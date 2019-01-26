@@ -32,8 +32,8 @@ if(UNIX)
 endif(UNIX)
 
 file(GLOB SOURCE_FILES
-        *.cpp
-        *.h
+    *.cpp
+    *.h
 )
 
 if(UNIX)
