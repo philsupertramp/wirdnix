@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include "olcPixelGameEngine.h"
 
 Engine::Engine()
 {
@@ -18,9 +19,10 @@ bool Engine::OnUserCreate()
 // called once per frame, draws random coloured pixels
 bool Engine::OnUserUpdate(float fElapsedTime)
 {
-    for (size_t i = 0; i < 10; i++)
-    {
-        FillCircle(olc::PixelGameEngine::ScreenHeight()/2, olc::PixelGameEngine::ScreenHeight()/2, 300, olc::Pixel(0,200,0));
-    }
+    static double pos = 0;
+    pos += fElapsedTime*100;
+    size_t x = size_t(pos) % (olc::PixelGameEngine::ScreenWidth()+600) -300;
+    olc::PixelGameEngine::Clear(olc::BLACK);
+    FillCircle(x, olc::PixelGameEngine::ScreenHeight()/2, 300, olc::Pixel(0,200,0));
     return true;
 }
