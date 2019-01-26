@@ -4,7 +4,6 @@ project(wirdnix)
 set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -fpermissive")
-
 add_executable(wirdnix 
 	main.cpp 
 	engine/olcPixelGameEngine.h 
@@ -19,7 +18,11 @@ if(MSVC)
 	set(CMAKE_CONFIGURATION_TYPES "Release;Debug;MinSizeRel;RelWithDebInfo")
 endif(MSVC)
 
-#find_package (PkgConfig REQUIRED)
+#jnl delete this if not needed, i dont need it for msvc
+if(UNIX)
+  find_package (PkgConfig REQUIRED)
+endif(UNIX)
+
 find_package (OpenGL REQUIRED)
 #find_package (GLUT REQUIRED)
 
