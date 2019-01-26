@@ -6,10 +6,14 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -fpermissive")
 add_executable(wirdnix 
 	main.cpp 
+	Chunk.h
+	Chunk.cpp
 	engine/olcPixelGameEngine.h 
 	engine/pge.cpp
 	engine/Engine.h
 	engine/Engine.cpp
+	engine/Drawable.h
+	engine/Drawable.cpp
 )
 
 # set the startup project in visual studio, such that it is not ALL_BUILD and annoying
