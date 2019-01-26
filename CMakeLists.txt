@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -fpermissive")
 
-add_executable(widnix main.cpp olcPixelGameEngine.h pge.cpp)
+add_executable(wirdnix main.cpp engine/olcPixelGameEngine.h engine/pge.cpp)
 
 find_package (PkgConfig REQUIRED)
 find_package (OpenGL REQUIRED)
