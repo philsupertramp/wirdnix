@@ -1,6 +1,6 @@
 #include "Engine.h"
 #include "olcPixelGameEngine.h"
-#include "../Chunk.h"
+#include "../Room.h"
 
 Engine::Engine()
 {
@@ -20,7 +20,12 @@ bool Engine::OnUserCreate()
 // called once per frame, draws random coloured pixels
 bool Engine::OnUserUpdate(float fElapsedTime)
 {
-    Chunk c(10,10);
+    Chunk c(10, 10);
     c.draw();
+
+    Room r(10, 10);
+    r.setBackgroundColor(olc::GREEN);
+    r.draw();
+
     return true;
 }

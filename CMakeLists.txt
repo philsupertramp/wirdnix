@@ -8,6 +8,8 @@ add_executable(wirdnix
 	main.cpp 
 	Chunk.h
 	Chunk.cpp
+	Room.h
+	Room.cpp
 	engine/olcPixelGameEngine.h 
 	engine/pge.cpp
 	engine/Engine.h

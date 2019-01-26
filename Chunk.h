@@ -2,8 +2,11 @@
 #define CHUNK_H
 
 #include "engine/Drawable.h"
+#include "engine/olcPixelGameEngine.h"
+
 
 typedef int WorldPos;
+
 class Chunk
     : public Drawable
 {
@@ -11,6 +14,8 @@ class Chunk
     WorldPos _posY;
     size_t _width;
     size_t _height;
+
+    olc::Pixel _backgroundColor;
 
 public:
     Chunk(WorldPos posX, WorldPos posY, size_t _width = CHUNK_WIDTH, size_t _height = CHUNK_HEIGHT);
@@ -22,6 +27,8 @@ public:
     const static size_t CHUNK_HEIGHT = CHUNK_WIDTH;
 
     void draw();
+
+    void setBackgroundColor(olc::Pixel const& color);
 };
 
 #endif // CHUNK_H
