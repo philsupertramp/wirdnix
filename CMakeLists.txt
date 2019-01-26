@@ -5,17 +5,18 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -fpermissive")
 
-add_executable(widnix 
+add_executable(wirdnix 
 	main.cpp 
-	olcPixelGameEngine.h 
-	pge.cpp
-	Engine.h
-	Engine.cpp
+	engine/olcPixelGameEngine.h 
+	engine/pge.cpp
+	engine/Engine.h
+	engine/Engine.cpp
 )
 
 # set the startup project in visual studio, such that it is not ALL_BUILD and annoying
 if(MSVC)
-	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT widnix)
+	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT wirdnix)
+	set(CMAKE_CONFIGURATION_TYPES "Release;Debug;MinSizeRel;RelWithDebInfo")
 endif(MSVC)
 
 #find_package (PkgConfig REQUIRED)
