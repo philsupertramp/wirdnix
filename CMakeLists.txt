@@ -13,6 +13,11 @@ add_executable(widnix
 	Engine.cpp
 )
 
+# set the startup project in visual studio, such that it is not ALL_BUILD and annoying
+if(MSVC)
+	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT widnix)
+endif(MSVC)
+
 #find_package (PkgConfig REQUIRED)
 find_package (OpenGL REQUIRED)
 #find_package (GLUT REQUIRED)
@@ -25,9 +30,9 @@ endif(UNIX)
 file(GLOB SOURCE_FILES
         *.cpp
         *.h
-        )
-if(UNIX)
+)
 
-target_link_libraries (wirdnix 
+if(UNIX)
+	target_link_libraries (wirdnix 
 	${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} GL m dl Xinerama Xrandr Xi Xcursor X11 Xxf86vm pthread png)
 endif(UNIX)
