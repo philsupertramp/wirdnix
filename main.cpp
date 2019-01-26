@@ -1,31 +1,8 @@
-#include "olcPixelGameEngine.h"
-// Override base class with your custom functionality
-class Example : public olc::PixelGameEngine
-{
-public:
-    Example()
-    {
-        sAppName = "Example";
-    }
-public:
-    bool OnUserCreate() override
-    {
-        // Called once at the start, so create things here
-        SetPixelMode(olc::Pixel::Mode::ALPHA);
-        return true;
-    }
-    bool OnUserUpdate(float fElapsedTime) override
-    {
-        // called once per frame, draws random coloured pixels
-
-        FillRect(rand() % 256, rand() % 240, 100, 100, olc::Pixel(rand() % 256, rand() % 256, rand() % 256, 10));
-        return true;
-    }
-};
+#include "Engine.h"
 int main()
 {
-    Example demo;
-    if (demo.Construct(256, 240, 4, 4))
-        demo.Start();
+    Engine& thomas = Engine::instance();
+    if (thomas.Construct(1000, 1000, 1, 1))
+        thomas.Start();
     return 0;
 }
