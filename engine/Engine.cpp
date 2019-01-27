@@ -31,13 +31,13 @@ void Engine::drawTestImage()
         d.draw();
     }
     {
-        // i
+        // -i
         Chunk d(-10, -10 +100,20,20);
         d.setBackgroundColor(olc::CYAN);
         d.draw();
     }
     {
-        // -i
+        // i
         Chunk d(-10, -10 -100,20,20);
         d.setBackgroundColor(olc::YELLOW);
         d.draw();
@@ -56,7 +56,7 @@ bool Engine::OnUserCreate()
 
     _drawTarget = GetDrawTarget();
 
-    camera.transform.Translate(GetDrawTargetWidth()/2, GetDrawTargetHeight()/2);
+    camera.reset();
 
     return true;
 }
@@ -120,11 +120,13 @@ void Engine::FillRect(olc::Sprite& sprite, int32_t x, int32_t y, int32_t w, int3
 void Engine::DrawSprite(int32_t x, int32_t y, olc::Sprite* sprite, uint32_t scale /* = 1 */)
 {
     SetDrawTarget(_drawTarget);
-    float angle = camera.getAngle();
 
-//    camera.transform.Rotate(-angle);
+    // transform the location where the sprite shall be drawn as well
+    float xf, yf;
+    camera.transform.Forward(x, y, xf, yf);
+    x = xf; y = yf;
+
     camera.transform.Translate(x, y);
     olc::GFX2D::DrawSprite(sprite, camera.transform);
     camera.transform.Translate(-x, -y);
-//    camera.transform.Rotate(angle);
 }

@@ -72,6 +72,7 @@
 #ifndef OLC_PGEX_GFX2D
 #define OLC_PGEX_GFX2D
 
+#include <iomanip>
 #include <algorithm>
 #undef min
 #undef max
@@ -105,10 +106,11 @@ namespace olc
 			inline void Backward(float in_x, float in_y, float &out_x, float &out_y);
 			// Regenerate the Inverse Transformation
 			inline void Invert();
+            inline void printEinheitsMatrix();
 
 		private:
 			inline void Multiply();
-			float matrix[4][3][3];
+			float matrix[5][3][3];
 			int nTargetMatrix;
 			int nSourceMatrix;
 			bool bDirty;
@@ -253,12 +255,14 @@ namespace olc
 
 	void olc::GFX2D::Transform2D::Forward(float in_x, float in_y, float &out_x, float &out_y)
 	{
-		out_x = in_x * matrix[nSourceMatrix][0][0] + in_y * matrix[nSourceMatrix][1][0] + matrix[nSourceMatrix][2][0];
+        Invert();
+        out_x = in_x * matrix[nSourceMatrix][0][0] + in_y * matrix[nSourceMatrix][1][0] + matrix[nSourceMatrix][2][0];
 		out_y = in_x * matrix[nSourceMatrix][0][1] + in_y * matrix[nSourceMatrix][1][1] + matrix[nSourceMatrix][2][1];
 	}
 
 	void olc::GFX2D::Transform2D::Backward(float in_x, float in_y, float &out_x, float &out_y)
 	{
+        Invert();
 		out_x = in_x * matrix[3][0][0] + in_y * matrix[3][1][0] + matrix[3][2][0];
 		out_y = in_x * matrix[3][0][1] + in_y * matrix[3][1][1] + matrix[3][2][1];
 	}
@@ -282,8 +286,52 @@ namespace olc
 			matrix[3][1][2] = (matrix[nSourceMatrix][0][2] * matrix[nSourceMatrix][1][0] - matrix[nSourceMatrix][0][0] * matrix[nSourceMatrix][1][2]) * idet;
 			matrix[3][2][2] = (matrix[nSourceMatrix][0][0] * matrix[nSourceMatrix][1][1] - matrix[nSourceMatrix][0][1] * matrix[nSourceMatrix][1][0]) * idet;
 			bDirty = false;
-		}
+
+            printEinheitsMatrix();
+        }
 	}
+
+    void olc::GFX2D::Transform2D::printEinheitsMatrix()
+    {
+        Invert();
+        //3 is inverse of nSourceMatrix
+
+        for (int c = 0; c < 3; c++)
+        {
+            for (int r = 0; r < 3; r++)
+            {
+                matrix[4][c][r] = matrix[3][0][r] * matrix[nSourceMatrix][c][0] +
+                                  matrix[3][1][r] * matrix[nSourceMatrix][c][1] +
+                                  matrix[3][2][r] * matrix[nSourceMatrix][c][2];
+            }
+        }
+
+        bool print = false;
+        for (int c = 0; c < 3 && !print; c++)
+        {
+            for (int r = 0; r < 3 && !print; r++)
+            {
+                if ( c == r && matrix[4][c][r] != 1 )
+                {
+                    print = true;
+                }
+                else if( matrix[4][c][r] != 0 )
+                {
+                    print = true;
+                }
+            }
+        }
+        std::cout << std::setprecision(10) << std::scientific;
+        for (int c = 0; c < 3 && print == true; c++)
+        {
+            for (int r = 0; r < 3; r++)
+            {
+                std::cout << matrix[4][c][r] -(c==r ? 1:0) << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+    }
 }
 
 #endif

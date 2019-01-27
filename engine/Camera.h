@@ -34,6 +34,8 @@ public:
 
     void reset();
 
+    void printZeros(std::string whoCalled = "");
+
     friend class Engine;
 };
 
