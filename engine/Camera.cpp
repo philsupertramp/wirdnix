@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Camera::Camera(WorldPos posX = 0, WorldPos posY = 0)
+Camera::Camera(WorldPos posX, WorldPos posY)
     : _posX(posX)
     , _posY(posY)
 { }

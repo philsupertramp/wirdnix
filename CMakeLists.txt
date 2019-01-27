@@ -3,7 +3,13 @@ project(wirdnix)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -fpermissive")
+if(UNIX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -fpermissive")
+elseif(MSVC)
+	# suppress warning about unknown options -pthread and -fpermissive
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+endif(UNIX)
+
 add_executable(wirdnix 
 	main.cpp 
 	Chunk.h
@@ -14,8 +20,8 @@ add_executable(wirdnix
 	engine/pge.cpp
 	engine/Engine.h
 	engine/Engine.cpp
-	engine/Drawable.h
-	engine/Drawable.cpp
+	engine/Renderable.h
+	engine/Renderable.cpp
 	engine/Camera.h
 	engine/Camera.cpp
 )

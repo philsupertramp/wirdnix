@@ -1,19 +1,19 @@
-#ifndef DRAWABLE_H
-#define DRAWABLE_H
+#ifndef RENDERABLE_H
+#define RENDERABLE_H
 
 #include "Engine.h"
 
-class Drawable
+class Renderable
 {
 protected:
     // for easy access to the engine
     Engine& engine = Engine::instance();
 
 public:
-//    Drawable();
+//    Renderable();
 
     virtual void draw() = 0;
 
 };
 
-#endif // DRAWABLE_H
+#endif // RENDERABLE_H

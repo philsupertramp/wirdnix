@@ -1,14 +1,14 @@
 #ifndef CHUNK_H
 #define CHUNK_H
 
-#include "engine/Drawable.h"
+#include "engine/Renderable.h"
 #include "engine/olcPixelGameEngine.h"
 
 
 typedef int WorldPos;
 
 class Chunk
-    : public Drawable
+    : public Renderable
 {
     WorldPos _posX;
     WorldPos _posY;
