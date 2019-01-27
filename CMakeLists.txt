@@ -17,6 +17,7 @@ add_executable(wirdnix
 	Room.h
 	Room.cpp
 	engine/olcPixelGameEngine.h 
+	engine/olcPGEX_Graphics2D.h
 	engine/pge.cpp
 	engine/Engine.h
 	engine/Engine.cpp

@@ -15,7 +15,10 @@ Chunk::~Chunk()
 
 void Chunk::draw()
 {
-    engine.FillRect(_posX, _posY, _width, _height, _backgroundColor);
+    olc::Sprite rect((int32_t)_width, (int32_t)_height);
+
+    Engine::FillRect(rect, 0, 0, (int32_t)_width, (int32_t)_height, _backgroundColor);
+    engine.DrawSprite(_posX, _posY, &rect);
 }
 
 void Chunk::setBackgroundColor(olc::Pixel const& color)

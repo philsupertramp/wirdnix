@@ -4,7 +4,6 @@
 #include "engine/Renderable.h"
 #include "engine/olcPixelGameEngine.h"
 
-
 typedef int WorldPos;
 
 class Chunk

@@ -1,24 +1,40 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-typedef size_t WorldPos;
+#include "olcPixelGameEngine.h"
+#include "olcPGEX_Graphics2D.h"
+
+class Engine;
+typedef int WorldPos;
 
 class Camera
 {
-    //jnl middlePoint currently
-    //  the camera has no rotation so far and no zoom
-    WorldPos _posX;
-    WorldPos _posY;
-
-    // maybe make the camera move, accelerate etc and get slowed down by drag
-    double _velocityX;
-    double _velocityY;
+    olc::GFX2D::Transform2D transform;
 
 public:
-    Camera(WorldPos posX = 0, WorldPos posY = 0);
+    ///*** constructors ***//
+    Camera();
     ~Camera();
 
-    void changePosBy(WorldPos x = 0, WorldPos y = 0);
+    ///*** constants ***//
+    const static WorldPos MOVEMENT_SPEED = 5;
+    const static float ROTATIONAL_SPEED;
+    const static WorldPos ZOOM_SPEED = 1;
+
+    float getAngle();
+
+    void moveUp();
+    void moveDown();
+    void moveLeft();
+    void moveRight();
+    void rotateLeft();
+    void rotateRight();
+    void zoomOut();
+    void zoomIn();
+
+    void reset();
+
+    friend class Engine;
 };
 
 #endif // CAMERA_H
