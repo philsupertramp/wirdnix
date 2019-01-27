@@ -68,8 +68,15 @@ void Camera::rotateLeft()
 
 void Camera::rotateRight()
 {
+    //float x0, y0;
+    //transform.Forward(0, 0, x0, y0);
+    //transform.Translate(-x0, -y0);
+    //transform.Rotate(-ROTATIONAL_SPEED);
+    //transform.Translate(x0, y0);
+
     float x0, y0;
-    transform.Forward(0, 0, x0, y0);
+    float x0, y0;
+    transform.Forward(Engine::instance().GetDrawTargetWidth()/2, Engine::instance().GetDrawTargetHeight()/2, x0, y0);
     transform.Translate(-x0, -y0);
     transform.Rotate(-ROTATIONAL_SPEED);
     transform.Translate(x0, y0);
