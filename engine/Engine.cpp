@@ -56,6 +56,8 @@ bool Engine::OnUserCreate()
 
     _drawTarget = GetDrawTarget();
 
+    camera.transform.Translate(GetDrawTargetWidth()/2, GetDrawTargetHeight()/2);
+
     return true;
 }
 
