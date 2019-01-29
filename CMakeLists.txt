@@ -3,13 +3,27 @@ project(wirdnix)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -fpermissive")
+if(UNIX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -fpermissive")
+elseif(MSVC)
+	# suppress warning about unknown options -pthread and -fpermissive
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+endif(UNIX)
+
 add_executable(wirdnix 
 	main.cpp 
+	Chunk.h
+	Chunk.cpp
+	Room.h
+	Room.cpp
 	engine/olcPixelGameEngine.h 
 	engine/pge.cpp
 	engine/Engine.h
 	engine/Engine.cpp
+	engine/Renderable.h
+	engine/Renderable.cpp
+	engine/Camera.h
+	engine/Camera.cpp
 )
 
 # set the startup project in visual studio, such that it is not ALL_BUILD and annoying
