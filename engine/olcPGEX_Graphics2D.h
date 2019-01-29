@@ -247,9 +247,9 @@ namespace olc
 	void olc::GFX2D::Transform2D::Translate(float ox, float oy)
 	{
 		// Construct Translate Matrix
-		matrix[2][0][0] = 1.0f; matrix[2][1][0] = 0.0f; matrix[2][2][0] = ox;
-		matrix[2][0][1] = 0.0f; matrix[2][1][1] = 1.0f; matrix[2][2][1] = oy;
-		matrix[2][0][2] = 0.0f;	matrix[2][1][2] = 0.0f;	matrix[2][2][2] = 1.0f;
+		matrix[2][0][0] = 1.0f; matrix[2][1][0] = 0.0f; matrix[2][2][0] = 0.0f;
+		matrix[2][0][1] = 0.0f; matrix[2][1][1] = 1.0f; matrix[2][2][1] = 0.0f;
+		matrix[2][0][2] = ox;	matrix[2][1][2] = oy;	matrix[2][2][2] = 1.0f;
 		Multiply();
 	}
 

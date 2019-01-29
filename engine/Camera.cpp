@@ -61,7 +61,7 @@ void Camera::moveRight()
 void Camera::rotateLeft()
 {
     float x0, y0;
-    transform.Backward(Engine::instance().GetDrawTargetWidth()/2, Engine::instance().GetDrawTargetHeight()/2, x0, y0);
+    transform.Forward(Engine::instance().GetDrawTargetWidth()/2, Engine::instance().GetDrawTargetHeight()/2, x0, y0);
     printZeros(std::string(__FUNCTION__) + " pre ");
     std::cout << "      " << x0 << " " << y0 << std::endl;
     transform.Translate(-x0, -y0);
