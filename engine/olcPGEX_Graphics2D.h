@@ -96,6 +96,7 @@ namespace olc
 			inline void Rotate(float fTheta);
 			// Append a translation (ox, oy) to this transform
 			inline void Translate(float ox, float oy);
+            inline void TranslateRotation(float ox, float oy);
 			// Append a scaling operation (sx, sy) to this transform
 			inline void Scale(float sx, float sy);
 			// Append a shear operation (sx, sy) to this transform
@@ -192,7 +193,6 @@ namespace olc
 		matrix[0][0][0] = 1.0f; matrix[0][1][0] = 0.0f; matrix[0][2][0] = 0.0f;
 		matrix[0][0][1] = 0.0f; matrix[0][1][1] = 1.0f; matrix[0][2][1] = 0.0f;
 		matrix[0][0][2] = 0.0f; matrix[0][1][2] = 0.0f; matrix[0][2][2] = 1.0f;
-
 		matrix[1][0][0] = 1.0f; matrix[1][1][0] = 0.0f; matrix[1][2][0] = 0.0f;
 		matrix[1][0][1] = 0.0f; matrix[1][1][1] = 1.0f; matrix[1][2][1] = 0.0f;
 		matrix[1][0][2] = 0.0f; matrix[1][1][2] = 0.0f; matrix[1][2][2] = 1.0f;
@@ -247,12 +247,19 @@ namespace olc
 	void olc::GFX2D::Transform2D::Translate(float ox, float oy)
 	{
 		// Construct Translate Matrix
-		matrix[2][0][0] = 1.0f; matrix[2][1][0] = 0.0f; matrix[2][2][0] = 0.0f;
-		matrix[2][0][1] = 0.0f; matrix[2][1][1] = 1.0f; matrix[2][2][1] = 0.0f;
-		matrix[2][0][2] = ox;	matrix[2][1][2] = oy;	matrix[2][2][2] = 1.0f;
+		matrix[2][0][0] = 1.0f; matrix[2][1][0] = 0; matrix[2][2][0] = ox;
+		matrix[2][0][1] = 0; matrix[2][1][1] = 1.0f; matrix[2][2][1] = oy;
+		matrix[2][0][2] = 0;	matrix[2][1][2] = 0;	matrix[2][2][2] = 1.0f;
 		Multiply();
 	}
-
+    void olc::GFX2D::Transform2D::TranslateRotation(float ox, float oy)
+    {
+        // Construct Translate Matrix
+        matrix[2][0][0] = 1.0f; matrix[2][1][0] = 0; matrix[2][2][0] = 0;
+        matrix[2][0][1] = 0; matrix[2][1][1] = 1.0f; matrix[2][2][1] = 0;
+        matrix[2][0][2] = ox;	matrix[2][1][2] = oy;	matrix[2][2][2] = 1.0f;
+        Multiply();
+    }
 	void olc::GFX2D::Transform2D::Forward(float in_x, float in_y, float &out_x, float &out_y)
 	{
         Invert();
@@ -287,7 +294,7 @@ namespace olc
 			matrix[3][2][2] = (matrix[nSourceMatrix][0][0] * matrix[nSourceMatrix][1][1] - matrix[nSourceMatrix][0][1] * matrix[nSourceMatrix][1][0]) * idet;
 			bDirty = false;
 
-            printEinheitsMatrix();
+            //printEinheitsMatrix();
         }
 	}
 
