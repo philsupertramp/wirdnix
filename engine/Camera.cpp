@@ -28,55 +28,44 @@ float Camera::getAngle()
 
 void Camera::moveUp()
 {
-    printZeros(std::string(__FUNCTION__) + " pre ");
     transform.Translate(0, MOVEMENT_SPEED);
-    printZeros(std::string(__FUNCTION__) + " post");
 }
 
 void Camera::moveDown()
 {
-    printZeros(std::string(__FUNCTION__) + " pre ");
     transform.Translate(0, -MOVEMENT_SPEED);
-    printZeros(std::string(__FUNCTION__) + " post");
 }
 
 void Camera::moveLeft()
 {
-    printZeros(std::string(__FUNCTION__) + " pre ");
     transform.Rotate((float)-M_PI_2);
     moveUp();
     transform.Rotate((float)M_PI_2);
-    printZeros(std::string(__FUNCTION__) + " post");
 }
 
 void Camera::moveRight()
 {
-    printZeros(std::string(__FUNCTION__) + " pre ");
     transform.Rotate((float)M_PI_2);
     moveUp();
     transform.Rotate((float)-M_PI_2);
-    printZeros(std::string(__FUNCTION__) + " post");
 }
 
 void Camera::rotateLeft()
 {
     float x0, y0;
-    transform.Forward(Engine::instance().GetDrawTargetWidth()/2, Engine::instance().GetDrawTargetHeight()/2, x0, y0);
+    transform.Backward(Engine::instance().GetDrawTargetWidth()/2, Engine::instance().GetDrawTargetHeight()/2, x0, y0);
     printZeros(std::string(__FUNCTION__) + " pre ");
     std::cout << "      " << x0 << " " << y0 << std::endl;
     transform.Translate(-x0, -y0);
-    printZeros(std::string(__FUNCTION__) + " pret");
     transform.Rotate(ROTATIONAL_SPEED);
-    printZeros(std::string(__FUNCTION__) + " posr");
     transform.Translate(x0, y0);
-    printZeros(std::string(__FUNCTION__) + " post");
-    std::cout << std::endl;
 }
 
 void Camera::rotateRight()
 {
     float x0, y0;
-    transform.Forward(Engine::instance().GetDrawTargetWidth()/2, Engine::instance().GetDrawTargetHeight()/2, x0, y0);
+    transform.Forward(0, 0, x0, y0);
+    printZeros(std::string(__FUNCTION__) + " pre ");
     transform.Translate(-x0, -y0);
     transform.Rotate(-ROTATIONAL_SPEED);
     transform.Translate(x0, y0);
@@ -84,17 +73,13 @@ void Camera::rotateRight()
 
 void Camera::zoomOut()
 {
-    printZeros(std::string(__FUNCTION__) + " pre ");
     transform.Scale(ZOOM_SPEED, ZOOM_SPEED);
-    printZeros(std::string(__FUNCTION__) + " post");
 }
 
 
 void Camera::zoomIn()
 {
-    printZeros(std::string(__FUNCTION__) + " pre ");
     transform.Scale(-ZOOM_SPEED, -ZOOM_SPEED);
-    printZeros(std::string(__FUNCTION__) + " post");
 }
 
 void Camera::reset()
@@ -111,5 +96,10 @@ void Camera::printZeros(std::string whoCalled)
     transform.Forward(0, 0, x, y);
     std::cout << whoCalled << "zeros forward " << x << " " << y ;
     transform.Backward(0, 0, x, y);
+    std::cout << " : backward " << x << " " << y;
+
+    transform.Forward(500, 500, x, y);
+    std::cout << " : 500 forward " << x << " " << y ;
+    transform.Backward(500, 500, x, y);
     std::cout << " : backward " << x << " " << y << std::endl;
 }

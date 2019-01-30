@@ -10,41 +10,64 @@ Engine::Engine()
 void Engine::drawTestImage()
 {
     // big origin
-    Chunk c(-100, -100,200,200);
+    Chunk c(-100, -100, 200, 200);
     c.draw();
 
     // origin
-    Chunk d(-10, -10,20,20);
+    Chunk d(-10, -10, 20, 20);
     d.setBackgroundColor(olc::RED);
     d.draw();
 
     {
         // one
-        Chunk d(-10 +100, -10,20,20);
+        Chunk d(-10 + 100, -10, 20, 20);
         d.setBackgroundColor(olc::GREEN);
         d.draw();
     }
     {
         // -one
-        Chunk d(-10 -100, -10,20,20);
+        Chunk d(-10 - 100, -10, 20, 20);
         d.setBackgroundColor(olc::BLUE);
         d.draw();
     }
     {
         // -i
-        Chunk d(-10, -10 +100,20,20);
+        Chunk d(-10, -10 + 100, 20, 20);
         d.setBackgroundColor(olc::CYAN);
         d.draw();
     }
     {
         // i
-        Chunk d(-10, -10 -100,20,20);
+        Chunk d(-10, -10 - 100, 20, 20);
         d.setBackgroundColor(olc::YELLOW);
         d.draw();
     }
     //Room r(10, 10);
     //r.setBackgroundColor(olc::GREEN);
     //r.draw();
+
+
+    /// create coordinate sprite
+    int32_t coordWidth = 500;
+    static olc::Sprite coords(coordWidth+100, coordWidth+100);
+    static bool coordsFilled = false;
+    if (!coordsFilled)
+    {
+        SetPixelMode(olc::Pixel::Mode::NORMAL);
+        FillRect(coords, 0, 0, coordWidth+100, coordWidth+100, olc::Pixel(0,255,255,0)); // transparent
+        SetPixelMode(olc::Pixel::Mode::ALPHA);
+
+        for (int i = 0; i <= coordWidth; i += 100)
+        {
+            for (int j = 0; j <= coordWidth; j += 100)
+            {
+                DrawString(coords, i, j, "(" + std::to_string(i) + "," + std::to_string(j) + ")", olc::Pixel(255,255,0,100));
+            }
+        }
+        coordsFilled = true; // dont fill again every frame
+    }
+    DrawSprite(0, 0, &coords);
+    olc::PixelGameEngine::DrawSprite(0,0, &coords);
 }
 
 // Called once at the start, so create things here
@@ -65,7 +88,8 @@ bool Engine::OnUserCreate()
 bool Engine::OnUserUpdate(float fElapsedTime)
 {
     SetDrawTarget(_drawTarget);
-    Clear(olc::Pixel( 75,   0, 130)); // to know where nothing has been drawn
+
+    Clear(olc::Pixel( 75,   0, 130, 255)); // to know where nothing has been drawn
 
     if (GetKey(olc::W).bHeld || GetKey(olc::UP).bHeld)
     {
@@ -114,6 +138,15 @@ void Engine::FillRect(olc::Sprite& sprite, int32_t x, int32_t y, int32_t w, int3
 
     engine.SetDrawTarget(&sprite);
     engine.olc::PixelGameEngine::FillRect(x, y, w, h, p);
+    engine.SetDrawTarget(engine._drawTarget);
+}
+
+void Engine::DrawString(olc::Sprite& sprite, int32_t x, int32_t y, std::string const& sText, olc::Pixel const& col, uint32_t scale /* = 1 */)
+{
+    auto& engine = instance();
+
+    engine.SetDrawTarget(&sprite);
+    engine.olc::PixelGameEngine::DrawString(x, y, sText, col, scale);
     engine.SetDrawTarget(engine._drawTarget);
 }
 

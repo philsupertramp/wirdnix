@@ -36,6 +36,7 @@ public:
     using olc::PixelGameEngine::GetDrawTargetHeight;
 
     static void FillRect(olc::Sprite& sprite, int32_t x, int32_t y, int32_t w, int32_t h, olc::Pixel const& p = olc::WHITE);
+    static void DrawString(olc::Sprite& sprite, int32_t x, int32_t y, std::string const& sText, olc::Pixel const& col, uint32_t scale = 1);
 
 
     void DrawSprite(int32_t x, int32_t y, olc::Sprite* sprite, uint32_t scale = 1);
