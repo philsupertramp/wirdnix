@@ -77,15 +77,15 @@ namespace olc
     olc::GFX3D::Math::Math()
     { }
 
-    GFX3D::vec3d GFX3D::Math::Mat_MultiplyVector(GFX3D::mat4x4& m, GFX3D::vec3d& i)
-    {
-        vec3d v;
-        v.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + i.w * m.m[3][0];
-        v.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + i.w * m.m[3][1];
-        v.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + i.w * m.m[3][2];
-        v.w = i.x * m.m[0][3] + i.y * m.m[1][3] + i.z * m.m[2][3] + i.w * m.m[3][3];
-        return v;
-    }
+    //inline olc::GFX3D::vec3d olc::GFX3D::Math::Mat_MultiplyVector(olc::GFX3D::mat4x4& m, olc::GFX3D::vec3d& i)
+    //{
+    //    vec3d v;
+    //    v.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + i.w * m.m[3][0];
+    //    v.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + i.w * m.m[3][1];
+    //    v.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + i.w * m.m[3][2];
+    //    v.w = i.x * m.m[0][3] + i.y * m.m[1][3] + i.z * m.m[2][3] + i.w * m.m[3][3];
+    //    return v;
+    //}
 
     olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeIdentity()
     {
@@ -361,29 +361,35 @@ namespace olc
 
         if (d0 >= 0)
 		{
-			inside_points[nInsidePointCount++] =& in_tri.p[0]; inside_tex[nInsideTexCount++] =& in_tri.t[0];
+			inside_points[nInsidePointCount++] = &in_tri.p[0];
+            inside_tex[nInsideTexCount++] =      &in_tri.t[0];
 		}
         else
 		{
-            outside_points[nOutsidePointCount++] =& in_tri.p[0]; outside_tex[nOutsideTexCount++] =& in_tri.t[0];
+            outside_points[nOutsidePointCount++] = &in_tri.p[0];
+            outside_tex[nOutsideTexCount++] =      &in_tri.t[0];
         }
 
 		if (d1 >= 0)
 		{
-            inside_points[nInsidePointCount++] =& in_tri.p[1]; inside_tex[nInsideTexCount++] =& in_tri.t[1];
+            inside_points[nInsidePointCount++] = &in_tri.p[1];
+            inside_tex[nInsideTexCount++] =      &in_tri.t[1];
         }
         else
 		{
-            outside_points[nOutsidePointCount++] =& in_tri.p[1];  outside_tex[nOutsideTexCount++] =& in_tri.t[1];
+            outside_points[nOutsidePointCount++] = &in_tri.p[1];
+            outside_tex[nOutsideTexCount++] =      &in_tri.t[1];
         }
 
         if (d2 >= 0)
 		{
-            inside_points[nInsidePointCount++] =& in_tri.p[2]; inside_tex[nInsideTexCount++] =& in_tri.t[2];
+            inside_points[nInsidePointCount++] = &in_tri.p[2];
+            inside_tex[nInsideTexCount++] =      &in_tri.t[2];
         }
         else
 		{
-            outside_points[nOutsidePointCount++] =& in_tri.p[2];  outside_tex[nOutsideTexCount++] =& in_tri.t[2];
+            outside_points[nOutsidePointCount++] = &in_tri.p[2];
+            outside_tex[nOutsideTexCount++] =      &in_tri.t[2];
         }
 
         // Now classify triangle points, and break the input triangle into
@@ -413,7 +419,7 @@ namespace olc
             // the plane, the triangle simply becomes a smaller triangle
 
             // Copy appearance info to new triangle
-            out_tri1.col = olc::MAGENTA;// in_tri.col;
+            out_tri1.col = in_tri.col;
 
             // The inside point is valid, so keep that...
             out_tri1.p[0] = *inside_points[0];
@@ -442,8 +448,8 @@ namespace olc
             // represent a quad with two new triangles
 
             // Copy appearance info to new triangles
-            out_tri1.col = olc::GREEN;// in_tri.col;
-            out_tri2.col = olc::RED;// in_tri.col;
+            out_tri1.col = in_tri.col;
+            out_tri2.col = in_tri.col;
 
             // The first triangle consists of the two inside points and a new
             // point determined by the location where one side of the triangle
@@ -490,7 +496,6 @@ namespace olc
     void GFX3D::TexturedTriangle(int x1, int y1, float u1, float v1, float w1,
                                  int x2, int y2, float u2, float v2, float w2,
                                  int x3, int y3, float u3, float v3, float w3, olc::Sprite* spr)
-
     {
         if (y2 < y1)
         {
@@ -930,7 +935,14 @@ namespace olc
             }
 
             // If Lighting, calculate shading
-            triTransformed.col = olc::WHITE;
+            if(flags & RENDER_FLAT)
+            {
+                triTransformed.col = tri.col;
+            }
+            else
+            {
+                triTransformed.col = olc::WHITE;
+            }
 
             // Clip triangle against near plane
             int nClippedTriangles = 0;
@@ -979,7 +991,6 @@ namespace olc
                 // ensure we only test new triangles generated against planes
                 triangle sclipped[2];
                 std::list<triangle> listTriangles;
-
 
                 // Add initial triangle
                 listTriangles.push_back(triProjected);

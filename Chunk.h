@@ -16,6 +16,7 @@ protected:
     size_t _height;
 
     olc::Pixel _backgroundColor;
+    olc::Sprite _sprite;
 
 public:
     Chunk(float posX, float posY, size_t _width = CHUNK_WIDTH, size_t _height = CHUNK_HEIGHT);

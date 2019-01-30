@@ -4,7 +4,7 @@
 #include "Engine.h"
 
 const float Camera::MOVEMENT_SPEED = 10;
-const float Camera::ROTATIONAL_SPEED = .1f;
+const float Camera::ROTATIONAL_SPEED = .9f;
 const float Camera::ZOOM_SPEED = .00001f;
 
 Camera::Camera()
@@ -62,6 +62,7 @@ void Camera::moveRight(float fElapsedTime /* = 0 */)
 void Camera::rotateLeft(float fElapsedTime /* = 0 */)
 {
     olc::GFX3D::vec3d heading = _lookat - _pos;
+    heading.normalize();
     olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(heading, fElapsedTime * ROTATIONAL_SPEED);
 
     _up = olc::GFX3D::Math::Mat_MultiplyVector(rot, _up);
@@ -71,6 +72,7 @@ void Camera::rotateLeft(float fElapsedTime /* = 0 */)
 void Camera::rotateRight(float fElapsedTime /* = 0 */)
 {
     olc::GFX3D::vec3d heading = _lookat - _pos;
+    heading.normalize();
     olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(heading, -fElapsedTime * ROTATIONAL_SPEED);
 
     _up = olc::GFX3D::Math::Mat_MultiplyVector(rot, _up);
@@ -102,7 +104,7 @@ void Camera::moveDown(float fElapsedTime /* = 0 */)
 
 void Camera::reset()
 {
-    _pos = {0,0,10};
+    _pos = {0,0,500};
     _lookat = {0,0,0};
     _up = {0,10,0};
     SetCamera(_pos, _lookat, _up);

@@ -44,7 +44,6 @@ public:
     static int32_t ScreenWidth();
     static int32_t ScreenHeight();
 
-
     void DrawMesh(olc::GFX3D::mesh& m, uint32_t flags = olc::GFX3D::RENDERFLAGS::RENDER_CULL_CW | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH);
 };
 
