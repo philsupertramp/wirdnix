@@ -94,6 +94,75 @@ namespace olc
             float y = 0;
             float z = 0;
             float w = 1; // Need a 4th term to perform sensible matrix vector multiplication
+
+            void normalize()
+            {
+                float l = x*x + y*y + z*z;
+                l = sqrt(l);
+
+                x /= l;
+                y /= l;
+                z /= l;
+
+                w = 1;
+            }
+
+            vec3d operator* (float s)
+            {
+                vec3d res = *this;
+                return res *= s;
+            }
+
+            vec3d& operator*= (float s)
+            {
+                x *= s;
+                y *= s;
+                z *= s;
+
+                return *this;
+            }
+
+            vec3d operator+ (vec3d const& v)
+            {
+                vec3d res = *this;
+                return res += v;
+            }
+
+            vec3d& operator+= (vec3d const& v)
+            {
+                x += v.x;
+                y += v.y;
+                z += v.z;
+
+                return *this;
+            }
+
+            vec3d operator- (vec3d const& v)
+            {
+                vec3d res = *this;
+                return res -= v;
+            }
+
+            vec3d& operator-= (vec3d const& v)
+            {
+                x -= v.x;
+                y -= v.y;
+                z -= v.z;
+
+                return *this;
+            }
+
+            // cross product time!
+            vec3d operator& (vec3d const& v)
+            {
+                vec3d res;
+
+                res.x = y*v.z - z*v.y;
+                res.y = z*v.x - x*v.z;
+                res.z = x*v.y - y*v.x;
+
+                return res;
+            }
         };
 
         struct triangle
@@ -124,6 +193,21 @@ namespace olc
             inline static mat4x4 Mat_MakeRotationX(float fAngleRad);
             inline static mat4x4 Mat_MakeRotationY(float fAngleRad);
             inline static mat4x4 Mat_MakeRotationZ(float fAngleRad);
+            inline static mat4x4 Mat_MakeRotationU(vec3d const& u, float fAngleRad)
+            {
+                mat4x4 res;
+
+                float sinTheta = sinf(fAngleRad);
+                float cosTheta = cosf(fAngleRad);
+
+                res.m[0][0] =    cosTheta + u.x*u.x * (1 - cosTheta);     res.m[1][0] = u.x*u.y * (1 - cosTheta) - u.z * sinTheta;  res.m[2][0] = u.x*u.z * (1 - cosTheta) + u.y * sinTheta;
+                res.m[0][1] = u.y*u.x * (1 - cosTheta) + u.z * sinTheta;  res.m[1][1] =    cosTheta + u.y*u.y * (1 - cosTheta);     res.m[2][1] = u.y*u.z * (1 - cosTheta) + u.x * sinTheta;
+                res.m[0][2] = u.z*u.x * (1 - cosTheta) - u.y * sinTheta;  res.m[1][2] = u.z*u.y * (1 - cosTheta) + u.x * sinTheta;  res.m[2][2] =   cosTheta + u.z*u.z * (1 - cosTheta);
+                res.m[3][3] = 1;
+
+                return res;
+            }
+
             inline static mat4x4 Mat_MakeScale(float x, float y, float z);
             inline static mat4x4 Mat_MakeTranslation(float x, float y, float z);
             inline static mat4x4 Mat_MakeProjection(float fFovDegrees, float fAspectRatio, float fNear, float fFar);

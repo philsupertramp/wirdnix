@@ -64,7 +64,7 @@
 
 #include "olcPixelGameEngine.h"
 
-#include  "olcPGEX_Graphics3D.h"
+#include "olcPGEX_Graphics3D.h"
 
 #include <algorithm>
 #include <vector>
@@ -132,6 +132,21 @@ namespace olc
         matrix.m[3][3] = 1.0f;
         return matrix;
     }
+
+    //olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeRotationU(vec3d const& u, float fAngleRad)
+    //{
+    //    olc::GFX3D::mat4x4 res;
+
+    //    float sinTheta = sinf(fAngleRad);
+    //    float cosTheta = cosf(fAngleRad);
+
+    //    res.m[0][0] =    cosTheta + u.x*u.x * (1 - cosTheta);     res.m[1][0] = u.x*u.y * (1 - cosTheta) - u.z * sinTheta;  res.m[2][0] = u.x*u.z * (1 - cosTheta) + u.y * sinTheta;
+    //    res.m[0][1] = u.y*u.x * (1 - cosTheta) + u.z * sinTheta;  res.m[1][1] =    cosTheta + u.y*u.y * (1 - cosTheta);     res.m[2][1] = u.y*u.z * (1 - cosTheta) + u.x * sinTheta;
+    //    res.m[0][2] = u.z*u.x * (1 - cosTheta) - u.y * sinTheta;  res.m[1][2] = u.z*u.y * (1 - cosTheta) + u.x * sinTheta;  res.m[2][2] =   cosTheta + u.z*u.z * (1 - cosTheta);
+    //    res.m[3][3] = 1;
+
+    //    return res;
+    //}
 
     olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeScale(float x, float y, float z)
     {
@@ -312,7 +327,6 @@ namespace olc
         return Vec_Add(lineStart, lineToIntersect);
     }
 
-
     int olc::GFX3D::Math::Triangle_ClipAgainstPlane(vec3d plane_p, vec3d plane_n, triangle& in_tri, triangle& out_tri1, triangle& out_tri2)
     {
         // Make sure plane normal is indeed normal
@@ -474,8 +488,8 @@ namespace olc
     }
 
     void GFX3D::TexturedTriangle(int x1, int y1, float u1, float v1, float w1,
-        int x2, int y2, float u2, float v2, float w2,
-        int x3, int y3, float u3, float v3, float w3, olc::Sprite* spr)
+                                 int x2, int y2, float u2, float v2, float w2,
+                                 int x3, int y3, float u3, float v3, float w3, olc::Sprite* spr)
 
     {
         if (y2 < y1)
@@ -947,7 +961,7 @@ namespace olc
                 // Clip against viewport in screen space
                 // Clip triangles against all four screen edges, this could yield
                 // a bunch of triangles, so create a queue that we traverse to
-                //  ensure we only test new triangles generated against planes
+                // ensure we only test new triangles generated against planes
                 triangle sclipped[2];
                 std::list<triangle> listTriangles;
 
@@ -973,10 +987,10 @@ namespace olc
                         // comment is almost completely and utterly justified
                         switch (p)
                         {
-                        case 0: nTrisToAdd = GFX3D::Math::Triangle_ClipAgainstPlane({ 0.0f, -1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, test, sclipped[0], sclipped[1]); break;
-                        case 1: nTrisToAdd = GFX3D::Math::Triangle_ClipAgainstPlane({ 0.0f, +1.0f, 0.0f }, { 0.0f, -1.0f, 0.0f }, test, sclipped[0], sclipped[1]); break;
-                        case 2: nTrisToAdd = GFX3D::Math::Triangle_ClipAgainstPlane({ -1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, test, sclipped[0], sclipped[1]); break;
-                        case 3: nTrisToAdd = GFX3D::Math::Triangle_ClipAgainstPlane({ +1.0f, 0.0f, 0.0f }, { -1.0f, 0.0f, 0.0f }, test, sclipped[0], sclipped[1]); break;
+                        case 0: nTrisToAdd = GFX3D::Math::Triangle_ClipAgainstPlane({  0.0f, -1.0f, 0.0f }, {  0.0f,  1.0f, 0.0f }, test, sclipped[0], sclipped[1]); break;
+                        case 1: nTrisToAdd = GFX3D::Math::Triangle_ClipAgainstPlane({  0.0f, +1.0f, 0.0f }, {  0.0f, -1.0f, 0.0f }, test, sclipped[0], sclipped[1]); break;
+                        case 2: nTrisToAdd = GFX3D::Math::Triangle_ClipAgainstPlane({ -1.0f,  0.0f, 0.0f }, {  1.0f,  0.0f, 0.0f }, test, sclipped[0], sclipped[1]); break;
+                        case 3: nTrisToAdd = GFX3D::Math::Triangle_ClipAgainstPlane({ +1.0f,  0.0f, 0.0f }, { -1.0f,  0.0f, 0.0f }, test, sclipped[0], sclipped[1]); break;
                         }
 
 
