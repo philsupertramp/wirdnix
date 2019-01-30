@@ -187,7 +187,15 @@ namespace olc
         public:
             inline Math();
         public:
-            inline static vec3d  Mat_MultiplyVector(mat4x4& m, vec3d& i);
+            inline static vec3d Mat_MultiplyVector(olc::GFX3D::mat4x4& m, olc::GFX3D::vec3d& i)
+            {
+                vec3d v;
+                v.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + i.w * m.m[3][0];
+                v.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + i.w * m.m[3][1];
+                v.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + i.w * m.m[3][2];
+                v.w = i.x * m.m[0][3] + i.y * m.m[1][3] + i.z * m.m[2][3] + i.w * m.m[3][3];
+                return v;
+            }
             inline static mat4x4 Mat_MultiplyMatrix(mat4x4& m1, mat4x4& m2);
             inline static mat4x4 Mat_MakeIdentity();
             inline static mat4x4 Mat_MakeRotationX(float fAngleRad);

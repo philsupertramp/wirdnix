@@ -77,7 +77,7 @@ namespace olc
     olc::GFX3D::Math::Math()
     { }
 
-    olc::GFX3D::vec3d olc::GFX3D::Math::Mat_MultiplyVector(olc::GFX3D::mat4x4& m, olc::GFX3D::vec3d& i)
+    GFX3D::vec3d GFX3D::Math::Mat_MultiplyVector(GFX3D::mat4x4& m, GFX3D::vec3d& i)
     {
         vec3d v;
         v.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + i.w * m.m[3][0];
@@ -849,7 +849,15 @@ namespace olc
     GFX3D::PipeLine::PipeLine()
     { }
 
-    void GFX3D::PipeLine::SetProjection(float fFovDegrees, float fAspectRatio, float fNear, float fFar, float fLeft, float fTop, float fWidth, float fHeight)
+    void GFX3D::PipeLine::SetProjection(float fFovDegrees, // field of view
+                                        float fAspectRatio, //? aspect ratio of camera
+                                        float fNear, //? near clipping plane
+                                        float fFar, //? far clipping plane
+                                        float fLeft, // distance from the left border of the screen
+                                        float fTop, // distance from the top border of the screen
+                                        float fWidth, // width  of the area the came4ra draws in
+                                        float fHeight // height of the area the came4ra draws in
+        )
     {
         matProj = GFX3D::Math::Mat_MakeProjection(fFovDegrees, fAspectRatio, fNear, fFar);
         fViewX = fLeft;
@@ -911,8 +919,15 @@ namespace olc
             normal = GFX3D::Math::Vec_Normalise(normal);
 
             // Cull triangles that face away from viewer
-            if (flags& RENDER_CULL_CW && GFX3D::Math::Vec_DotProduct(normal, triTransformed.p[0]) > 0.0f) continue;
-            if (flags& RENDER_CULL_CCW && GFX3D::Math::Vec_DotProduct(normal, triTransformed.p[0]) < 0.0f) continue;
+            if (flags & RENDER_CULL_CW  && GFX3D::Math::Vec_DotProduct(normal, triTransformed.p[0]) > 0.0f)
+            {
+                continue;
+            }
+
+            if (flags & RENDER_CULL_CCW && GFX3D::Math::Vec_DotProduct(normal, triTransformed.p[0]) < 0.0f)
+            {
+                continue;
+            }
 
             // If Lighting, calculate shading
             triTransformed.col = olc::WHITE;

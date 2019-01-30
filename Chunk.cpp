@@ -32,7 +32,7 @@ Chunk::~Chunk()
 
 void Chunk::draw()
 {
-    engine.DrawMesh(_mesh, olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_WIRE);
+    engine.DrawMesh(_mesh, olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_WIRE | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH);
 }
 
 void Chunk::setBackgroundColor(olc::Pixel const& color)
