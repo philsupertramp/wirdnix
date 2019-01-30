@@ -3,103 +3,90 @@
 #include <math.h>
 #include "Engine.h"
 
-
-const float Camera::ROTATIONAL_SPEED = .005f;
-
+const float Camera::MOVEMENT_SPEED = 100;
+const float Camera::ROTATIONAL_SPEED = .9f;
+const float Camera::ZOOM_SPEED = .00001f;
 
 Camera::Camera()
-{ }
+{
+    reset();
+}
 
 Camera::~Camera()
 { }
 
-float Camera::getAngle()
+void Camera::moveForward(float fElapsedTime /* = 0 */)
 {
-
-    float x1, y1;
-    transform.Forward(1, 0, x1, y1);
-
-    float x0, y0;
-    transform.Forward(0, 0, x0, y0);
-
-    // average as maybe more precise
-    return (acosf(x1 - x0) + asinf(y1 - y0))/2;
+    _pos.y += fElapsedTime * MOVEMENT_SPEED;
+    SetCamera(_pos, _lookat, _up);
 }
 
-void Camera::moveUp()
+void Camera::moveBackward(float fElapsedTime /* = 0 */)
 {
-    transform.Translate(0, MOVEMENT_SPEED);
+    _pos.y -= fElapsedTime * MOVEMENT_SPEED;
+    SetCamera(_pos, _lookat, _up);
 }
 
-void Camera::moveDown()
+void Camera::moveLeft(float fElapsedTime /* = 0 */)
 {
-    transform.Translate(0, -MOVEMENT_SPEED);
+    _pos.x -= fElapsedTime * MOVEMENT_SPEED;
+    SetCamera(_pos, _lookat, _up);
 }
 
-void Camera::moveLeft()
+void Camera::moveRight(float fElapsedTime /* = 0 */)
 {
-    transform.Rotate((float)-M_PI_2);
-    moveUp();
-    transform.Rotate((float)M_PI_2);
+    _pos.x += fElapsedTime * MOVEMENT_SPEED;
+    SetCamera(_pos, _lookat, _up);
 }
 
-void Camera::moveRight()
+void Camera::rotateLeft(float fElapsedTime /* = 0 */)
 {
-    transform.Rotate((float)M_PI_2);
-    moveUp();
-    transform.Rotate((float)-M_PI_2);
+    //TODO rotate up
 }
 
-void Camera::rotateLeft()
+void Camera::rotateRight(float fElapsedTime /* = 0 */)
 {
-    float x0, y0;
-    transform.Backward(Engine::instance().GetDrawTargetWidth()/2, Engine::instance().GetDrawTargetHeight()/2, x0, y0);
-    printZeros(std::string(__FUNCTION__) + " pre ");
-    std::cout << "      " << x0 << " " << y0 << std::endl;
-    transform.Translate(-x0, -y0);
-    transform.Rotate(ROTATIONAL_SPEED);
-    transform.Translate(x0, y0);
+    //TODO rotate up
 }
 
-void Camera::rotateRight()
+void Camera::moveUp(float fElapsedTime /* = 0 */)
 {
-    float x0, y0;
-    transform.Forward(0, 0, x0, y0);
-    printZeros(std::string(__FUNCTION__) + " pre ");
-    transform.Translate(-x0, -y0);
-    transform.Rotate(-ROTATIONAL_SPEED);
-    transform.Translate(x0, y0);
-}
-
-void Camera::zoomOut()
-{
-    transform.Scale(ZOOM_SPEED, ZOOM_SPEED);
+    _pos.z += fElapsedTime * MOVEMENT_SPEED;
+    SetCamera(_pos, _lookat, _up);
 }
 
 
-void Camera::zoomIn()
+void Camera::moveDown(float fElapsedTime /* = 0 */)
 {
-    transform.Scale(-ZOOM_SPEED, -ZOOM_SPEED);
+    _pos.z -= fElapsedTime * MOVEMENT_SPEED;
+    SetCamera(_pos, _lookat, _up);
 }
 
 void Camera::reset()
 {
-    transform.Reset();
-    transform.Translate(Engine::instance().GetDrawTargetWidth()/4, Engine::instance().GetDrawTargetHeight()/4);
+    _pos = {0,0,0};
+    _lookat  ={1,0,0};
+    _up = {0,0,1};
+    SetCamera(_pos, _lookat, _up);
+    SetProjection(90, 1, 0.1, 10, 0, 0, (float)Engine::ScreenWidth(), (float)Engine::ScreenHeight()); //jnl no idea yet about these numbers
+    olc::GFX3D::mat4x4 einheit;
+    einheit.m[0][0] = 1;
+    einheit.m[1][1] = 1;
+    einheit.m[2][2] = 1;
+    einheit.m[3][3] = 1;
+    SetTransform(einheit);
 }
 
-void Camera::printZeros(std::string whoCalled)
+void Camera::iterate()
 {
-    if(whoCalled.size() > 0)
-        whoCalled += " ";
-    float x, y;
-    transform.Forward(0, 0, x, y);
-    std::cout << whoCalled << "zeros forward " << x << " " << y ;
-    transform.Backward(0, 0, x, y);
-    std::cout << " : backward " << x << " " << y;
+    return;
+    _lookat.x += .1;
+    _lookat.y += .2;
+    _lookat.z += .07;
 
-    transform.Forward(500, 500, x, y);
-    std::cout << " : 500 forward " << x << " " << y ;
-    transform.Backward(500, 500, x, y);
-    std::cout << " : backward " << x << " " << y << std::endl;
+    float d = 10;
+    if (_lookat.x > d) _lookat.x = -d;
+    if (_lookat.y > d) _lookat.y = -d;
+    if (_lookat.z > d) _lookat.z = -d;
+    SetCamera(_pos, _lookat, _up);
 }

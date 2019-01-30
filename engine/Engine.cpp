@@ -2,6 +2,9 @@
 #include "olcPixelGameEngine.h"
 #include "../Room.h"
 
+int32_t Engine::_nScreenWidth = 100;
+int32_t Engine::_nScreenHeight = 100;
+
 Engine::Engine()
 {
     sAppName = "widnix"; // hehe
@@ -42,10 +45,17 @@ void Engine::drawTestImage()
         d.setBackgroundColor(olc::YELLOW);
         d.draw();
     }
-    //Room r(10, 10);
-    //r.setBackgroundColor(olc::GREEN);
-    //r.draw();
 
+    static Room r(10, 10);
+    r.setBackgroundColor(olc::GREEN);
+    r.draw();
+
+
+
+
+
+
+    return;
 
     /// create coordinate sprite
     int32_t coordWidth = 500;
@@ -66,7 +76,7 @@ void Engine::drawTestImage()
         }
         coordsFilled = true; // dont fill again every frame
     }
-    DrawSprite(0, 0, &coords);
+//    DrawMesh(0, 0, &coords);
     olc::PixelGameEngine::DrawSprite(0,0, &coords);
 }
 
@@ -93,32 +103,42 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
     if (GetKey(olc::W).bHeld || GetKey(olc::UP).bHeld)
     {
-        camera.moveUp();
+        camera.moveForward(fElapsedTime);
     }
 
     if (GetKey(olc::A).bHeld || GetKey(olc::LEFT).bHeld)
     {
-        camera.moveLeft();
+        camera.moveLeft(fElapsedTime);
     }
 
     if (GetKey(olc::S).bHeld || GetKey(olc::DOWN).bHeld)
     {
-        camera.moveDown();
+        camera.moveBackward(fElapsedTime);
     }
 
     if (GetKey(olc::D).bHeld || GetKey(olc::RIGHT).bHeld)
     {
-        camera.moveRight();
+        camera.moveRight(fElapsedTime);
     }
 
     if (GetKey(olc::Q).bHeld || GetKey(olc::CTRL).bHeld)
     {
-        camera.rotateLeft();
+        camera.rotateLeft(fElapsedTime);
     }
 
     if (GetKey(olc::E).bHeld || GetKey(olc::NP0).bHeld)
     {
-        camera.rotateRight();
+        camera.rotateRight(fElapsedTime);
+    }
+
+    if (GetKey(olc::R).bHeld || GetKey(olc::NP_ADD).bHeld)
+    {
+        camera.moveUp(fElapsedTime);
+    }
+
+    if (GetKey(olc::F).bHeld || GetKey(olc::NP_SUB).bHeld)
+    {
+        camera.moveDown(fElapsedTime);
     }
 
     if (GetKey(olc::SPACE).bHeld)
@@ -129,7 +149,14 @@ bool Engine::OnUserUpdate(float fElapsedTime)
     SetDrawTarget(_drawTarget);
     drawTestImage();
 
+    camera.iterate();
+
     return true;
+}
+
+olc::rcode Engine::Construct(uint32_t screen_w, uint32_t screen_h, uint32_t pixel_w, uint32_t pixel_h)
+{
+    return olc::PixelGameEngine::Construct(_nScreenWidth =  screen_w, _nScreenHeight = screen_h, pixel_w, pixel_h);
 }
 
 void Engine::FillRect(olc::Sprite& sprite, int32_t x, int32_t y, int32_t w, int32_t h, olc::Pixel const& p /* = olc::WHITE */)
@@ -150,16 +177,19 @@ void Engine::DrawString(olc::Sprite& sprite, int32_t x, int32_t y, std::string c
     engine.SetDrawTarget(engine._drawTarget);
 }
 
-void Engine::DrawSprite(int32_t x, int32_t y, olc::Sprite* sprite, uint32_t scale /* = 1 */)
+int32_t Engine::ScreenWidth()
+{
+    return _nScreenWidth;
+}
+
+int32_t Engine::ScreenHeight()
+{
+    return _nScreenHeight;
+}
+
+void Engine::DrawMesh(olc::GFX3D::mesh& m, uint32_t flags /* = olc::GFX3D::RENDERFLAGS::RENDER_CULL_CW | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH */)
 {
     SetDrawTarget(_drawTarget);
 
-    // transform the location where the sprite shall be drawn as well
-    float xf, yf;
-    camera.transform.Forward(x, y, xf, yf);
-    x = xf; y = yf;
-
-    camera.transform.Translate(x, y);
-    olc::GFX2D::DrawSprite(sprite, camera.transform);
-    camera.transform.Translate(-x, -y);
+    camera.Render(m.tris, flags);
 }
