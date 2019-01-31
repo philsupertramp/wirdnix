@@ -197,7 +197,15 @@ namespace olc
                 return v;
             }
             inline static mat4x4 Mat_MultiplyMatrix(mat4x4& m1, mat4x4& m2);
-            inline static mat4x4 Mat_MakeIdentity();
+            inline static mat4x4 Mat_MakeIdentity()
+            {
+                mat4x4 matrix;
+                matrix.m[0][0] = 1.0f;
+                matrix.m[1][1] = 1.0f;
+                matrix.m[2][2] = 1.0f;
+                matrix.m[3][3] = 1.0f;
+                return matrix;
+            }
             inline static mat4x4 Mat_MakeRotationX(float fAngleRad);
             inline static mat4x4 Mat_MakeRotationY(float fAngleRad);
             inline static mat4x4 Mat_MakeRotationZ(float fAngleRad);

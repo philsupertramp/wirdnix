@@ -2,7 +2,7 @@
 #include "engine/olcPixelGameEngine.h"
 #include "engine/olcPGEX_Graphics3D.h"
 
-Chunk::Chunk(float posX, float posY, size_t _width, size_t _height)
+Chunk::Chunk(float posX, float posY, uint32_t _width, uint32_t _height)
     : _posX(posX)
     , _posY(posY)
     , _width(_width)
@@ -38,7 +38,7 @@ Chunk::~Chunk()
 
 void Chunk::draw()
 {
-    engine.DrawMesh(_mesh, olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_WIRE | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH);
+    engine.DrawMesh(_mesh, olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH);
 }
 
 void Chunk::setBackgroundColor(olc::Pixel const& color)

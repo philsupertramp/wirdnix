@@ -12,20 +12,20 @@ class Chunk
 protected:
     float _posX;
     float _posY;
-    size_t _width;
-    size_t _height;
+    uint32_t _width;
+    uint32_t _height;
 
     olc::Pixel _backgroundColor;
     olc::Sprite _sprite;
 
 public:
-    Chunk(float posX, float posY, size_t _width = CHUNK_WIDTH, size_t _height = CHUNK_HEIGHT);
+    Chunk(float posX, float posY, uint32_t _width = CHUNK_WIDTH, uint32_t _height = CHUNK_HEIGHT);
 
     ~Chunk();
 
     //jnl in pixels for now
-    const static size_t CHUNK_WIDTH = 200;
-    const static size_t CHUNK_HEIGHT = CHUNK_WIDTH;
+    const static uint32_t CHUNK_WIDTH = 200;
+    const static uint32_t CHUNK_HEIGHT = CHUNK_WIDTH;
 
     void draw();
 

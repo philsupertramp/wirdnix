@@ -87,16 +87,6 @@ namespace olc
     //    return v;
     //}
 
-    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeIdentity()
-    {
-        olc::GFX3D::mat4x4 matrix;
-        matrix.m[0][0] = 1.0f;
-        matrix.m[1][1] = 1.0f;
-        matrix.m[2][2] = 1.0f;
-        matrix.m[3][3] = 1.0f;
-        return matrix;
-    }
-
     olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeRotationX(float fAngleRad)
     {
         olc::GFX3D::mat4x4 matrix;

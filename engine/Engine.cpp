@@ -103,7 +103,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
     if (GetKey(olc::W).bHeld || GetKey(olc::UP).bHeld)
     {
-        camera.moveForward(fElapsedTime);
+        camera.moveUp(fElapsedTime);
     }
 
     if (GetKey(olc::A).bHeld || GetKey(olc::LEFT).bHeld)
@@ -113,7 +113,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
     if (GetKey(olc::S).bHeld || GetKey(olc::DOWN).bHeld)
     {
-        camera.moveBackward(fElapsedTime);
+        camera.moveDown(fElapsedTime);
     }
 
     if (GetKey(olc::D).bHeld || GetKey(olc::RIGHT).bHeld)
@@ -133,12 +133,12 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
     if (GetKey(olc::R).bHeld || GetKey(olc::NP_ADD).bHeld)
     {
-        camera.moveUp(fElapsedTime);
+        camera.moveForward(fElapsedTime);
     }
 
     if (GetKey(olc::F).bHeld || GetKey(olc::NP_SUB).bHeld)
     {
-        camera.moveDown(fElapsedTime);
+        camera.moveBackward(fElapsedTime);
     }
 
     if (GetKey(olc::SPACE).bHeld)

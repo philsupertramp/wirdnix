@@ -10,7 +10,7 @@ class Room
     olc::Sprite _rand;
 
 public:
-    Room(float posX, float posY, size_t _width = Room::ROOM_WIDTH, size_t _height = Room::ROOM_HEIGHT);
+    Room(float posX, float posY, uint32_t _width = Room::ROOM_WIDTH, uint32_t _height = Room::ROOM_HEIGHT);
     ~Room();
 
     //jnl in pixels for now

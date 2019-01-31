@@ -1,13 +1,13 @@
 #include "Room.h"
 
-Room::Room(float posX, float posY, size_t width, size_t height)
+Room::Room(float posX, float posY, uint32_t width, uint32_t height)
     : Chunk(posX, posY, width, height)
     , _rand(width, height)
 {
     Engine::FillRect(_rand, 0, 0, (int32_t)_width, (int32_t)_height, _backgroundColor);
-    for (size_t i = 0; i < _width; i++)
+    for (uint32_t i = 0; i < _width; i++)
     {
-        for (size_t j = 0; j < _height; j++)
+        for (uint32_t j = 0; j < _height; j++)
         {
             _rand.SetPixel(i, j, olc::Pixel(rand() % 255, rand() % 255, rand() % 255));
         }
