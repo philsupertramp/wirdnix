@@ -299,8 +299,22 @@ namespace olc
         //static const int RF_TEXTURE = 0x00000001;
         //static const int RF_ = 0x00000002;
 
-        inline static void ConfigureDisplay();
-        inline static void ClearDepth();
+        inline static void ConfigureDisplay()
+        {
+            if (m_DepthBuffer != nullptr)
+            {
+                ClearDepth();
+            }
+            else
+            {
+                auto length = pge->ScreenWidth() * pge->ScreenHeight();
+                m_DepthBuffer = new float[length] { 0 };
+            }
+        }
+        inline static void ClearDepth()
+        {
+            memset(m_DepthBuffer, 0, pge->ScreenWidth() * pge->ScreenHeight() * sizeof(float));
+        }
         inline static void AddTriangleToScene(olc::GFX3D::triangle& tri);
         inline static void RenderScene();
 

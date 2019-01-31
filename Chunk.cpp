@@ -18,17 +18,17 @@ Chunk::Chunk(float posX, float posY, uint32_t _width, uint32_t _height)
     tri.p[0] = olc::GFX3D::vec3d(posX,          posY,           0);
     tri.p[1] = olc::GFX3D::vec3d(posX + _width, posY,           0);
     tri.p[2] = olc::GFX3D::vec3d(posX,          posY + _height, 0);
-    tri.t[0] = olc::GFX3D::vec2d( 0,  0);
-    tri.t[1] = olc::GFX3D::vec2d(10,  0);
-    tri.t[2] = olc::GFX3D::vec2d( 0, 10);
+    tri.t[0] = olc::GFX3D::vec2d( 0, 0);
+    tri.t[1] = olc::GFX3D::vec2d( 1, 0);
+    tri.t[2] = olc::GFX3D::vec2d( 0, 1);
     _mesh.tris.push_back(tri);
 
     tri.p[0] = olc::GFX3D::vec3d(posX + _width, posY,           0);
     tri.p[1] = olc::GFX3D::vec3d(posX + _width, posY + _height, 0);
     tri.p[2] = olc::GFX3D::vec3d(posX,          posY + _height, 0);
-    tri.t[0] = olc::GFX3D::vec2d(10, 10);
-    tri.t[1] = olc::GFX3D::vec2d(10,  0);
-    tri.t[2] = olc::GFX3D::vec2d( 0, 10);
+    tri.t[0] = olc::GFX3D::vec2d( 1, 0);
+    tri.t[1] = olc::GFX3D::vec2d( 1, 1);
+    tri.t[2] = olc::GFX3D::vec2d( 0, 1);
     _mesh.tris.push_back(tri);
 }
 
@@ -38,7 +38,7 @@ Chunk::~Chunk()
 
 void Chunk::draw()
 {
-    engine.DrawMesh(_mesh, olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH);
+    engine.DrawMesh(_mesh);// , olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH);
 }
 
 void Chunk::setBackgroundColor(olc::Pixel const& color)

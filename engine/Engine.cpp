@@ -1,6 +1,9 @@
 #include "Engine.h"
 #include "olcPixelGameEngine.h"
 #include "../Room.h"
+#include <algorithm>
+
+//#include <filesystem>
 
 int32_t Engine::_nScreenWidth = 100;
 int32_t Engine::_nScreenHeight = 100;
@@ -8,6 +11,10 @@ int32_t Engine::_nScreenHeight = 100;
 Engine::Engine()
 {
     sAppName = "widnix"; // hehe
+
+    // dont put anything else here that has something to do with the pge,
+    //       initialize in onUserCreate
+    // for example loading files into sprites wont work here
 }
 
 void Engine::drawTestImage()
@@ -16,42 +23,39 @@ void Engine::drawTestImage()
     Chunk c(-100, -100, 200, 200);
     c.draw();
 
-    // origin
-    Chunk d(-10, -10, 20, 20);
-    d.setBackgroundColor(olc::RED);
-    d.draw();
+    //// origin
+    //Chunk d(-10, -10, 20, 20);
+    //d.setBackgroundColor(olc::RED);
+    //d.draw();
 
-    {
-        // one
-        Chunk d(-10 + 100, -10, 20, 20);
-        d.setBackgroundColor(olc::GREEN);
-        d.draw();
-    }
-    {
-        // -one
-        Chunk d(-10 - 100, -10, 20, 20);
-        d.setBackgroundColor(olc::BLUE);
-        d.draw();
-    }
-    {
-        // -i
-        Chunk d(-10, -10 + 100, 20, 20);
-        d.setBackgroundColor(olc::CYAN);
-        d.draw();
-    }
-    {
-        // i
-        Chunk d(-10, -10 - 100, 20, 20);
-        d.setBackgroundColor(olc::YELLOW);
-        d.draw();
-    }
+    //{
+    //    // one
+    //    Chunk d(-10 + 100, -10, 20, 20);
+    //    d.setBackgroundColor(olc::GREEN);
+    //    d.draw();
+    //}
+    //{
+    //    // -one
+    //    Chunk d(-10 - 100, -10, 20, 20);
+    //    d.setBackgroundColor(olc::BLUE);
+    //    d.draw();
+    //}
+    //{
+    //    // -i
+    //    Chunk d(-10, -10 + 100, 20, 20);
+    //    d.setBackgroundColor(olc::CYAN);
+    //    d.draw();
+    //}
+    //{
+    //    // i
+    //    Chunk d(-10, -10 - 100, 20, 20);
+    //    d.setBackgroundColor(olc::YELLOW);
+    //    d.draw();
+    //}
 
-    static Room r(10, 10);
-    r.setBackgroundColor(olc::GREEN);
-    r.draw();
-
-
-
+    //static Room r(10, 10);
+    //r.setBackgroundColor(olc::GREEN);
+    //r.draw();
 
 
 
@@ -91,6 +95,7 @@ bool Engine::OnUserCreate()
 
     camera.reset();
 
+    grass.LoadFromFile("../Images/Rasen.png");
     return true;
 }
 
@@ -148,7 +153,6 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
     SetDrawTarget(_drawTarget);
     drawTestImage();
-
     camera.iterate();
 
     return true;
@@ -191,5 +195,10 @@ void Engine::DrawMesh(olc::GFX3D::mesh& m, uint32_t flags /* = olc::GFX3D::RENDE
 {
     SetDrawTarget(_drawTarget);
 
-    camera.Render(m.tris, flags);
+    //// only wire, not flat, not textured
+    //flags &= ~olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_WIRE;
+
+    camera.SetTexture(&grass);
+
+    camera.Render(m.tris, flags | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED & ~olc::GFX3D::RENDERFLAGS::RENDER_FLAT);
 }

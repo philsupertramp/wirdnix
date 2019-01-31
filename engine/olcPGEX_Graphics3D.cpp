@@ -529,9 +529,9 @@ namespace olc
         float tex_u, tex_v, tex_w;
 
         float dax_step = 0, dbx_step = 0,
-            du1_step = 0, dv1_step = 0,
-            du2_step = 0, dv2_step = 0,
-            dw1_step = 0, dw2_step = 0;
+              du1_step = 0, dv1_step = 0,
+              du2_step = 0, dv2_step = 0,
+              dw1_step = 0, dw2_step = 0;
 
         if (dy1) dax_step = dx1 / (float)abs(dy1);
         if (dy2) dbx_step = dx2 / (float)abs(dy2);
@@ -546,7 +546,7 @@ namespace olc
 
         if (dy1)
         {
-            for (int i = y1; i <= y2; i++)
+            for (int i = y1; i <= y2 && i < pge->ScreenHeight(); i++)
             {
                 int ax = x1 + (float)(i - y1) * dax_step;
                 int bx = x1 + (float)(i - y1) * dbx_step;
@@ -579,10 +579,19 @@ namespace olc
                     tex_u = (1.0f - t) * tex_su + t * tex_eu;
                     tex_v = (1.0f - t) * tex_sv + t * tex_ev;
                     tex_w = (1.0f - t) * tex_sw + t * tex_ew;
-                    if (tex_w > m_DepthBuffer[i*pge->ScreenWidth() + j])
+                    auto index = i * pge->ScreenWidth() + j;
+                    if (index < pge->ScreenWidth()*pge->ScreenHeight())
                     {
-                        pge->Draw(j, i, spr->Sample(tex_u / tex_w, tex_v / tex_w));
-                        m_DepthBuffer[i*pge->ScreenWidth() + j] = tex_w;
+                        if (tex_w > m_DepthBuffer[index])
+                        {
+                            pge->Draw(j, i, spr->Sample(tex_u / tex_w, tex_v / tex_w));
+                            m_DepthBuffer[index] = tex_w;
+                        }
+                    }
+                    else
+                    {
+                        auto w = pge->ScreenWidth();
+                        auto h = pge->ScreenHeight();
                     }
                     t += tstep;
                 }
@@ -606,7 +615,7 @@ namespace olc
 
         if (dy1)
         {
-            for (int i = y2; i <= y3; i++)
+            for (int i = y2; i <= y3 && i < pge->ScreenHeight(); i++)
             {
                 int ax = x2 + (float)(i - y2) * dax_step;
                 int bx = x1 + (float)(i - y1) * dbx_step;
@@ -829,18 +838,6 @@ namespace olc
 
     float* GFX3D::m_DepthBuffer = nullptr;
 
-    void GFX3D::ConfigureDisplay()
-    {
-        m_DepthBuffer = new float[pge->ScreenWidth() * pge->ScreenHeight()]{ 0 };
-    }
-
-
-    void GFX3D::ClearDepth()
-    {
-        memset(m_DepthBuffer, 0, pge->ScreenWidth() * pge->ScreenHeight() * sizeof(float));
-    }
-
-
     GFX3D::PipeLine::PipeLine()
     { }
 
@@ -850,8 +847,8 @@ namespace olc
                                         float fFar, //? far clipping plane
                                         float fLeft, // distance from the left border of the screen
                                         float fTop, // distance from the top border of the screen
-                                        float fWidth, // width  of the area the came4ra draws in
-                                        float fHeight // height of the area the came4ra draws in
+                                        float fWidth, // width  of the area the camera draws in
+                                        float fHeight // height of the area the camera draws in
         )
     {
         matProj = GFX3D::Math::Mat_MakeProjection(fFovDegrees, fAspectRatio, fNear, fFar);
@@ -1047,6 +1044,11 @@ namespace olc
 
                     // For now, just draw triangle
 
+                    if (flags & RENDER_FLAT)
+                    {
+                        DrawTriangleFlat(triRaster);
+                    }
+
                     if (flags & RENDER_TEXTURED)
                     {
                         TexturedTriangle(
@@ -1059,11 +1061,6 @@ namespace olc
                     if (flags & RENDER_WIRE)
                     {
                         DrawTriangleWire(triRaster, olc::RED);
-                    }
-
-                    if (flags & RENDER_FLAT)
-                    {
-                        DrawTriangleFlat(triRaster);
                     }
 
                     nTriangleDrawnCount++;

@@ -15,6 +15,8 @@ private:
     Engine();
     Camera camera;
 
+    olc::Sprite grass;
+
     void drawTestImage();
 
     olc::Sprite* _drawTarget;

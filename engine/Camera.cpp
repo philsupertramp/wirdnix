@@ -9,7 +9,7 @@ const float Camera::ZOOM_SPEED = .00001f;
 
 Camera::Camera()
 {
-    reset();
+//    reset();
 }
 
 Camera::~Camera()
@@ -107,9 +107,11 @@ void Camera::reset()
     _lookat = {0,0,0}; // zero
     _up = {0,-10,0}; //- since y is downward
     SetCamera(_pos, _lookat, _up);
-    SetProjection(110, (float)Engine::ScreenHeight()/(float)Engine::ScreenWidth(), -0.1f, 10, 0, 0, (float)Engine::ScreenWidth(), (float)Engine::ScreenHeight()); //jnl no idea yet about these numbers
+    SetProjection(110, (float)Engine::ScreenHeight()/(float)Engine::ScreenWidth(), 0.1f, 1000000, 0, 0, (float)Engine::ScreenWidth(), (float)Engine::ScreenHeight()); //jnl no idea yet about these numbers
     olc::GFX3D::mat4x4 I = olc::GFX3D::Math::Mat_MakeIdentity();
     SetTransform(I);
+
+    olc::GFX3D::ConfigureDisplay();
 }
 
 void Camera::iterate()
