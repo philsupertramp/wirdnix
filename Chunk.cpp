@@ -15,20 +15,20 @@ Chunk::Chunk(float posX, float posY, uint32_t _width, uint32_t _height)
     olc::GFX3D::triangle tri;
     tri.col = _backgroundColor;
 
-    tri.p[0] = olc::GFX3D::vec3d{posX,          posY,           0};
-    tri.p[1] = olc::GFX3D::vec3d{posX + _width, posY,           0};
-    tri.p[2] = olc::GFX3D::vec3d{posX,          posY + _height, 0};
-    tri.t[0] = olc::GFX3D::vec2d{ 0,  0};
-    tri.t[1] = olc::GFX3D::vec2d{10,  0};
-    tri.t[2] = olc::GFX3D::vec2d{ 0, 10};
+    tri.p[0] = olc::GFX3D::vec3d(posX,          posY,           0);
+    tri.p[1] = olc::GFX3D::vec3d(posX + _width, posY,           0);
+    tri.p[2] = olc::GFX3D::vec3d(posX,          posY + _height, 0);
+    tri.t[0] = olc::GFX3D::vec2d( 0,  0);
+    tri.t[1] = olc::GFX3D::vec2d(10,  0);
+    tri.t[2] = olc::GFX3D::vec2d( 0, 10);
     _mesh.tris.push_back(tri);
 
-    tri.p[0] = olc::GFX3D::vec3d{posX + _width, posY,           0};
-    tri.p[1] = olc::GFX3D::vec3d{posX + _width, posY + _height, 0};
-    tri.p[2] = olc::GFX3D::vec3d{posX,          posY + _height, 0};
-    tri.t[0] = olc::GFX3D::vec2d{10, 10};
-    tri.t[1] = olc::GFX3D::vec2d{10,  0};
-    tri.t[2] = olc::GFX3D::vec2d{ 0, 10};
+    tri.p[0] = olc::GFX3D::vec3d(posX + _width, posY,           0);
+    tri.p[1] = olc::GFX3D::vec3d(posX + _width, posY + _height, 0);
+    tri.p[2] = olc::GFX3D::vec3d(posX,          posY + _height, 0);
+    tri.t[0] = olc::GFX3D::vec2d(10, 10);
+    tri.t[1] = olc::GFX3D::vec2d(10,  0);
+    tri.t[2] = olc::GFX3D::vec2d( 0, 10);
     _mesh.tris.push_back(tri);
 }
 
