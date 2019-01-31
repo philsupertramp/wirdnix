@@ -1,24 +1,45 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-typedef size_t WorldPos;
+#include "olcPGEX_Graphics3D.h"
+#include "olcPixelGameEngine.h"
+
+class Engine;
 
 class Camera
+    : private olc::GFX3D::PipeLine
 {
-    //jnl middlePoint currently
-    //  the camera has no rotation so far and no zoom
-    WorldPos _posX;
-    WorldPos _posY;
-
-    // maybe make the camera move, accelerate etc and get slowed down by drag
-    double _velocityX;
-    double _velocityY;
+    olc::GFX3D::vec3d _pos;
+    olc::GFX3D::vec3d _lookat;
+    olc::GFX3D::vec3d _up;
 
 public:
-    Camera(WorldPos posX = 0, WorldPos posY = 0);
+    ///*** constructors ***//
+    Camera();
     ~Camera();
 
-    void changePosBy(WorldPos x = 0, WorldPos y = 0);
+    // allow render to be called
+    using olc::GFX3D::PipeLine::Render;
+
+    ///*** constants ***//
+    const static float MOVEMENT_SPEED;
+    const static float ROTATIONAL_SPEED;
+    const static float ZOOM_SPEED;
+
+    ///*** modifiers ***//
+    void moveForward(float fElapsedTime = 0);
+    void moveBackward(float fElapsedTime = 0);
+    void moveLeft(float fElapsedTime = 0);
+    void moveRight(float fElapsedTime = 0);
+    void rotateLeft(float fElapsedTime = 0);
+    void rotateRight(float fElapsedTime = 0);
+    void moveUp(float fElapsedTime = 0);
+    void moveDown(float fElapsedTime = 0);
+
+    void reset();
+    void iterate();
+
+    friend class Engine;
 };
 
 #endif // CAMERA_H

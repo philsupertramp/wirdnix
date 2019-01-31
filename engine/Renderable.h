@@ -9,6 +9,8 @@ protected:
     // for easy access to the engine
     Engine& engine = Engine::instance();
 
+    olc::GFX3D::mesh _mesh;
+
 public:
 //    Renderable();
 

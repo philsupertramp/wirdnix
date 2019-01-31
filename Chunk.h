@@ -3,28 +3,29 @@
 
 #include "engine/Renderable.h"
 #include "engine/olcPixelGameEngine.h"
+#include "engine/olcPGEX_Graphics3D.h"
 
-
-typedef int WorldPos;
 
 class Chunk
     : public Renderable
 {
-    WorldPos _posX;
-    WorldPos _posY;
-    size_t _width;
-    size_t _height;
+protected:
+    float _posX;
+    float _posY;
+    uint32_t _width;
+    uint32_t _height;
 
     olc::Pixel _backgroundColor;
+    olc::Sprite _sprite;
 
 public:
-    Chunk(WorldPos posX, WorldPos posY, size_t _width = CHUNK_WIDTH, size_t _height = CHUNK_HEIGHT);
+    Chunk(float posX, float posY, uint32_t _width = CHUNK_WIDTH, uint32_t _height = CHUNK_HEIGHT);
 
     ~Chunk();
 
     //jnl in pixels for now
-    const static size_t CHUNK_WIDTH = 200;
-    const static size_t CHUNK_HEIGHT = CHUNK_WIDTH;
+    const static uint32_t CHUNK_WIDTH = 200;
+    const static uint32_t CHUNK_HEIGHT = CHUNK_WIDTH;
 
     void draw();
 

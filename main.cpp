@@ -3,7 +3,7 @@
 int main()
 {
     Engine& thomas = Engine::instance();
-    if (thomas.Construct(1000, 1000, 1, 1))
+    if (thomas.Construct(1280, 720, 1, 1))
         thomas.Start();
     return 0;
 }
