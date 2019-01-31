@@ -86,10 +86,24 @@ namespace olc
             float x = 0;
             float y = 0;
             float z = 0;
+
+            //JNL why z == 0? div by 0 should not be a possible idea
+            vec2d(float x_ = 0, float y_ = 0, float z_ = 1)
+                : x(x_)
+                , y(y_)
+                , z(z_)
+            { }
         };
 
         struct vec3d
         {
+            vec3d(float x_ = 0, float y_ = 0, float z_ = 0, float w_ = 1)
+                : x(x_)
+                , y(y_)
+                , z(z_)
+                , w(w_)
+            { }
+
             float x = 0;
             float y = 0;
             float z = 0;

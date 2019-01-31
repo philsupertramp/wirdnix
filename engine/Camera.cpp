@@ -90,7 +90,6 @@ void Camera::moveUp(float fElapsedTime /* = 0 */)
     SetCamera(_pos, _lookat, _up);
 }
 
-
 void Camera::moveDown(float fElapsedTime /* = 0 */)
 {
     olc::GFX3D::vec3d dir = _up;
