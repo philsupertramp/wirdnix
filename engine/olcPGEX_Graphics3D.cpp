@@ -87,42 +87,6 @@ namespace olc
     //    return v;
     //}
 
-    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeRotationX(float fAngleRad)
-    {
-        olc::GFX3D::mat4x4 matrix;
-        matrix.m[0][0] = 1.0f;
-        matrix.m[1][1] = cosf(fAngleRad);
-        matrix.m[1][2] = sinf(fAngleRad);
-        matrix.m[2][1] = -sinf(fAngleRad);
-        matrix.m[2][2] = cosf(fAngleRad);
-        matrix.m[3][3] = 1.0f;
-        return matrix;
-    }
-
-    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeRotationY(float fAngleRad)
-    {
-        olc::GFX3D::mat4x4 matrix;
-        matrix.m[0][0] = cosf(fAngleRad);
-        matrix.m[0][2] = sinf(fAngleRad);
-        matrix.m[2][0] = -sinf(fAngleRad);
-        matrix.m[1][1] = 1.0f;
-        matrix.m[2][2] = cosf(fAngleRad);
-        matrix.m[3][3] = 1.0f;
-        return matrix;
-    }
-
-    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeRotationZ(float fAngleRad)
-    {
-        olc::GFX3D::mat4x4 matrix;
-        matrix.m[0][0] = cosf(fAngleRad);
-        matrix.m[0][1] = sinf(fAngleRad);
-        matrix.m[1][0] = -sinf(fAngleRad);
-        matrix.m[1][1] = cosf(fAngleRad);
-        matrix.m[2][2] = 1.0f;
-        matrix.m[3][3] = 1.0f;
-        return matrix;
-    }
-
     //olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeRotationU(vec3d const& u, float fAngleRad)
     //{
     //    olc::GFX3D::mat4x4 res;

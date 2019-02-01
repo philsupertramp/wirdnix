@@ -37,6 +37,7 @@ public:
     void moveDown(float fElapsedTime = 0);
 
     void reset();
+    void refresh();
     void iterate();
 
     friend class Engine;

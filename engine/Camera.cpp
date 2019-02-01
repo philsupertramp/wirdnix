@@ -114,16 +114,18 @@ void Camera::reset()
     olc::GFX3D::ConfigureDisplay();
 }
 
+void Camera::refresh()
+{
+    olc::GFX3D::ConfigureDisplay();
+}
+
 void Camera::iterate()
 {
-    return;
-    _lookat.x += .1f;
-    _lookat.y += .2f;
-    _lookat.z += .07f;
-
-    float d = 10;
-    if (_lookat.x > d) _lookat.x = -d;
-    if (_lookat.y > d) _lookat.y = -d;
-    if (_lookat.z > d) _lookat.z = -d;
+    static olc::GFX3D::mat4x4 rotX = olc::GFX3D::Math::Mat_MakeRotationX(.002f);
+    static olc::GFX3D::mat4x4 rotY = olc::GFX3D::Math::Mat_MakeRotationY(.003f);
+    static olc::GFX3D::mat4x4 rotZ = olc::GFX3D::Math::Mat_MakeRotationZ(.004f);
+    _pos = rotX * (rotY * (rotZ * _pos));
+//    _pos.normalize();
+//    _pos *= 10;
     SetCamera(_pos, _lookat, _up);
 }

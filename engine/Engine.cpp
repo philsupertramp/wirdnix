@@ -19,9 +19,15 @@ Engine::Engine()
 
 void Engine::drawTestImage()
 {
+    float zFight = .5;
+
     // big origin
-    Chunk c(-100, -100, 200, 200);
-    c.draw();
+    Chunk c(-100, -100, 200, 200, zFight);
+    c.draw(&grass);
+
+    // big origin
+    Chunk d(-100, -100, 200, 200, -zFight);
+    d.draw(&dirt);
 
     //// origin
     //Chunk d(-10, -10, 20, 20);
@@ -96,6 +102,8 @@ bool Engine::OnUserCreate()
     camera.reset();
 
     grass.LoadFromFile("../Images/Rasen.png");
+    dirt.LoadFromFile("../Images/dirt.png");
+
     return true;
 }
 
@@ -154,6 +162,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
     SetDrawTarget(_drawTarget);
     drawTestImage();
     camera.iterate();
+    camera.refresh();
 
     return true;
 }
@@ -191,14 +200,21 @@ int32_t Engine::ScreenHeight()
     return _nScreenHeight;
 }
 
-void Engine::DrawMesh(olc::GFX3D::mesh& m, uint32_t flags /* = olc::GFX3D::RENDERFLAGS::RENDER_CULL_CW | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH */)
+void Engine::DrawMesh(olc::GFX3D::mesh& m, uint32_t flags /* = olc::GFX3D::RENDERFLAGS::RENDER_CULL_CW | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH */, olc::Sprite* tex /* = nullptr */)
 {
     SetDrawTarget(_drawTarget);
 
     //// only wire, not flat, not textured
     //flags &= ~olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_WIRE;
 
-    camera.SetTexture(&grass);
-
-    camera.Render(m.tris, flags | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED & ~olc::GFX3D::RENDERFLAGS::RENDER_FLAT);
+    if (tex != nullptr)
+    {
+        camera.SetTexture(tex);
+        camera.Render(m.tris, flags | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED & ~olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_WIRE);
+    }
+    else
+    {
+        // certainly dont render it textured
+        camera.Render(m.tris, flags & ~olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED);
+    }
 }

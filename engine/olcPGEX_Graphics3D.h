@@ -76,11 +76,10 @@
 namespace olc
 {
     // Container class for Advanced 2D Drawing functions
-    class GFX3D : public olc::PGEX
+    class GFX3D
+        : public olc::PGEX
     {
-
     public:
-
         struct vec2d
         {
             float x = 0;
@@ -121,7 +120,7 @@ namespace olc
                 w = 1;
             }
 
-            vec3d operator* (float s)
+            vec3d operator* (float s) const
             {
                 vec3d res = *this;
                 return res *= s;
@@ -136,7 +135,7 @@ namespace olc
                 return *this;
             }
 
-            vec3d operator+ (vec3d const& v)
+            vec3d operator+ (vec3d const& v) const
             {
                 vec3d res = *this;
                 return res += v;
@@ -151,7 +150,7 @@ namespace olc
                 return *this;
             }
 
-            vec3d operator- (vec3d const& v)
+            vec3d operator- (vec3d const& v) const
             {
                 vec3d res = *this;
                 return res -= v;
@@ -167,7 +166,7 @@ namespace olc
             }
 
             // cross product time!
-            vec3d operator& (vec3d const& v)
+            vec3d operator& (vec3d const& v) const
             {
                 vec3d res;
 
@@ -189,6 +188,14 @@ namespace olc
         struct mat4x4
         {
             float m[4][4] = { 0 };
+
+            vec3d operator* (vec3d const& v)
+            {
+                vec3d res = v;
+                mat4x4 t = *this;
+                res = Math::Mat_MultiplyVector(t, res);
+                return res;
+            }
         };
 
         struct mesh
@@ -200,6 +207,7 @@ namespace olc
         {
         public:
             inline Math();
+
         public:
             inline static vec3d Mat_MultiplyVector(olc::GFX3D::mat4x4& m, olc::GFX3D::vec3d& i)
             {
@@ -220,9 +228,39 @@ namespace olc
                 matrix.m[3][3] = 1.0f;
                 return matrix;
             }
-            inline static mat4x4 Mat_MakeRotationX(float fAngleRad);
-            inline static mat4x4 Mat_MakeRotationY(float fAngleRad);
-            inline static mat4x4 Mat_MakeRotationZ(float fAngleRad);
+            inline static mat4x4 Mat_MakeRotationX(float fAngleRad)
+            {
+                mat4x4 matrix;
+                matrix.m[0][0] = 1.0f;
+                matrix.m[1][1] = cosf(fAngleRad);
+                matrix.m[1][2] = sinf(fAngleRad);
+                matrix.m[2][1] = -sinf(fAngleRad);
+                matrix.m[2][2] = cosf(fAngleRad);
+                matrix.m[3][3] = 1.0f;
+                return matrix;
+            }
+            inline static mat4x4 Mat_MakeRotationY(float fAngleRad)
+            {
+                mat4x4 matrix;
+                matrix.m[0][0] = cosf(fAngleRad);
+                matrix.m[0][2] = sinf(fAngleRad);
+                matrix.m[2][0] = -sinf(fAngleRad);
+                matrix.m[1][1] = 1.0f;
+                matrix.m[2][2] = cosf(fAngleRad);
+                matrix.m[3][3] = 1.0f;
+                return matrix;
+            }
+            inline static mat4x4 Mat_MakeRotationZ(float fAngleRad)
+            {
+                mat4x4 matrix;
+                matrix.m[0][0] = cosf(fAngleRad);
+                matrix.m[0][1] = sinf(fAngleRad);
+                matrix.m[1][0] = -sinf(fAngleRad);
+                matrix.m[1][1] = cosf(fAngleRad);
+                matrix.m[2][2] = 1.0f;
+                matrix.m[3][3] = 1.0f;
+                return matrix;
+            }
             inline static mat4x4 Mat_MakeRotationU(vec3d const& u, float fAngleRad)
             {
                 mat4x4 res;
@@ -311,10 +349,12 @@ namespace olc
                 m_DepthBuffer = new float[length] { 0 };
             }
         }
+
         inline static void ClearDepth()
         {
             memset(m_DepthBuffer, 0, pge->ScreenWidth() * pge->ScreenHeight() * sizeof(float));
         }
+
         inline static void AddTriangleToScene(olc::GFX3D::triangle& tri);
         inline static void RenderScene();
 
@@ -322,8 +362,8 @@ namespace olc
         inline static void DrawTriangleWire(olc::GFX3D::triangle& tri, olc::Pixel col = olc::WHITE);
         inline static void DrawTriangleTex(olc::GFX3D::triangle& tri, olc::Sprite* spr);
         inline static void TexturedTriangle(int x1, int y1, float u1, float v1, float w1,
-            int x2, int y2, float u2, float v2, float w2,
-            int x3, int y3, float u3, float v3, float w3, olc::Sprite* spr);
+                                            int x2, int y2, float u2, float v2, float w2,
+                                            int x3, int y3, float u3, float v3, float w3, olc::Sprite* spr);
 
         // Draws a sprite with the transform applied
         //inline static void DrawSprite(olc::Sprite* sprite, olc::GFX2D::Transform2D& transform);
