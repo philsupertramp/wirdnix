@@ -28,10 +28,10 @@ public:
     const static uint32_t CHUNK_WIDTH = 200;
     const static uint32_t CHUNK_HEIGHT = CHUNK_WIDTH;
 
-    void draw(olc::Sprite* tex = nullptr);
+    void draw();
 
     void setBackgroundColor(olc::Pixel const& color);
-    void setTexture(std::string const& name);
+    bool setTexture(std::string const& name);
 };
 
 #endif // CHUNK_H

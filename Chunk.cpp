@@ -32,7 +32,7 @@ Chunk::Chunk(float posX, float posY, uint32_t _width, uint32_t _height, float po
 Chunk::~Chunk()
 { }
 
-void Chunk::draw(olc::Sprite* tex /* = nullptr */)
+void Chunk::draw()
 {
     r.draw();
 }
@@ -42,4 +42,9 @@ void Chunk::setBackgroundColor(olc::Pixel const& color)
     _backgroundColor = color;
 
     r.setBackgroundColor(color);
+}
+
+bool Chunk::setTexture(std::string const& name)
+{
+    return r.setTexture(name);
 }

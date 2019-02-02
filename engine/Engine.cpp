@@ -3,6 +3,7 @@
 #include "../Room.h"
 #include <algorithm>
 #include "TextureLibrary.h"
+#include "../Chunk.h"
 
 int32_t Engine::_nScreenWidth = 100;
 int32_t Engine::_nScreenHeight = 100;
@@ -27,12 +28,13 @@ void Engine::drawTestImage()
     {
         // big origin
         Chunk c(-100, -100, 200, 200, zFight +i);
-        olc::Sprite* rasen = TextureLibrary::get("Rasen");
-        c.draw(rasen);
+        c.setTexture("rasen");
+        c.draw();
 
         // big origin
         Chunk d(-100, -100, 200, 200, -zFight+i);
-        d.draw(TextureLibrary::get("dirt"));
+        d.setTexture("dirt");
+        d.draw();
 
     }
     //// origin
@@ -107,8 +109,8 @@ bool Engine::OnUserCreate()
 
     camera.reset();
 
-    TextureLibrary::add("../Images/Rasen.png");
-    TextureLibrary::add("../Images/dirt.png");
+    TextureLibrary::add("../images/rasen.png");
+    TextureLibrary::add("../images/dirt.png");
 
     return true;
 }

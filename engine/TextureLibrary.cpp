@@ -57,6 +57,7 @@ void TextureLibrary::add(std::string fileName)
     if (indexOf(cleanedName) == std::string::npos)
     {
         olc::Sprite* s = new olc::Sprite(fileName);
+        //TODO check if file actually loaded
         _lib.push_back( std::make_pair(cleanedName, s) );
     }
 }
@@ -140,4 +141,9 @@ olc::Sprite TextureLibrary::nothing(std::string const& name)
     add(name, s);
 
     return s;
+}
+
+bool TextureLibrary::exists(std::string const& name)
+{
+    return indexOf(name) != std::string::npos;
 }

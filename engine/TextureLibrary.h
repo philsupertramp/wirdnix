@@ -33,6 +33,8 @@ public:
     static void add(std::string name, olc::Sprite s);
     static olc::Sprite* get(std::string const& name);
     static olc::Sprite nothing(std::string const& name);
+
+    static bool exists(std::string const& name);
 };
 
 #endif // TEXTURELIBRARY_H

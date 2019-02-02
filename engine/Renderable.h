@@ -38,9 +38,16 @@ public:
         }
     }
 
+    // returns success, if found in TextureLibrary
     bool setTexture(std::string const& name)
     {
+        if (!TextureLibrary::exists(name))
+        {
+            return false;
+        }
+
         _texture = TextureLibrary::get(name);
+        return true;
     }
 
     void addTriangle(olc::GFX3D::triangle const& tri)
