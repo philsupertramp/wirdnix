@@ -26,6 +26,10 @@ add_executable(wirdnix
 	engine/Renderable.cpp
 	engine/Camera.h
 	engine/Camera.cpp
+	engine/TextureLibrary.h
+	engine/TextureLibrary.cpp
+	util/Logger.h
+	util/Logger.cpp
 )
 
 # set the startup project in visual studio, such that it is not ALL_BUILD and annoying

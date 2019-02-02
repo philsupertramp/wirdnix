@@ -38,7 +38,7 @@ public:
 
     void reset();
     void refresh();
-    void iterate();
+    void iterate(float fElapsedTime = 0);
 
     friend class Engine;
 };

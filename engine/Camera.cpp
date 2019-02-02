@@ -119,11 +119,11 @@ void Camera::refresh()
     olc::GFX3D::ConfigureDisplay();
 }
 
-void Camera::iterate()
+void Camera::iterate(float fElapsedTime /* = 0 */)
 {
-    static olc::GFX3D::mat4x4 rotX = olc::GFX3D::Math::Mat_MakeRotationX(.002f);
-    static olc::GFX3D::mat4x4 rotY = olc::GFX3D::Math::Mat_MakeRotationY(.003f);
-    static olc::GFX3D::mat4x4 rotZ = olc::GFX3D::Math::Mat_MakeRotationZ(.004f);
+    olc::GFX3D::mat4x4 rotX = olc::GFX3D::Math::Mat_MakeRotationX(.5f * fElapsedTime);
+    olc::GFX3D::mat4x4 rotY = olc::GFX3D::Math::Mat_MakeRotationY(.3f * fElapsedTime);
+    olc::GFX3D::mat4x4 rotZ = olc::GFX3D::Math::Mat_MakeRotationZ(.2f * fElapsedTime);
     _pos = rotX * (rotY * (rotZ * _pos));
 //    _pos.normalize();
 //    _pos *= 10;

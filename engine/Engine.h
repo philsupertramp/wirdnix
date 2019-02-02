@@ -4,8 +4,8 @@
 #include "olcPixelGameEngine.h"
 #include "Camera.h"
 //#include "olcPGEX_Graphics3D.h"
+#include "TextureLibrary.h"
 
-// Override base class with your custom functionality
 
 class Engine
     : private olc::PixelGameEngine
@@ -15,8 +15,7 @@ private:
     Engine();
     Camera camera;
 
-    olc::Sprite grass;
-    olc::Sprite dirt;
+    TextureLibrary _texLib;
 
     void drawTestImage();
 

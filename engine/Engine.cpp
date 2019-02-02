@@ -2,8 +2,7 @@
 #include "olcPixelGameEngine.h"
 #include "../Room.h"
 #include <algorithm>
-
-//#include <filesystem>
+#include "TextureLibrary.h"
 
 int32_t Engine::_nScreenWidth = 100;
 int32_t Engine::_nScreenHeight = 100;
@@ -21,14 +20,18 @@ void Engine::drawTestImage()
 {
     float zFight = .5;
 
-    // big origin
-    Chunk c(-100, -100, 200, 200, zFight);
-    c.draw(&grass);
+    for (size_t i = 0; i < 1; i++)
+    {
+        // big origin
+        Chunk c(-100, -100, 200, 200, zFight +i);
+        olc::Sprite* rasen = _texLib.get("Rasen");
+        c.draw(rasen);
 
-    // big origin
-    Chunk d(-100, -100, 200, 200, -zFight);
-    d.draw(&dirt);
+        // big origin
+        Chunk d(-100, -100, 200, 200, -zFight+i);
+        d.draw(_texLib.get("dirt"));
 
+    }
     //// origin
     //Chunk d(-10, -10, 20, 20);
     //d.setBackgroundColor(olc::RED);
@@ -101,8 +104,8 @@ bool Engine::OnUserCreate()
 
     camera.reset();
 
-    grass.LoadFromFile("../Images/Rasen.png");
-    dirt.LoadFromFile("../Images/dirt.png");
+    _texLib.add("../Images/Rasen.png");
+    _texLib.add("../Images/dirt.png");
 
     return true;
 }
@@ -161,7 +164,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
     SetDrawTarget(_drawTarget);
     drawTestImage();
-    camera.iterate();
+    camera.iterate(fElapsedTime);
     camera.refresh();
 
     return true;
@@ -202,6 +205,7 @@ int32_t Engine::ScreenHeight()
 
 void Engine::DrawMesh(olc::GFX3D::mesh& m, uint32_t flags /* = olc::GFX3D::RENDERFLAGS::RENDER_CULL_CW | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH */, olc::Sprite* tex /* = nullptr */)
 {
+    SetPixelMode(olc::Pixel::Mode::NORMAL);
     SetDrawTarget(_drawTarget);
 
     //// only wire, not flat, not textured
@@ -215,6 +219,6 @@ void Engine::DrawMesh(olc::GFX3D::mesh& m, uint32_t flags /* = olc::GFX3D::RENDE
     else
     {
         // certainly dont render it textured
-        camera.Render(m.tris, flags & ~olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED);
+        camera.Render(m.tris, flags & ~olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED | olc::GFX3D::RENDERFLAGS::RENDER_CULL_CW);
     }
 }
