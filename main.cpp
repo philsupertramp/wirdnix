@@ -4,7 +4,7 @@
 int main()
 {
     float scale = 1;
-    scale = std::max(floor(scale), 1.f);
+    scale = std::max(floorf(scale), 1.f);
     float height = 720 / scale;
     float width = height / 9 * 16;
 
