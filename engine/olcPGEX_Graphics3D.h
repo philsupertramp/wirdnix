@@ -67,6 +67,8 @@
 
 #include "olcPixelGameEngine.h"
 
+#include <cstring> // for the linux - inclined
+
 #include <algorithm>
 #include <vector>
 #include <list>

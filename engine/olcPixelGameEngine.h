@@ -840,7 +840,7 @@ namespace olc
 			if (x < width && y < height)
 				return pColData[y*width + x];
 			else
-				return olc::BLACK;
+				return olc::BLANK;
 		}
 		else
 		{
