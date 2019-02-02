@@ -2080,8 +2080,8 @@ namespace olc
 		case WM_MOUSELEAVE: sge->bHasMouseFocus = false;
 		case WM_SETFOCUS:	sge->bHasInputFocus = true;								return 0;
 		case WM_KILLFOCUS:	sge->bHasInputFocus = false;							return 0;
-		case WM_KEYDOWN:	sge->pKeyNewState[mapKeys[wParam]] = true;				return 0;
-		case WM_KEYUP:		sge->pKeyNewState[mapKeys[wParam]] = false;				return 0;
+		case WM_KEYDOWN:	sge->pKeyNewState[mapKeys[(uint8_t)wParam]] = true;	    return 0;
+		case WM_KEYUP:		sge->pKeyNewState[mapKeys[(uint8_t)wParam]] = false;	return 0;
 		case WM_LBUTTONDOWN:sge->pMouseNewState[0] = true;							return 0;
 		case WM_LBUTTONUP:	sge->pMouseNewState[0] = false;							return 0;
 		case WM_RBUTTONDOWN:sge->pMouseNewState[1] = true;							return 0;

@@ -13,9 +13,8 @@ class Engine
 private:
     // engine is a singleton
     Engine();
+    ~Engine();
     Camera camera;
-
-    TextureLibrary _texLib;
 
     void drawTestImage();
 
@@ -30,7 +29,7 @@ public:
     // engine is a singleton
     static Engine& instance()
     {
-        static Engine e = Engine();
+        static Engine e;
         return e;
     }
 

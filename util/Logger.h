@@ -8,7 +8,7 @@
 class Logger
 {
     Logger();
-    ~Logger();
+    ~Logger() noexcept(false);
     std::fstream _fout;
 
 public:

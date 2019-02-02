@@ -182,6 +182,7 @@ namespace olc
 
         struct triangle
         {
+            triangle() = default;
             vec3d p[3];
             vec2d t[3];
             olc::Pixel col;

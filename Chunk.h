@@ -4,10 +4,10 @@
 #include "engine/Renderable.h"
 #include "engine/olcPixelGameEngine.h"
 #include "engine/olcPGEX_Graphics3D.h"
-
+#include <string>
 
 class Chunk
-    : public Renderable
+//    : public Renderable
 {
 protected:
     float _posX;
@@ -16,13 +16,8 @@ protected:
     uint32_t _height;
 
     olc::Pixel _backgroundColor;
-    olc::Sprite _sprite;
 
-    // make it non-virtual
-    void draw()
-    {
-        draw(nullptr);
-    }
+    Renderable r;
 
 public:
     Chunk(float posX, float posY, uint32_t _width = CHUNK_WIDTH, uint32_t _height = CHUNK_HEIGHT, float posZ = 0);
@@ -36,6 +31,7 @@ public:
     void draw(olc::Sprite* tex = nullptr);
 
     void setBackgroundColor(olc::Pixel const& color);
+    void setTexture(std::string const& name);
 };
 
 #endif // CHUNK_H

@@ -16,6 +16,9 @@ Engine::Engine()
     // for example loading files into sprites wont work here
 }
 
+Engine::~Engine()
+{ }
+
 void Engine::drawTestImage()
 {
     float zFight = .5;
@@ -24,12 +27,12 @@ void Engine::drawTestImage()
     {
         // big origin
         Chunk c(-100, -100, 200, 200, zFight +i);
-        olc::Sprite* rasen = _texLib.get("Rasen");
+        olc::Sprite* rasen = TextureLibrary::get("Rasen");
         c.draw(rasen);
 
         // big origin
         Chunk d(-100, -100, 200, 200, -zFight+i);
-        d.draw(_texLib.get("dirt"));
+        d.draw(TextureLibrary::get("dirt"));
 
     }
     //// origin
@@ -104,8 +107,8 @@ bool Engine::OnUserCreate()
 
     camera.reset();
 
-    _texLib.add("../Images/Rasen.png");
-    _texLib.add("../Images/dirt.png");
+    TextureLibrary::add("../Images/Rasen.png");
+    TextureLibrary::add("../Images/dirt.png");
 
     return true;
 }

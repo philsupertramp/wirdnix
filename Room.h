@@ -1,13 +1,12 @@
 #ifndef ROOM_H
 #define ROOM_H
 
-#include "Chunk.h"
 #include "engine/olcPixelGameEngine.h"
+#include "engine/Renderable.h"
 
 class Room
-    : public Chunk
 {
-    olc::Sprite _rand;
+    Renderable _floor;
 
 public:
     Room(float posX, float posY, uint32_t _width = Room::ROOM_WIDTH, uint32_t _height = Room::ROOM_HEIGHT);
