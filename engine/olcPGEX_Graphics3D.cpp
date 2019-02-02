@@ -87,42 +87,6 @@ namespace olc
     //    return v;
     //}
 
-    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeRotationX(float fAngleRad)
-    {
-        olc::GFX3D::mat4x4 matrix;
-        matrix.m[0][0] = 1.0f;
-        matrix.m[1][1] = cosf(fAngleRad);
-        matrix.m[1][2] = sinf(fAngleRad);
-        matrix.m[2][1] = -sinf(fAngleRad);
-        matrix.m[2][2] = cosf(fAngleRad);
-        matrix.m[3][3] = 1.0f;
-        return matrix;
-    }
-
-    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeRotationY(float fAngleRad)
-    {
-        olc::GFX3D::mat4x4 matrix;
-        matrix.m[0][0] = cosf(fAngleRad);
-        matrix.m[0][2] = sinf(fAngleRad);
-        matrix.m[2][0] = -sinf(fAngleRad);
-        matrix.m[1][1] = 1.0f;
-        matrix.m[2][2] = cosf(fAngleRad);
-        matrix.m[3][3] = 1.0f;
-        return matrix;
-    }
-
-    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeRotationZ(float fAngleRad)
-    {
-        olc::GFX3D::mat4x4 matrix;
-        matrix.m[0][0] = cosf(fAngleRad);
-        matrix.m[0][1] = sinf(fAngleRad);
-        matrix.m[1][0] = -sinf(fAngleRad);
-        matrix.m[1][1] = cosf(fAngleRad);
-        matrix.m[2][2] = 1.0f;
-        matrix.m[3][3] = 1.0f;
-        return matrix;
-    }
-
     //olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MakeRotationU(vec3d const& u, float fAngleRad)
     //{
     //    olc::GFX3D::mat4x4 res;
@@ -475,12 +439,12 @@ namespace olc
 
     void GFX3D::DrawTriangleFlat(olc::GFX3D::triangle& tri)
     {
-        pge->FillTriangle(tri.p[0].x, tri.p[0].y, tri.p[1].x, tri.p[1].y, tri.p[2].x, tri.p[2].y, tri.col);
+        pge->FillTriangle((int32_t)tri.p[0].x, (int32_t)tri.p[0].y, (int32_t)tri.p[1].x, (int32_t)tri.p[1].y, (int32_t)tri.p[2].x, (int32_t)tri.p[2].y, tri.col);
     }
 
     void GFX3D::DrawTriangleWire(olc::GFX3D::triangle& tri, olc::Pixel col)
     {
-        pge->DrawTriangle(tri.p[0].x, tri.p[0].y, tri.p[1].x, tri.p[1].y, tri.p[2].x, tri.p[2].y, col);
+        pge->DrawTriangle((int32_t)tri.p[0].x, (int32_t)tri.p[0].y, (int32_t)tri.p[1].x, (int32_t)tri.p[1].y, (int32_t)tri.p[2].x, (int32_t)tri.p[2].y, col);
     }
 
     void GFX3D::TexturedTriangle(int x1, int y1, float u1, float v1, float w1,
@@ -529,9 +493,9 @@ namespace olc
         float tex_u, tex_v, tex_w;
 
         float dax_step = 0, dbx_step = 0,
-            du1_step = 0, dv1_step = 0,
-            du2_step = 0, dv2_step = 0,
-            dw1_step = 0, dw2_step = 0;
+              du1_step = 0, dv1_step = 0,
+              du2_step = 0, dv2_step = 0,
+              dw1_step = 0, dw2_step = 0;
 
         if (dy1) dax_step = dx1 / (float)abs(dy1);
         if (dy2) dbx_step = dx2 / (float)abs(dy2);
@@ -546,10 +510,10 @@ namespace olc
 
         if (dy1)
         {
-            for (int i = y1; i <= y2; i++)
+            for (int i = y1; i <= y2 && i < pge->ScreenHeight(); i++)
             {
-                int ax = x1 + (float)(i - y1) * dax_step;
-                int bx = x1 + (float)(i - y1) * dbx_step;
+                int ax = int(x1 + (float)(i - y1) * dax_step);
+                int bx = int(x1 + (float)(i - y1) * dbx_step);
 
                 float tex_su = u1 + (float)(i - y1) * du1_step;
                 float tex_sv = v1 + (float)(i - y1) * dv1_step;
@@ -570,19 +534,30 @@ namespace olc
                 tex_u = tex_su;
                 tex_v = tex_sv;
                 tex_w = tex_sw;
+                float d_tex_ev_sv = tex_ev - tex_sv;
+                float d_tex_eu_su = tex_eu - tex_su;
 
                 float tstep = 1.0f / ((float)(bx - ax));
                 float t = 0.0f;
 
-                for (int j = ax; j < bx; j++)
+                // jnl index does not have to be computed twice per loop
+                for (int j = ax, index = i * pge->ScreenWidth() + ax; j < bx; ++j, ++index)
                 {
-                    tex_u = (1.0f - t) * tex_su + t * tex_eu;
-                    tex_v = (1.0f - t) * tex_sv + t * tex_ev;
-                    tex_w = (1.0f - t) * tex_sw + t * tex_ew;
-                    if (tex_w > m_DepthBuffer[i*pge->ScreenWidth() + j])
+                    //jnl this uses one less operation, gives more fps 270 > 260
+                    //tex_w = (1.0f - t) * tex_sw + t * tex_ew;
+                    tex_w = tex_sw + t * (tex_ew - tex_sw);
+
+                    if (tex_w > m_DepthBuffer[index])
                     {
-                        pge->Draw(j, i, spr->Sample(tex_u / tex_w, tex_v / tex_w));
-                        m_DepthBuffer[i*pge->ScreenWidth() + j] = tex_w;
+                        // tex_u = (1.0f - t) * tex_su + t * tex_eu;
+                        tex_u = tex_su + t * d_tex_eu_su;
+
+                        // tex_v = (1.0f - t) * tex_sv + t * tex_ev;
+                        tex_v = tex_sv + t * d_tex_ev_sv;
+
+                        olc::Pixel const& pr = spr->Sample(tex_u / tex_w, tex_v / tex_w);
+                        pge->Draw(j, i, pr);
+                        m_DepthBuffer[index] = tex_w;
                     }
                     t += tstep;
                 }
@@ -606,10 +581,10 @@ namespace olc
 
         if (dy1)
         {
-            for (int i = y2; i <= y3; i++)
+            for (int i = y2; i <= y3 && i < pge->ScreenHeight(); i++)
             {
-                int ax = x2 + (float)(i - y2) * dax_step;
-                int bx = x1 + (float)(i - y1) * dbx_step;
+                int ax = int(x2 + (float)(i - y2) * dax_step);
+                int bx = int(x1 + (float)(i - y1) * dbx_step);
 
                 float tex_su = u2 + (float)(i - y2) * du1_step;
                 float tex_sv = v2 + (float)(i - y2) * dv1_step;
@@ -681,14 +656,14 @@ namespace olc
             std::swap(tri.t[1].z, tri.t[2].z);
         }
 
-        int dy1 = tri.p[1].y - tri.p[0].y;
-        int dx1 = tri.p[1].x - tri.p[0].x;
+        int dy1 = int(tri.p[1].y - tri.p[0].y);
+        int dx1 = int(tri.p[1].x - tri.p[0].x);
         float dv1 = tri.t[1].y - tri.t[0].y;
         float du1 = tri.t[1].x - tri.t[0].x;
         float dz1 = tri.t[1].z - tri.t[0].z;
 
-        int dy2 = tri.p[2].y - tri.p[0].y;
-        int dx2 = tri.p[2].x - tri.p[0].x;
+        int dy2 = int(tri.p[2].y - tri.p[0].y);
+        int dx2 = int(tri.p[2].x - tri.p[0].x);
         float dv2 = tri.t[2].y - tri.t[0].y;
         float du2 = tri.t[2].x - tri.t[0].x;
         float dz2 = tri.t[2].z - tri.t[0].z;
@@ -713,10 +688,10 @@ namespace olc
 
         if (dy1)
         {
-            for (int i = tri.p[0].y; i <= tri.p[1].y; i++)
+            for (int i = (int)tri.p[0].y; i <= tri.p[1].y; i++)
             {
-                int ax = tri.p[0].x + (i - tri.p[0].y) * dax_step;
-                int bx = tri.p[0].x + (i - tri.p[0].y) * dbx_step;
+                int ax = int(tri.p[0].x + (i - tri.p[0].y) * dax_step);
+                int bx = int(tri.p[0].x + (i - tri.p[0].y) * dbx_step);
 
                 // Start and end points in texture space
                 float tex_su = tri.t[0].x + (float)(i - tri.p[0].y) * du1_step;
@@ -761,11 +736,11 @@ namespace olc
             }
         }
 
-        dy1 = tri.p[2].y - tri.p[1].y;
-        dx1 = tri.p[2].x - tri.p[1].x;
-        dv1 = tri.t[2].y - tri.t[1].y;
-        du1 = tri.t[2].x - tri.t[1].x;
-        dz1 = tri.t[2].z - tri.t[1].z;
+        dy1 = int(tri.p[2].y - tri.p[1].y);
+        dx1 = int(tri.p[2].x - tri.p[1].x);
+        dv1 =     tri.t[2].y - tri.t[1].y;
+        du1 =     tri.t[2].x - tri.t[1].x;
+        dz1 =     tri.t[2].z - tri.t[1].z;
 
         if (dy1) dax_step = dx1 / (float)abs(dy1);
         if (dy2) dbx_step = dx2 / (float)abs(dy2);
@@ -778,10 +753,10 @@ namespace olc
 
         if (dy1)
         {
-            for (int i = tri.p[1].y; i <= tri.p[2].y; i++)
+            for (int i = (int)tri.p[1].y; i <= tri.p[2].y; i++)
             {
-                int ax = tri.p[1].x + (i - tri.p[1].y) * dax_step;
-                int bx = tri.p[0].x + (i - tri.p[0].y) * dbx_step;
+                int ax = int(tri.p[1].x + (i - tri.p[1].y) * dax_step);
+                int bx = int(tri.p[0].x + (i - tri.p[0].y) * dbx_step);
 
                 // Start and end points in texture space
                 float tex_su = tri.t[1].x + (float)(i - tri.p[1].y) * du1_step;
@@ -829,18 +804,6 @@ namespace olc
 
     float* GFX3D::m_DepthBuffer = nullptr;
 
-    void GFX3D::ConfigureDisplay()
-    {
-        m_DepthBuffer = new float[pge->ScreenWidth() * pge->ScreenHeight()]{ 0 };
-    }
-
-
-    void GFX3D::ClearDepth()
-    {
-        memset(m_DepthBuffer, 0, pge->ScreenWidth() * pge->ScreenHeight() * sizeof(float));
-    }
-
-
     GFX3D::PipeLine::PipeLine()
     { }
 
@@ -850,8 +813,8 @@ namespace olc
                                         float fFar, //? far clipping plane
                                         float fLeft, // distance from the left border of the screen
                                         float fTop, // distance from the top border of the screen
-                                        float fWidth, // width  of the area the came4ra draws in
-                                        float fHeight // height of the area the came4ra draws in
+                                        float fWidth, // width  of the area the camera draws in
+                                        float fHeight // height of the area the camera draws in
         )
     {
         matProj = GFX3D::Math::Mat_MakeProjection(fFovDegrees, fAspectRatio, fNear, fFar);
@@ -1018,7 +981,7 @@ namespace olc
                             listTriangles.push_back(sclipped[w]);
                         }
                     }
-                    nNewTriangles = listTriangles.size();
+                    nNewTriangles = (int)listTriangles.size();
                 }
 
                 for (auto& triRaster : listTriangles)
@@ -1047,23 +1010,22 @@ namespace olc
 
                     // For now, just draw triangle
 
+                    if (flags & RENDER_FLAT)
+                    {
+                        DrawTriangleFlat(triRaster);
+                    }
+
                     if (flags & RENDER_TEXTURED)
                     {
-                        TexturedTriangle(
-                            triRaster.p[0].x, triRaster.p[0].y, triRaster.t[0].x, triRaster.t[0].y, triRaster.t[0].z,
-                            triRaster.p[1].x, triRaster.p[1].y, triRaster.t[1].x, triRaster.t[1].y, triRaster.t[1].z,
-                            triRaster.p[2].x, triRaster.p[2].y, triRaster.t[2].x, triRaster.t[2].y, triRaster.t[2].z,
+                        TexturedTriangle((int)triRaster.p[0].x, (int)triRaster.p[0].y, triRaster.t[0].x, triRaster.t[0].y, triRaster.t[0].z,
+                                         (int)triRaster.p[1].x, (int)triRaster.p[1].y, triRaster.t[1].x, triRaster.t[1].y, triRaster.t[1].z,
+                                         (int)triRaster.p[2].x, (int)triRaster.p[2].y, triRaster.t[2].x, triRaster.t[2].y, triRaster.t[2].z,
                             sprTexture);
                     }
 
                     if (flags & RENDER_WIRE)
                     {
                         DrawTriangleWire(triRaster, olc::RED);
-                    }
-
-                    if (flags & RENDER_FLAT)
-                    {
-                        DrawTriangleFlat(triRaster);
                     }
 
                     nTriangleDrawnCount++;

@@ -4,8 +4,8 @@
 #include "olcPixelGameEngine.h"
 #include "Camera.h"
 //#include "olcPGEX_Graphics3D.h"
+#include "TextureLibrary.h"
 
-// Override base class with your custom functionality
 
 class Engine
     : private olc::PixelGameEngine
@@ -14,6 +14,8 @@ private:
     // engine is a singleton
     Engine();
     Camera camera;
+
+    TextureLibrary _texLib;
 
     void drawTestImage();
 
@@ -44,7 +46,7 @@ public:
     static int32_t ScreenWidth();
     static int32_t ScreenHeight();
 
-    void DrawMesh(olc::GFX3D::mesh& m, uint32_t flags = olc::GFX3D::RENDERFLAGS::RENDER_CULL_CW | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH);
+    void DrawMesh(olc::GFX3D::mesh& m, uint32_t flags = olc::GFX3D::RENDERFLAGS::RENDER_CULL_CW | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH, olc::Sprite* tex = nullptr);
 };
 
 #endif // ENGINE_H

@@ -9,7 +9,7 @@ const float Camera::ZOOM_SPEED = .00001f;
 
 Camera::Camera()
 {
-    reset();
+//    reset();
 }
 
 Camera::~Camera()
@@ -107,21 +107,25 @@ void Camera::reset()
     _lookat = {0,0,0}; // zero
     _up = {0,-10,0}; //- since y is downward
     SetCamera(_pos, _lookat, _up);
-    SetProjection(110, (float)Engine::ScreenHeight()/(float)Engine::ScreenWidth(), -0.1f, 10, 0, 0, (float)Engine::ScreenWidth(), (float)Engine::ScreenHeight()); //jnl no idea yet about these numbers
+    SetProjection(110, (float)Engine::ScreenHeight()/(float)Engine::ScreenWidth(), 0.1f, 1000000, 0, 0, (float)Engine::ScreenWidth(), (float)Engine::ScreenHeight()); //jnl no idea yet about these numbers
     olc::GFX3D::mat4x4 I = olc::GFX3D::Math::Mat_MakeIdentity();
     SetTransform(I);
+
+    olc::GFX3D::ConfigureDisplay();
 }
 
-void Camera::iterate()
+void Camera::refresh()
 {
-    return;
-    _lookat.x += .1f;
-    _lookat.y += .2f;
-    _lookat.z += .07f;
+    olc::GFX3D::ConfigureDisplay();
+}
 
-    float d = 10;
-    if (_lookat.x > d) _lookat.x = -d;
-    if (_lookat.y > d) _lookat.y = -d;
-    if (_lookat.z > d) _lookat.z = -d;
+void Camera::iterate(float fElapsedTime /* = 0 */)
+{
+    olc::GFX3D::mat4x4 rotX = olc::GFX3D::Math::Mat_MakeRotationX(.5f * fElapsedTime);
+    olc::GFX3D::mat4x4 rotY = olc::GFX3D::Math::Mat_MakeRotationY(.3f * fElapsedTime);
+    olc::GFX3D::mat4x4 rotZ = olc::GFX3D::Math::Mat_MakeRotationZ(.2f * fElapsedTime);
+    _pos = rotX * (rotY * (rotZ * _pos));
+//    _pos.normalize();
+//    _pos *= 10;
     SetCamera(_pos, _lookat, _up);
 }
