@@ -221,6 +221,7 @@ static glSwapInterval_t *glSwapIntervalEXT;
 #include <fstream>
 #include <map>
 #include <functional>
+#include <algorithm>
 
 #undef min
 #undef max
@@ -837,10 +838,14 @@ namespace olc
 	{
 		if (modeSample == olc::Sprite::Mode::NORMAL)
 		{
-			if (x < width && y < height)
-				return pColData[y*width + x];
-			else
-				return olc::BLANK;
+            if (x < width && y < height)
+            {
+                return pColData[y*width + x];
+            }
+            else
+            {
+                return olc::BLANK;
+            }
 		}
 		else
 		{
@@ -863,8 +868,8 @@ namespace olc
 
 	Pixel const& Sprite::Sample(float x, float y)
 	{
-		uint32_t sx = (uint32_t)(x * (float)width);
-		uint32_t sy = (uint32_t)(y * (float)height);
+		uint32_t sx = std::min((uint32_t)(x * float(width )), width-1);
+		uint32_t sy = std::min((uint32_t)(y * float(height)), height-1);
 		return GetPixel(sx, sy);
 	}
 

@@ -26,14 +26,14 @@ void clean(std::string& s)
     if (lastB != std::string::npos)
     {
         s.erase(0, lastB+1);
-        std::cout << s << std::endl;
+//      std::cout << s << std::endl;
     }
 
     size_t lastP = s.find_last_of('.');
     if (lastP != std::string::npos)
     {
         s.erase(lastP);
-        std::cout << s << std::endl;
+//      std::cout << s << std::endl;
     }
 }
 

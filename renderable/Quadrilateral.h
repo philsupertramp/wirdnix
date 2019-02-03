@@ -2,17 +2,22 @@
 #define QUADRILATERAL_H
 
 #include "../engine/olcPixelGameEngine.h"
+#include "../engine/olcPGEX_Graphics3D.h"
 #include "Renderable.h"
 #include <string>
 
 class Quadrilateral
     : protected Renderable
 {
-    void initPlane(float posX, float posY, float posZ, float width, float height);
 
 public:
-    Quadrilateral(float posX, float posY, float posZ, float width, float height, std::string const& textureName = "");
-    Quadrilateral(float posX, float posY, float posZ, float width, float height, olc::Pixel const& backgroundColor);
+    // if you use the default constructor you need to initialize the plane via initPlane and set the texture and/or backgroundcolor separately
+    // width and height are relative to the pos
+    Quadrilateral() = default;
+    void initPlane(olc::GFX3D::vec3d const& pos, olc::GFX3D::vec3d const& width, olc::GFX3D::vec3d const& height);
+
+    Quadrilateral(olc::GFX3D::vec3d const& pos, olc::GFX3D::vec3d const& width, olc::GFX3D::vec3d const& height, std::string const& textureName = "");
+    Quadrilateral(olc::GFX3D::vec3d const& pos, olc::GFX3D::vec3d const& width, olc::GFX3D::vec3d const& height, olc::Pixel const& backgroundColor);
 
     ~Quadrilateral();
 

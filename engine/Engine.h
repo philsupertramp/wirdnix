@@ -22,6 +22,8 @@ private:
     bool OnUserCreate() override;
     bool OnUserUpdate(float fElapsedTime) override;
 
+    void handleUserInput(float fElapsedTime = 0);
+
     static int32_t _nScreenWidth;
     static int32_t _nScreenHeight;
 

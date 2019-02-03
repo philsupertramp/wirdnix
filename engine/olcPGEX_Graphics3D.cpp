@@ -536,6 +536,7 @@ namespace olc
                 tex_w = tex_sw;
                 float d_tex_ev_sv = tex_ev - tex_sv;
                 float d_tex_eu_su = tex_eu - tex_su;
+                float d_tex_ew_sw = tex_ew - tex_sw;
 
                 float tstep = 1.0f / ((float)(bx - ax));
                 float t = 0.0f;
@@ -545,17 +546,24 @@ namespace olc
                 {
                     //jnl this uses one less operation, gives more fps 270 > 260
                     //tex_w = (1.0f - t) * tex_sw + t * tex_ew;
-                    tex_w = tex_sw + t * (tex_ew - tex_sw);
+                    tex_w = tex_sw + t * (d_tex_ew_sw);
 
                     if (tex_w > m_DepthBuffer[index])
                     {
-                        // tex_u = (1.0f - t) * tex_su + t * tex_eu;
+                        //tex_u = (1.0f - t) * tex_su + t * tex_eu;
                         tex_u = tex_su + t * d_tex_eu_su;
 
-                        // tex_v = (1.0f - t) * tex_sv + t * tex_ev;
+                        //tex_v = (1.0f - t) * tex_sv + t * tex_ev;
                         tex_v = tex_sv + t * d_tex_ev_sv;
 
                         olc::Pixel const& pr = spr->Sample(tex_u / tex_w, tex_v / tex_w);
+
+                        if (pr.r == 255 && pr.g == 255 && pr.b == 255 && pr.a == 255)
+                        {
+                            float yoHoldOn = 0;
+                            yoHoldOn = 7;
+                        }
+
                         pge->Draw(j, i, pr);
                         m_DepthBuffer[index] = tex_w;
                     }
@@ -605,20 +613,30 @@ namespace olc
                 tex_u = tex_su;
                 tex_v = tex_sv;
                 tex_w = tex_sw;
+                float d_tex_ev_sv = tex_ev - tex_sv;
+                float d_tex_eu_su = tex_eu - tex_su;
+                float d_tex_ew_sw = tex_ew - tex_sw;
 
                 float tstep = 1.0f / ((float)(bx - ax));
                 float t = 0.0f;
 
-                for (int j = ax; j < bx; j++)
+                // jnl index does not have to be computed twice per loop
+                for (int j = ax, index = i * pge->ScreenWidth() + ax; j < bx; ++j, ++index)
+                //for (int j = ax; j < bx; j++)
                 {
-                    tex_u = (1.0f - t) * tex_su + t * tex_eu;
-                    tex_v = (1.0f - t) * tex_sv + t * tex_ev;
-                    tex_w = (1.0f - t) * tex_sw + t * tex_ew;
+                    //tex_w = (1.0f - t) * tex_sw + t * tex_ew;
+                    tex_w = tex_sw + t * (d_tex_ew_sw);
 
-                    if (tex_w > m_DepthBuffer[i*pge->ScreenWidth() + j])
+                    if (tex_w > m_DepthBuffer[index])
                     {
+                        //tex_u = (1.0f - t) * tex_su + t * tex_eu;
+                        tex_u = tex_su + t * d_tex_eu_su;
+
+                        //tex_v = (1.0f - t) * tex_sv + t * tex_ev;
+                        tex_v = tex_sv + t * d_tex_ev_sv;
+
                         pge->Draw(j, i, spr->Sample(tex_u / tex_w, tex_v / tex_w));
-                        m_DepthBuffer[i*pge->ScreenWidth() + j] = tex_w;
+                        m_DepthBuffer[index] = tex_w;
                     }
                     t += tstep;
                 }

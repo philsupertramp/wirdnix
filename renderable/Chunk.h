@@ -9,17 +9,10 @@
 class Chunk
 {
 protected:
-    float _posX;
-    float _posY;
-    uint32_t _width;
-    uint32_t _height;
-
-    olc::Pixel _backgroundColor;
-
     Quadrilateral q;
 
 public:
-    Chunk(float posX, float posY, uint32_t _width = CHUNK_WIDTH, uint32_t _height = CHUNK_HEIGHT, float posZ = 0);
+    Chunk(olc::GFX3D::vec3d const& pos, float width, float height);
 
     ~Chunk();
 

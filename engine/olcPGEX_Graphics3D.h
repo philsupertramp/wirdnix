@@ -68,6 +68,7 @@
 #include "olcPixelGameEngine.h"
 
 #include <cstring> // for the linux - inclined
+#include <iostream> // for output <<-operator
 
 #include <algorithm>
 #include <vector>
@@ -94,6 +95,11 @@ namespace olc
                 , y(y_)
                 , z(z_)
             { }
+
+            friend std::ostream& operator<< (std::ostream& ostr, vec2d const& v)
+            {
+                return ostr << "(" << v.x << ", " << v.y << ": " << v.z << ")";
+            }
         };
 
         struct vec3d
@@ -177,6 +183,11 @@ namespace olc
                 res.z = x*v.y - y*v.x;
 
                 return res;
+            }
+
+            friend std::ostream& operator<< (std::ostream& ostr, vec3d const& v)
+            {
+                return ostr << "(" << v.x << ", " << v.y << ", " << v.z << ": " << v.w << ")";
             }
         };
 
