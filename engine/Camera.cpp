@@ -103,7 +103,7 @@ void Camera::moveDown(float fElapsedTime /* = 0 */)
 
 void Camera::reset()
 {
-    _pos = {0,0,100}; // above zero
+    _pos = {0,0,10}; // above zero
     _lookat = {0,0,0}; // zero
     _up = {0,-10,0}; //- since y is downward
     SetCamera(_pos, _lookat, _up);

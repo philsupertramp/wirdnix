@@ -1,9 +1,9 @@
 #include "Engine.h"
 #include "olcPixelGameEngine.h"
-#include "../Room.h"
+#include "../renderable/Room.h"
 #include <algorithm>
 #include "TextureLibrary.h"
-#include "../Chunk.h"
+#include "../renderable/Chunk.h"
 
 int32_t Engine::_nScreenWidth = 100;
 int32_t Engine::_nScreenHeight = 100;
@@ -22,21 +22,21 @@ Engine::~Engine()
 
 void Engine::drawTestImage()
 {
-    float zFight = .5;
+    //float zFight = .5;
 
-    for (size_t i = 0; i < 1; i++)
-    {
-        // big origin
-        Chunk c(-100, -100, 200, 200, zFight +i);
-        c.setTexture("rasen");
-        c.draw();
+    //for (size_t i = 0; i < 1; i++)
+    //{
+    //    // big origin
+    //    Chunk c(-100, -100, 200, 200, zFight +i);
+    //    c.setTexture("rasen");
+    //    c.draw();
 
-        // big origin
-        Chunk d(-100, -100, 200, 200, -zFight+i);
-        d.setTexture("dirt");
-        d.draw();
+    //    // big origin
+    //    Chunk d(-100, -100, 200, 200, -zFight+i);
+    //    d.setTexture("dirt");
+    //    d.draw();
 
-    }
+    //}
     //// origin
     //Chunk d(-10, -10, 20, 20);
     //d.setBackgroundColor(olc::RED);
@@ -67,9 +67,8 @@ void Engine::drawTestImage()
     //    d.draw();
     //}
 
-    //static Room r(10, 10);
-    //r.setBackgroundColor(olc::GREEN);
-    //r.draw();
+    static Room r(-10, -10, 20, 20);
+    r.draw();
 
 
 
@@ -111,6 +110,7 @@ bool Engine::OnUserCreate()
 
     TextureLibrary::add("../images/rasen.png");
     TextureLibrary::add("../images/dirt.png");
+    TextureLibrary::add("../images/floor.png");
 
     return true;
 }

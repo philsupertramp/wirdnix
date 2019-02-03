@@ -1,13 +1,12 @@
 #ifndef CHUNK_H
 #define CHUNK_H
 
-#include "engine/Renderable.h"
-#include "engine/olcPixelGameEngine.h"
-#include "engine/olcPGEX_Graphics3D.h"
+#include "../renderable/Quadrilateral.h"
+#include "../engine/olcPixelGameEngine.h"
+#include "../engine/olcPGEX_Graphics3D.h"
 #include <string>
 
 class Chunk
-//    : public Renderable
 {
 protected:
     float _posX;
@@ -17,7 +16,7 @@ protected:
 
     olc::Pixel _backgroundColor;
 
-    Renderable r;
+    Quadrilateral q;
 
 public:
     Chunk(float posX, float posY, uint32_t _width = CHUNK_WIDTH, uint32_t _height = CHUNK_HEIGHT, float posZ = 0);

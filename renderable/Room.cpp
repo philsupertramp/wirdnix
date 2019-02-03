@@ -1,8 +1,9 @@
 #include "Room.h"
-#include "engine/Engine.h"
-#include "engine/TextureLibrary.h"
+#include "../engine/Engine.h"
+#include "../engine/TextureLibrary.h"
 
 Room::Room(float posX, float posY, uint32_t width, uint32_t height)
+    : _floor(posX, posY, 0, width, height)
 {
     _floor.setTexture("floor");
 

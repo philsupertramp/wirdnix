@@ -1,12 +1,12 @@
 #ifndef ROOM_H
 #define ROOM_H
 
-#include "engine/olcPixelGameEngine.h"
-#include "engine/Renderable.h"
+#include "../engine/olcPixelGameEngine.h"
+#include "Quadrilateral.h"
 
 class Room
 {
-    Renderable _floor;
+    Quadrilateral _floor;
 
 public:
     Room(float posX, float posY, uint32_t _width = Room::ROOM_WIDTH, uint32_t _height = Room::ROOM_HEIGHT);
