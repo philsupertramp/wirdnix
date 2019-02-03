@@ -2,15 +2,12 @@
 #include "../engine/olcPixelGameEngine.h"
 #include "../engine/olcPGEX_Graphics3D.h"
 
-Chunk::Chunk(float posX, float posY, uint32_t _width, uint32_t _height, float posZ)
-    : _posX(posX)
-    , _posY(posY)
-    , _width(_width)
-    , _height(_height)
-    , _backgroundColor(olc::DARK_YELLOW)
-    , q(posX, posY, posZ, _width, _height)
+Chunk::Chunk(olc::GFX3D::vec3d const& pos, float width, float height)
 {
-    q.setBackgroundColor(_backgroundColor);
+    olc::GFX3D::vec3d sizeX(width,      0, 0);
+    olc::GFX3D::vec3d sizeY(0    , height, 0);
+    q.initPlane(pos, sizeX, sizeY);
+    q.setBackgroundColor(olc::DARK_YELLOW);
 }
 
 Chunk::~Chunk()
@@ -23,8 +20,6 @@ void Chunk::draw()
 
 void Chunk::setBackgroundColor(olc::Pixel const& color)
 {
-    _backgroundColor = color;
-
     q.setBackgroundColor(color);
 }
 

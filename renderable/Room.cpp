@@ -1,48 +1,38 @@
 #include "Room.h"
 #include "../engine/Engine.h"
 #include "../engine/TextureLibrary.h"
+#include "olcPGEX_Graphics3D.h"
 
-Room::Room(float posX, float posY, uint32_t width, uint32_t height)
-    : _floor(posX, posY, 0, width, height)
+const float Room::ROOM_WIDTH = 50;
+const float Room::ROOM_LENGTH = ROOM_WIDTH;
+const float Room::ROOM_HEIGHT = 10;
+
+Room::Room(float posX, float posY, float width, float length, float height)
 {
+    olc::GFX3D::vec3d posFloor(posX, posY, 0);
+    olc::GFX3D::vec3d sizeX(width,      0,      0);
+    olc::GFX3D::vec3d sizeY(    0, length,      0);
+    olc::GFX3D::vec3d sizeZ(    0,      0, height);
+
+    float angle = 1.25*2;
+    olc::GFX3D::vec3d unitX(angle, 0, 0);
+    olc::GFX3D::vec3d unitY(0, angle, 0);
+    olc::GFX3D::vec3d unitZ(0, 0, angle);
+
+    _floor.initPlane(posFloor, sizeX, sizeY);
     _floor.setTexture("floor");
 
-    // testcube
-    //// bottom
-    //tri.p[0] = olc::GFX3D::vec3d{-1, -1, -1};
-    //tri.p[1] = olc::GFX3D::vec3d{-1,  1, -1};
-    //tri.p[2] = olc::GFX3D::vec3d{ 1, -1, -1};
-    //_mesh.tris.push_back(tri);
-    //
-    //// top
-    //tri.p[0] = olc::GFX3D::vec3d{-1, -1,  1};
-    //tri.p[1] = olc::GFX3D::vec3d{-1,  1,  1};
-    //tri.p[2] = olc::GFX3D::vec3d{ 1, -1,  1};
-    //_mesh.tris.push_back(tri);
-    //
-    //// left
-    //tri.p[0] = olc::GFX3D::vec3d{-1, -1, -1};
-    //tri.p[1] = olc::GFX3D::vec3d{-1,  1, -1};
-    //tri.p[2] = olc::GFX3D::vec3d{-1, -1,  1};
-    //_mesh.tris.push_back(tri);
-    //
-    //// right
-    //tri.p[0] = olc::GFX3D::vec3d{ 1, -1, -1};
-    //tri.p[1] = olc::GFX3D::vec3d{ 1,  1, -1};
-    //tri.p[2] = olc::GFX3D::vec3d{ 1, -1,  1};
-    //_mesh.tris.push_back(tri);
-    //
-    //// front
-    //tri.p[0] = olc::GFX3D::vec3d{-1, -1, -1};
-    //tri.p[1] = olc::GFX3D::vec3d{ 1, -1, -1};
-    //tri.p[2] = olc::GFX3D::vec3d{-1, -1,  1};
-    //_mesh.tris.push_back(tri);
-    //
-    //// back
-    //tri.p[0] = olc::GFX3D::vec3d{-1,  1, -1};
-    //tri.p[1] = olc::GFX3D::vec3d{ 1,  1, -1};
-    //tri.p[2] = olc::GFX3D::vec3d{-1,  1,  1};
-    //_mesh.tris.push_back(tri);
+    _wallNorth.initPlane(posFloor + sizeZ -unitY -unitX , sizeX + unitX*2, sizeZ*-1.f +unitY);
+    _wallNorth.setTexture("wall");
+
+    _wallSouth.initPlane(posFloor + sizeZ + sizeY +unitY-unitX, sizeX +unitX*2, sizeZ*-1.f -unitY);
+    _wallSouth.setTexture("wall");
+
+    _wallEast.initPlane(posFloor + sizeZ + sizeY -unitX+unitY, sizeY*-1 -unitY*2, sizeZ*-1.f+unitX);
+    _wallEast.setTexture("wall");
+
+    _wallWest.initPlane(posFloor + sizeZ + sizeY + sizeX+unitX+unitY, sizeY*-1 -unitY*2, sizeZ*-1.f-unitX);
+    _wallWest.setTexture("wall");
 }
 
 Room::~Room()
@@ -50,5 +40,9 @@ Room::~Room()
 
 void Room::draw()
 {
+    _wallNorth.draw();
+    _wallSouth.draw();
+    _wallEast.draw();
+    _wallWest.draw();
     _floor.draw();
 }

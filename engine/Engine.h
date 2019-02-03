@@ -18,9 +18,11 @@ private:
 
     void drawTestImage();
 
-    olc::Sprite* _drawTarget;
+    olc::Sprite* _drawTarget = nullptr;
     bool OnUserCreate() override;
     bool OnUserUpdate(float fElapsedTime) override;
+
+    void handleUserInput(float fElapsedTime = 0);
 
     static int32_t _nScreenWidth;
     static int32_t _nScreenHeight;

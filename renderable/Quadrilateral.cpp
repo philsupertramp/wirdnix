@@ -6,40 +6,41 @@
 
 const olc::Pixel Quadrilateral::DEFAULT_BACKGROUND_COLOR = olc::Pixel(128,   0, 128, 250);
 
-void Quadrilateral::initPlane(float posX, float posY, float posZ, float width, float height)
+void Quadrilateral::initPlane(olc::GFX3D::vec3d const& pos, olc::GFX3D::vec3d const& width, olc::GFX3D::vec3d const& height)
 {
     olc::GFX3D::triangle tri;
     tri.col = DEFAULT_BACKGROUND_COLOR;
 
-    tri.p[0] = olc::GFX3D::vec3d(posX,         posY,          posZ);
-    tri.p[1] = olc::GFX3D::vec3d(posX + width, posY,          posZ);
-    tri.p[2] = olc::GFX3D::vec3d(posX,         posY + height, posZ);
+    tri.p[0] = pos;
+    tri.p[1] = pos + width;
+    tri.p[2] = pos         + height;
     tri.t[0] = olc::GFX3D::vec2d( 0, 0);
     tri.t[1] = olc::GFX3D::vec2d( 1, 0);
     tri.t[2] = olc::GFX3D::vec2d( 0, 1);
+
     addTriangle(tri);
 
-    tri.p[0] = olc::GFX3D::vec3d(posX + width, posY,          posZ);
-    tri.p[1] = olc::GFX3D::vec3d(posX + width, posY + height, posZ);
-    tri.p[2] = olc::GFX3D::vec3d(posX,         posY + height, posZ);
+    tri.p[0] = pos + width;
+    tri.p[1] = pos + width + height;
+    tri.p[2] = pos         + height;
     tri.t[0] = olc::GFX3D::vec2d( 1, 0);
     tri.t[1] = olc::GFX3D::vec2d( 1, 1);
     tri.t[2] = olc::GFX3D::vec2d( 0, 1);
     addTriangle(tri);
 }
 
-Quadrilateral::Quadrilateral(float posX, float posY, float posZ, float width, float height, std::string const& textureName /* = "" */)
+Quadrilateral::Quadrilateral(olc::GFX3D::vec3d const& pos, olc::GFX3D::vec3d const& width, olc::GFX3D::vec3d const& height, std::string const& textureName /* = "" */)
 {
-    initPlane(posX, posY, posZ, width, height);
+    initPlane(pos, width, height);
     if (textureName.size() > 0)
     {
         setTexture(textureName);
     }
 }
 
-Quadrilateral::Quadrilateral(float posX, float posY, float posZ, float width, float height, olc::Pixel const& backgroundColor)
+Quadrilateral::Quadrilateral(olc::GFX3D::vec3d const& pos, olc::GFX3D::vec3d const& width, olc::GFX3D::vec3d const& height, olc::Pixel const& backgroundColor)
 {
-    initPlane(posX, posY, posZ, width, height);
+    initPlane(pos, width, height);
     setBackgroundColor(backgroundColor);
 }
 

@@ -3,7 +3,7 @@
 #include <math.h>
 #include "Engine.h"
 
-const float Camera::MOVEMENT_SPEED = 100;
+const float Camera::MOVEMENT_SPEED = 20;
 const float Camera::ROTATIONAL_SPEED = .9f;
 const float Camera::ZOOM_SPEED = .00001f;
 
@@ -103,11 +103,11 @@ void Camera::moveDown(float fElapsedTime /* = 0 */)
 
 void Camera::reset()
 {
-    _pos = {0,0,10}; // above zero
-    _lookat = {0,0,0}; // zero
-    _up = {0,-10,0}; //- since y is downward
+    _pos = {12.5,12.5,10}; // above zero
+    _lookat = {12.5,12.5,0}; // zero
+    _up = {0,10,0}; //- since y is downward
     SetCamera(_pos, _lookat, _up);
-    SetProjection(110, (float)Engine::ScreenHeight()/(float)Engine::ScreenWidth(), 0.1f, 1000000, 0, 0, (float)Engine::ScreenWidth(), (float)Engine::ScreenHeight()); //jnl no idea yet about these numbers
+    SetProjection(110, (float)Engine::ScreenHeight()/(float)Engine::ScreenWidth(), .1f, 100, 0, 0, (float)Engine::ScreenWidth(), (float)Engine::ScreenHeight()); //jnl no idea yet about these numbers
     olc::GFX3D::mat4x4 I = olc::GFX3D::Math::Mat_MakeIdentity();
     SetTransform(I);
 

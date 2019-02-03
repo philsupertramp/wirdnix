@@ -68,6 +68,7 @@
 #include "olcPixelGameEngine.h"
 
 #include <cstring> // for the linux - inclined
+#include <iostream> // for output <<-operator
 
 #include <algorithm>
 #include <vector>
@@ -94,6 +95,11 @@ namespace olc
                 , y(y_)
                 , z(z_)
             { }
+
+            friend std::ostream& operator<< (std::ostream& ostr, vec2d const& v)
+            {
+                return ostr << "(" << v.x << ", " << v.y << ": " << v.z << ")";
+            }
         };
 
         struct vec3d
@@ -178,6 +184,11 @@ namespace olc
 
                 return res;
             }
+
+            friend std::ostream& operator<< (std::ostream& ostr, vec3d const& v)
+            {
+                return ostr << "(" << v.x << ", " << v.y << ", " << v.z << ": " << v.w << ")";
+            }
         };
 
         struct triangle
@@ -192,7 +203,7 @@ namespace olc
         {
             float m[4][4] = { 0 };
 
-            vec3d operator* (vec3d const& v)
+            vec3d operator* (vec3d const& v) const
             {
                 vec3d res = v;
                 mat4x4 t = *this;
@@ -327,7 +338,7 @@ namespace olc
             olc::GFX3D::mat4x4 matProj;
             olc::GFX3D::mat4x4 matView;
             olc::GFX3D::mat4x4 matWorld;
-            olc::Sprite* sprTexture;
+            olc::Sprite* sprTexture = nullptr;
             float fViewX;
             float fViewY;
             float fViewW;

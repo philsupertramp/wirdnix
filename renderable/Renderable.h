@@ -16,7 +16,7 @@ protected:
 
 public:
     Renderable() = default;
-    ~Renderable() = default;
+    virtual ~Renderable() = default;
 
     virtual void draw();
 
