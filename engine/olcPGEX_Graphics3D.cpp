@@ -820,9 +820,9 @@ namespace olc
     { }
 
     void GFX3D::PipeLine::SetProjection(float fFovDegrees, // field of view
-                                        float fAspectRatio, //? aspect ratio of camera
-                                        float fNear, //? near clipping plane
-                                        float fFar, //? far clipping plane
+                                        float fAspectRatio, // aspect ratio of camera
+                                        float fNear, // near clipping plane
+                                        float fFar, // far clipping plane
                                         float fLeft, // distance from the left border of the screen
                                         float fTop, // distance from the top border of the screen
                                         float fWidth, // width  of the area the camera draws in
