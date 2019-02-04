@@ -83,8 +83,6 @@ void Engine::drawTestImage()
         {
             for (int j = -length; j < length; ++j)
             {
-                //if (i + j < 2)
-                //    continue;
                 r.push_back(Room(i*(size + gap), j*(size + gap), size, size));
             }
         }
