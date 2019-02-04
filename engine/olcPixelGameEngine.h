@@ -937,8 +937,8 @@ namespace olc
 
     Pixel const& Sprite::Sample(float x, float y)
     {
-        uint32_t sx = (uint32_t)((x * (float)width) - 0.5f);
-        uint32_t sy = (uint32_t)((y * (float)height) - 0.5f);
+        uint32_t sx = std::min((uint32_t)((x * (float)width)), width -1);
+        uint32_t sy = std::min((uint32_t)((y * (float)height)), height -1);
         return GetPixel(sx, sy);
     }
 
