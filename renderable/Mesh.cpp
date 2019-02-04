@@ -41,9 +41,10 @@ bool Mesh::loadFromOBJfile(std::string const& fileName)
         fin.close();
         return false;
     }
-
+    std::streampos p = fin.tellg();
     std::stringstream ss;
-    ss.set_rdbuf(fin.rdbuf());
+    ss << fin.rdbuf();
+    fin.seekg(p);
 
     std::vector<olc::GFX3D::vec3d> vertices;
     vertices.push_back(olc::GFX3D::vec3d()); // offset as file is 1-indexed
