@@ -40,9 +40,9 @@ Room::~Room()
 
 void Room::draw()
 {
-    _wallNorth.draw();
-    _wallSouth.draw();
-    _wallEast.draw();
-    _wallWest.draw();
+    //_wallNorth.draw();
+    //_wallSouth.draw();
+    //_wallEast.draw();
+    //_wallWest.draw();
     _floor.draw();
 }
