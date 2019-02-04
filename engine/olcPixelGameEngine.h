@@ -943,7 +943,7 @@ namespace olc
 
     Pixel Sprite::SampleBL(float u, float v)
     {
-        u = u * width  - 0.5f;
+        u = u * width - 0.5f;
         v = v * height - 0.5f;
         int x = (int)floor(u);
         int y = (int)floor(v);
@@ -952,32 +952,31 @@ namespace olc
         float u_opposite = 1 - u_ratio;
         float v_opposite = 1 - v_ratio;
 
-        //if(x < 0 || y < 0 || u < 0 || v < 0)
-        //{
-        //    std::cout << x << " " << y << " - " << u << " " << v << std::endl;
-        //}
-
-#if 1
-        olc::Pixel p1 = GetPixel(std::max(x,                  0), std::max(y,                   0));
-        olc::Pixel p2 = GetPixel(std::min(x + 1, (int)width - 1), std::max(y,                   0));
-        olc::Pixel p3 = GetPixel(std::max(x,                  0), std::min(y + 1, (int)height - 1));
+        olc::Pixel p1 = GetPixel(std::max(x    ,              0), std::max(y   ,                0));
+        olc::Pixel p2 = GetPixel(std::min(x + 1, (int)width - 1), std::max(y   ,                0));
+        olc::Pixel p3 = GetPixel(std::max(x    ,              0), std::min(y + 1, (int)height - 1));
         olc::Pixel p4 = GetPixel(std::min(x + 1, (int)width - 1), std::min(y + 1, (int)height - 1));
-#else
-        olc::Pixel p1 = GetPixel(x, y);
-        olc::Pixel p2 = GetPixel(x + 1, y);
-        olc::Pixel p3 = GetPixel(x, y + 1);
-        olc::Pixel p4 = GetPixel(x + 1, y + 1);
-#endif
 
-	ResourcePack::ResourcePack()
-	{
+        return olc::Pixel(
+            (uint8_t)((p1.r * u_opposite + p2.r * u_ratio) * v_opposite + (p3.r * u_opposite + p4.r * u_ratio) * v_ratio),
+            (uint8_t)((p1.g * u_opposite + p2.g * u_ratio) * v_opposite + (p3.g * u_opposite + p4.g * u_ratio) * v_ratio),
+            (uint8_t)((p1.b * u_opposite + p2.b * u_ratio) * v_opposite + (p3.b * u_opposite + p4.b * u_ratio) * v_ratio));
+    }
 
-	}
+    Pixel* Sprite::GetData()
+    {
+        return pColData;
+    }
 
-	ResourcePack::~ResourcePack()
-	{
-		ClearPack();
-	}
+    //==========================================================
+
+    ResourcePack::ResourcePack()
+    { }
+
+    ResourcePack::~ResourcePack()
+    {
+        ClearPack();
+    }
 
 	olc::rcode ResourcePack::AddToPack(std::string sFile)
 	{
