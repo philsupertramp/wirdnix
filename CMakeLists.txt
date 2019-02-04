@@ -12,25 +12,31 @@ endif(UNIX)
 
 add_executable(wirdnix 
 	main.cpp 
-	Chunk.h
-	Chunk.cpp
-	Room.h
-	Room.cpp
+	util/Logger.h
+	util/Logger.cpp
+	renderable/Chunk.h
+	renderable/Chunk.cpp
+	renderable/Room.h
+	renderable/Room.cpp
+	renderable/Renderable.h
+	renderable/Renderable.cpp
+	renderable/Quadrilateral.h
+	renderable/Quadrilateral.cpp
 	engine/olcPixelGameEngine.h 
 	engine/olcPGEX_Graphics3D.h
 	engine/olcPGEX_Graphics3D.cpp
 	engine/pge.cpp
 	engine/Engine.h
 	engine/Engine.cpp
-	engine/Renderable.h
-	engine/Renderable.cpp
 	engine/Camera.h
 	engine/Camera.cpp
 	engine/TextureLibrary.h
 	engine/TextureLibrary.cpp
-	util/Logger.h
-	util/Logger.cpp
 )
+
+include_directories(util)
+include_directories(engine)
+include_directories(renderable)
 
 # set the startup project in visual studio, such that it is not ALL_BUILD and annoying
 if(MSVC)

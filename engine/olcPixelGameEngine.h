@@ -221,6 +221,7 @@ static glSwapInterval_t *glSwapIntervalEXT;
 #include <fstream>
 #include <map>
 #include <functional>
+#include <algorithm>
 
 #undef min
 #undef max
@@ -837,10 +838,14 @@ namespace olc
 	{
 		if (modeSample == olc::Sprite::Mode::NORMAL)
 		{
-			if (x < width && y < height)
-				return pColData[y*width + x];
-			else
-				return olc::BLANK;
+            if (x < width && y < height)
+            {
+                return pColData[y*width + x];
+            }
+            else
+            {
+                return olc::BLANK;
+            }
 		}
 		else
 		{
@@ -863,8 +868,8 @@ namespace olc
 
 	Pixel const& Sprite::Sample(float x, float y)
 	{
-		uint32_t sx = (uint32_t)(x * (float)width);
-		uint32_t sy = (uint32_t)(y * (float)height);
+		uint32_t sx = std::min((uint32_t)(x * float(width )), width-1);
+		uint32_t sy = std::min((uint32_t)(y * float(height)), height-1);
 		return GetPixel(sx, sy);
 	}
 
@@ -2080,8 +2085,8 @@ namespace olc
 		case WM_MOUSELEAVE: sge->bHasMouseFocus = false;
 		case WM_SETFOCUS:	sge->bHasInputFocus = true;								return 0;
 		case WM_KILLFOCUS:	sge->bHasInputFocus = false;							return 0;
-		case WM_KEYDOWN:	sge->pKeyNewState[mapKeys[wParam]] = true;				return 0;
-		case WM_KEYUP:		sge->pKeyNewState[mapKeys[wParam]] = false;				return 0;
+		case WM_KEYDOWN:	sge->pKeyNewState[mapKeys[(uint8_t)wParam]] = true;	    return 0;
+		case WM_KEYUP:		sge->pKeyNewState[mapKeys[(uint8_t)wParam]] = false;	return 0;
 		case WM_LBUTTONDOWN:sge->pMouseNewState[0] = true;							return 0;
 		case WM_LBUTTONUP:	sge->pMouseNewState[0] = false;							return 0;
 		case WM_RBUTTONDOWN:sge->pMouseNewState[1] = true;							return 0;

@@ -27,7 +27,7 @@ Logger::Logger()
     }
 }
 
-Logger::~Logger()
+Logger::~Logger() noexcept(false)
 {
     if (_fout.is_open() && !_fout.bad())
     {

@@ -1,8 +1,11 @@
 #include "Engine.h"
 #include "olcPixelGameEngine.h"
-#include "../Room.h"
+#include "../renderable/Room.h"
 #include <algorithm>
 #include "TextureLibrary.h"
+#include "../renderable/Chunk.h"
+#include "olcPGEX_Graphics3D.h"
+#include <vector>
 
 int32_t Engine::_nScreenWidth = 100;
 int32_t Engine::_nScreenHeight = 100;
@@ -16,22 +19,27 @@ Engine::Engine()
     // for example loading files into sprites wont work here
 }
 
+Engine::~Engine()
+{ }
+
 void Engine::drawTestImage()
 {
-    float zFight = .5;
+    //float zFight = .5;
 
-    for (size_t i = 0; i < 1; i++)
-    {
-        // big origin
-        Chunk c(-100, -100, 200, 200, zFight +i);
-        olc::Sprite* rasen = _texLib.get("Rasen");
-        c.draw(rasen);
+    //for (size_t i = 0; i < 1; i++)
+    //{
+    //    // big origin
+    //    Chunk c(olc::GFX3D::vec3d(-100, -100, zFight +i), 200, 200);
+    //    c.setTexture("rasen");
+    //    c.draw();
 
-        // big origin
-        Chunk d(-100, -100, 200, 200, -zFight+i);
-        d.draw(_texLib.get("dirt"));
+    //    // big origin
+    //    Chunk d(olc::GFX3D::vec3d(-100, -100, -zFight +i), 200, 200);
+    //    d.setTexture("dirt");
+    //    d.draw();
 
-    }
+    //}
+
     //// origin
     //Chunk d(-10, -10, 20, 20);
     //d.setBackgroundColor(olc::RED);
@@ -62,13 +70,34 @@ void Engine::drawTestImage()
     //    d.draw();
     //}
 
-    //static Room r(10, 10);
-    //r.setBackgroundColor(olc::GREEN);
-    //r.draw();
+    static std::vector<Room> r;
+    /*(-10, -10, 20, 20)*/
 
+    static bool initted = false;
+    if (!initted)
+    {
+        int length = 10;
+        float gap = 5;
+        float size = 25;
+        for (int i = -length; i < length; ++i)
+        {
+            for (int j = -length; j < length; ++j)
+            {
+                r.push_back(Room(i*(size + gap), j*(size + gap), size, size));
+            }
+        }
+        initted = true;
+    }
+
+
+    for (auto& room:r)
+    {
+        room.draw();
+    }
 
 
     return;
+
 
     /// create coordinate sprite
     int32_t coordWidth = 500;
@@ -104,8 +133,10 @@ bool Engine::OnUserCreate()
 
     camera.reset();
 
-    _texLib.add("../Images/Rasen.png");
-    _texLib.add("../Images/dirt.png");
+    TextureLibrary::add("../images/rasen.png");
+    TextureLibrary::add("../images/dirt.png");
+    TextureLibrary::add("../images/floor.png");
+    TextureLibrary::add("../images/wall.png");
 
     return true;
 }
@@ -115,8 +146,22 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 {
     SetDrawTarget(_drawTarget);
 
-    Clear(olc::Pixel( 75,   0, 130, 255)); // to know where nothing has been drawn
+    // to know where nothing has been drawn
+    Clear(olc::Pixel( 75,   0, 130, 255));
 
+    handleUserInput(fElapsedTime);
+
+    SetDrawTarget(_drawTarget);
+    drawTestImage();
+
+//    camera.iterate(fElapsedTime);
+    camera.refresh();
+
+    return true;
+}
+
+void Engine::handleUserInput(float fElapsedTime /* = 0 */)
+{
     if (GetKey(olc::W).bHeld || GetKey(olc::UP).bHeld)
     {
         camera.moveUp(fElapsedTime);
@@ -161,13 +206,6 @@ bool Engine::OnUserUpdate(float fElapsedTime)
     {
         camera.reset();
     }
-
-    SetDrawTarget(_drawTarget);
-    drawTestImage();
-    camera.iterate(fElapsedTime);
-    camera.refresh();
-
-    return true;
 }
 
 olc::rcode Engine::Construct(uint32_t screen_w, uint32_t screen_h, uint32_t pixel_w, uint32_t pixel_h)
@@ -214,7 +252,7 @@ void Engine::DrawMesh(olc::GFX3D::mesh& m, uint32_t flags /* = olc::GFX3D::RENDE
     if (tex != nullptr)
     {
         camera.SetTexture(tex);
-        camera.Render(m.tris, flags | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED & ~olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_WIRE);
+        camera.Render(m.tris, flags | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED & ~olc::GFX3D::RENDERFLAGS::RENDER_FLAT /*| olc::GFX3D::RENDERFLAGS::RENDER_WIRE*/ );
     }
     else
     {

@@ -13,15 +13,16 @@ class Engine
 private:
     // engine is a singleton
     Engine();
+    ~Engine();
     Camera camera;
-
-    TextureLibrary _texLib;
 
     void drawTestImage();
 
     olc::Sprite* _drawTarget;
     bool OnUserCreate() override;
     bool OnUserUpdate(float fElapsedTime) override;
+
+    void handleUserInput(float fElapsedTime = 0);
 
     static int32_t _nScreenWidth;
     static int32_t _nScreenHeight;
@@ -30,7 +31,7 @@ public:
     // engine is a singleton
     static Engine& instance()
     {
-        static Engine e = Engine();
+        static Engine e;
         return e;
     }
 

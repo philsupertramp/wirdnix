@@ -2,6 +2,8 @@
 #include "Engine.h"
 
 
+std::vector<std::pair<std::string, olc::Sprite*>> TextureLibrary::_lib;
+
 TextureLibrary::TextureLibrary()
 { }
 
@@ -24,14 +26,14 @@ void clean(std::string& s)
     if (lastB != std::string::npos)
     {
         s.erase(0, lastB+1);
-        std::cout << s << std::endl;
+//      std::cout << s << std::endl;
     }
 
     size_t lastP = s.find_last_of('.');
     if (lastP != std::string::npos)
     {
         s.erase(lastP);
-        std::cout << s << std::endl;
+//      std::cout << s << std::endl;
     }
 }
 
@@ -55,6 +57,7 @@ void TextureLibrary::add(std::string fileName)
     if (indexOf(cleanedName) == std::string::npos)
     {
         olc::Sprite* s = new olc::Sprite(fileName);
+        //TODO check if file actually loaded
         _lib.push_back( std::make_pair(cleanedName, s) );
     }
 }
@@ -70,7 +73,7 @@ void TextureLibrary::add(std::string name, olc::Sprite s)
     }
 }
 
-olc::Sprite* TextureLibrary::get(std::string name)
+olc::Sprite* TextureLibrary::get(std::string const& name)
 {
     size_t index = indexOf(name);
     if (index != std::string::npos)
@@ -91,7 +94,7 @@ olc::Sprite TextureLibrary::nothing(std::string const& name)
 
     olc::Pixel color[2];
     color[0] = olc::Pixel(50, 50, 50, 255);
-    color[1] = olc::Pixel(50, 0, 50, 255);
+    color[1] = olc::Pixel(50,  0, 50, 255);
     int colToChoose = 0;
 
     int squareLength = (s.width + s.height)/4;
@@ -138,4 +141,9 @@ olc::Sprite TextureLibrary::nothing(std::string const& name)
     add(name, s);
 
     return s;
+}
+
+bool TextureLibrary::exists(std::string const& name)
+{
+    return indexOf(name) != std::string::npos;
 }
