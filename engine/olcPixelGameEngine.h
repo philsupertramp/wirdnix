@@ -903,7 +903,6 @@ namespace olc
         modeSample = mode;
     }
 
-
     Pixel const& Sprite::GetPixel(uint32_t x, uint32_t y)
     {
         if (modeSample == olc::Sprite::Mode::NORMAL)
@@ -933,7 +932,7 @@ namespace olc
         {
             pColData[y*width + x] = p;
         }
-    }
+	}
 
     Pixel const& Sprite::Sample(float x, float y)
     {
@@ -970,156 +969,134 @@ namespace olc
         olc::Pixel p4 = GetPixel(x + 1, y + 1);
 #endif
 
-        return olc::Pixel(
-            (uint8_t)((p1.r * u_opposite + p2.r * u_ratio) * v_opposite + (p3.r * u_opposite + p4.r * u_ratio) * v_ratio),
-            (uint8_t)((p1.g * u_opposite + p2.g * u_ratio) * v_opposite + (p3.g * u_opposite + p4.g * u_ratio) * v_ratio),
-            (uint8_t)((p1.b * u_opposite + p2.b * u_ratio) * v_opposite + (p3.b * u_opposite + p4.b * u_ratio) * v_ratio));
-    }
+	ResourcePack::ResourcePack()
+	{
 
-    Pixel* Sprite::GetData()
-    {
-        return pColData;
-    }
+	}
 
-    //==========================================================
+	ResourcePack::~ResourcePack()
+	{
+		ClearPack();
+	}
 
-    ResourcePack::ResourcePack()
-    { }
+	olc::rcode ResourcePack::AddToPack(std::string sFile)
+	{
+		std::ifstream ifs(sFile, std::ifstream::binary);
+		if (!ifs.is_open()) return olc::FAIL;
 
-    ResourcePack::~ResourcePack()
-    {
-        ClearPack();
-    }
+		// Get File Size
+		std::streampos p = 0;
+		p = ifs.tellg();
+		ifs.seekg(0, std::ios::end);
+		p = ifs.tellg() - p;
+		ifs.seekg(0, std::ios::beg);
 
-    olc::rcode ResourcePack::AddToPack(std::string sFile)
-    {
-        std::ifstream ifs(sFile, std::ifstream::binary);
-        if (!ifs.is_open())
-        {
-            return olc::FAIL;
-        }
+		// Create entry
+		sEntry e;
+		e.data = nullptr;
+		e.nFileSize = (uint32_t)p;
 
-        // Get File Size
-        std::streampos p = 0;
-        p = ifs.tellg();
-        ifs.seekg(0, std::ios::end);
-        p = ifs.tellg() - p;
-        ifs.seekg(0, std::ios::beg);
+		// Read file into memory
+		e.data = new uint8_t[(uint32_t)e.nFileSize];
+		ifs.read((char*)e.data, e.nFileSize);
+		ifs.close();
 
-        // Create entry
-        sEntry e;
-        e.data = nullptr;
-        e.nFileSize = (uint32_t)p;
+		// Add To Map
+		mapFiles[sFile] = e;
+		return olc::OK;
+	}
 
-        // Read file into memory
-        e.data = new uint8_t[(uint32_t)e.nFileSize];
-        ifs.read((char*)e.data, e.nFileSize);
-        ifs.close();
+	olc::rcode ResourcePack::SavePack(std::string sFile)
+	{
+		std::ofstream ofs(sFile, std::ofstream::binary);
+		if (!ofs.is_open()) return olc::FAIL;
 
-        // Add To Map
-        mapFiles[sFile] = e;
-        return olc::OK;
-    }
+		// 1) Write Map
+		size_t nMapSize = mapFiles.size();
+		ofs.write((char*)&nMapSize, sizeof(size_t));
+		for (auto &e : mapFiles)
+		{
+			size_t nPathSize = e.first.size();
+			ofs.write((char*)&nPathSize, sizeof(size_t));
+			ofs.write(e.first.c_str(), nPathSize);
+			ofs.write((char*)&e.second.nID, sizeof(uint32_t));
+			ofs.write((char*)&e.second.nFileSize, sizeof(uint32_t));
+			ofs.write((char*)&e.second.nFileOffset, sizeof(uint32_t));
+		}
 
-    olc::rcode ResourcePack::SavePack(std::string sFile)
-    {
-        std::ofstream ofs(sFile, std::ofstream::binary);
-        if (!ofs.is_open())
-        {
-            return olc::FAIL;
-        }
+		// 2) Write Data
+		std::streampos offset = ofs.tellp();
+		for (auto &e : mapFiles)
+		{
+			e.second.nFileOffset = (uint32_t)offset;
+			ofs.write((char*)e.second.data, e.second.nFileSize);
+			offset += e.second.nFileSize;
+		}
 
-        // 1) Write Map
-        size_t nMapSize = mapFiles.size();
-        ofs.write((char*)&nMapSize, sizeof(size_t));
-        for (auto &e : mapFiles)
-        {
-            size_t nPathSize = e.first.size();
-            ofs.write((char*)&nPathSize, sizeof(size_t));
-            ofs.write(e.first.c_str(), nPathSize);
-            ofs.write((char*)&e.second.nID, sizeof(uint32_t));
-            ofs.write((char*)&e.second.nFileSize, sizeof(uint32_t));
-            ofs.write((char*)&e.second.nFileOffset, sizeof(uint32_t));
-        }
+		// 3) Rewrite Map (it has been updated with offsets now)
+		ofs.seekp(std::ios::beg);
+		ofs.write((char*)&nMapSize, sizeof(size_t));
+		for (auto &e : mapFiles)
+		{
+			size_t nPathSize = e.first.size();
+			ofs.write((char*)&nPathSize, sizeof(size_t));
+			ofs.write(e.first.c_str(), nPathSize);
+			ofs.write((char*)&e.second.nID, sizeof(uint32_t));
+			ofs.write((char*)&e.second.nFileSize, sizeof(uint32_t));
+			ofs.write((char*)&e.second.nFileOffset, sizeof(uint32_t));
+		}
+		ofs.close();
 
-        // 2) Write Data
-        std::streampos offset = ofs.tellp();
-        for (auto &e : mapFiles)
-        {
-            e.second.nFileOffset = (uint32_t)offset;
-            ofs.write((char*)e.second.data, e.second.nFileSize);
-            offset += e.second.nFileSize;
-        }
+		return olc::OK;
+	}
 
-        // 3) Rewrite Map (it has been updated with offsets now)
-        ofs.seekp(std::ios::beg);
-        ofs.write((char*)&nMapSize, sizeof(size_t));
-        for (auto &e : mapFiles)
-        {
-            size_t nPathSize = e.first.size();
-            ofs.write((char*)&nPathSize, sizeof(size_t));
-            ofs.write(e.first.c_str(), nPathSize);
-            ofs.write((char*)&e.second.nID, sizeof(uint32_t));
-            ofs.write((char*)&e.second.nFileSize, sizeof(uint32_t));
-            ofs.write((char*)&e.second.nFileOffset, sizeof(uint32_t));
-        }
-        ofs.close();
+	olc::rcode ResourcePack::LoadPack(std::string sFile)
+	{
+		std::ifstream ifs(sFile, std::ifstream::binary);
+		if (!ifs.is_open()) return olc::FAIL;
 
-        return olc::OK;
-    }
+		// 1) Read Map
+		size_t nMapEntries;
+		ifs.read((char*)&nMapEntries, sizeof(size_t));
+		for (size_t i = 0; i < nMapEntries; i++)
+		{
+			size_t nFilePathSize = 0;
+			ifs.read((char*)&nFilePathSize, sizeof(size_t));
 
-    olc::rcode ResourcePack::LoadPack(std::string sFile)
-    {
-        std::ifstream ifs(sFile, std::ifstream::binary);
-        if (!ifs.is_open())
-        {
-            return olc::FAIL;
-        }
+			std::string sFileName(nFilePathSize, ' ');
+			for (size_t j = 0; j < nFilePathSize; j++)
+				sFileName[j] = ifs.get();
 
-        // 1) Read Map
-        size_t nMapEntries;
-        ifs.read((char*)&nMapEntries, sizeof(size_t));
-        for (size_t i = 0; i < nMapEntries; i++)
-        {
-            size_t nFilePathSize = 0;
-            ifs.read((char*)&nFilePathSize, sizeof(size_t));
+			sEntry e;
+			e.data = nullptr;
+			ifs.read((char*)&e.nID, sizeof(uint32_t));
+			ifs.read((char*)&e.nFileSize, sizeof(uint32_t));
+			ifs.read((char*)&e.nFileOffset, sizeof(uint32_t));
+			mapFiles[sFileName] = e;
+		}
 
-            std::string sFileName(nFilePathSize, ' ');
-            for (size_t j = 0; j < nFilePathSize; j++)
-            {
-                sFileName[j] = ifs.get();
-            }
+		// 2) Read Data
+		for (auto &e : mapFiles)
+		{
+			e.second.data = new uint8_t[(uint32_t)e.second.nFileSize];
+			ifs.seekg(e.second.nFileOffset);
+			ifs.read((char*)e.second.data, e.second.nFileSize);
+			e.second._config();
+		}
 
-            sEntry e;
-            e.data = nullptr;
-            ifs.read((char*)&e.nID, sizeof(uint32_t));
-            ifs.read((char*)&e.nFileSize, sizeof(uint32_t));
-            ifs.read((char*)&e.nFileOffset, sizeof(uint32_t));
-            mapFiles[sFileName] = e;
-        }
+		ifs.close();
+		return olc::OK;
+	}
 
-        // 2) Read Data
-        for (auto &e : mapFiles)
-        {
-            e.second.data = new uint8_t[(uint32_t)e.second.nFileSize];
-            ifs.seekg(e.second.nFileOffset);
-            ifs.read((char*)e.second.data, e.second.nFileSize);
-            e.second._config();
-        }
+	olc::ResourcePack::sEntry ResourcePack::GetStreamBuffer(std::string sFile)
+	{
+		return mapFiles[sFile];
+	}
 
-        ifs.close();
-        return olc::OK;
-    }
-
-    olc::ResourcePack::sEntry ResourcePack::GetStreamBuffer(std::string sFile)
-    {
-        return mapFiles[sFile];
-    }
-
-    olc::rcode ResourcePack::ClearPack()
-    {
-        for (auto& e : mapFiles)
-        {
+	olc::rcode ResourcePack::ClearPack()
+	{
+		for (auto& e : mapFiles)
+		{
             if (e.second.data != nullptr)
             {
                 delete[] e.second.data;
