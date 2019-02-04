@@ -1,5 +1,5 @@
 #include "Renderable.h"
-
+#include "Engine.h"
 
 // returns success, if found in TextureLibrary
 
@@ -7,11 +7,11 @@ void Renderable::draw()
 {
     if (_texture != nullptr)
     {
-        engine.DrawMesh(_mesh, olc::GFX3D::RENDERFLAGS::RENDER_DEPTH | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED, _texture);
+        Engine::instance().DrawMesh(_mesh, olc::GFX3D::RENDERFLAGS::RENDER_DEPTH | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED, _texture);
     }
     else
     {
-        engine.DrawMesh(_mesh, olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH);
+        Engine::instance().DrawMesh(_mesh, olc::GFX3D::RENDERFLAGS::RENDER_FLAT | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH);
     }
 }
 

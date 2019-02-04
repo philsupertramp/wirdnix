@@ -556,7 +556,7 @@ namespace olc
                         //tex_v = (1.0f - t) * tex_sv + t * tex_ev;
                         tex_v = tex_sv + t * d_tex_ev_sv;
 
-                        olc::Pixel const& pr = spr->SampleBL(tex_u / tex_w, tex_v / tex_w);
+                        olc::Pixel const& pr = spr->Sample(tex_u / tex_w, tex_v / tex_w);
 
                         pge->Draw(j, i, pr);
                         m_DepthBuffer[index] = tex_w;
@@ -629,7 +629,10 @@ namespace olc
                         //tex_v = (1.0f - t) * tex_sv + t * tex_ev;
                         tex_v = tex_sv + t * d_tex_ev_sv;
 
-                        pge->Draw(j, i, spr->SampleBL(tex_u / tex_w, tex_v / tex_w));
+                        olc::Pixel const& pr = spr->Sample(tex_u / tex_w, tex_v / tex_w);
+
+                        pge->Draw(j, i, pr);
+
                         m_DepthBuffer[index] = tex_w;
                     }
                     t += tstep;
@@ -738,7 +741,9 @@ namespace olc
 
                     if (tex_z > m_DepthBuffer[i*pge->ScreenWidth() + j])
                     {
-                        pge->Draw(j, i, spr->SampleBL(tex_x / tex_z, tex_y / tex_z));
+                        olc::Pixel const& pr = spr->Sample(tex_x / tex_z, tex_y / tex_z);
+
+                        pge->Draw(j, i, pr);
                         m_DepthBuffer[i*pge->ScreenWidth() + j] = tex_z;
                     }
                     t += tstep;
@@ -803,7 +808,9 @@ namespace olc
 
                     if (tex_z > m_DepthBuffer[i*pge->ScreenWidth() + j])
                     {
-                        pge->Draw(j, i, spr->SampleBL(tex_x / tex_z, tex_y / tex_z));
+                        olc::Pixel const& pr = spr->Sample(tex_x / tex_z, tex_y / tex_z);
+
+                        pge->Draw(j, i, pr);
                         m_DepthBuffer[i*pge->ScreenWidth() + j] = tex_z;
                     }
 
@@ -811,7 +818,6 @@ namespace olc
                 }
             }
         }
-
     }
 
     float* GFX3D::m_DepthBuffer = nullptr;

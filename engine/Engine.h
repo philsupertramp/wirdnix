@@ -5,7 +5,7 @@
 #include "Camera.h"
 //#include "olcPGEX_Graphics3D.h"
 #include "TextureLibrary.h"
-
+#include "../renderable/Mesh.h"
 
 class Engine
     : private olc::PixelGameEngine
@@ -26,6 +26,8 @@ private:
 
     static int32_t _nScreenWidth;
     static int32_t _nScreenHeight;
+
+    Mesh obj;
 
 public:
     // engine is a singleton
