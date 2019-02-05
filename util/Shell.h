@@ -43,74 +43,22 @@ public:
 
         Message(std::string const& message, olc::Pixel color = olc::WHITE, uint32_t scale = 1);
 
-        void setColor(olc::Pixel const& newColor)
-        {
-            _color = newColor;
-            initSprite();
-        }
-
-        void setBackground(olc::Pixel const& newColor)
-        {
-            _backgroundColor = newColor;
-            initSprite(); //TODO dirty flag
-        }
-
-        void setScale(uint32_t newScale)
-        {
-            if (newScale == 0)
-            {
-                newScale = 1;
-            }
-
-            _scale = newScale;
-            generateMessageString(_originalMessage);
-            initSprite();
-        }
-
+        void setColor(olc::Pixel const& newColor);
+        void setBackground(olc::Pixel const& newColor);
+        void setScale(uint32_t newScale);
         void initSprite();
-
-        uint32_t getMessageHeight()
-        {
-            return _messageSprite.height;
-        }
-
+        uint32_t getMessageHeight();
         std::string generateMessageString(std::string const& message);
-
         void draw(uint32_t height);
-
-        void increaseAge(float fElapsedTime)
-        {
-            _age += fElapsedTime;
-        }
-
-        float getAge() const
-        {
-            return _age;
-        }
-
-        olc::Pixel const& getColor() const
-        {
-            return _color;
-        }
-
-        olc::Pixel const& getBackground() const
-        {
-            return _backgroundColor;
-        }
+        void increaseAge(float fElapsedTime);
+        float getAge() const;
+        olc::Pixel const& getColor() const;
+        olc::Pixel const& getBackground() const;
     };
 
     void draw(float fElapsedTime);
-
-    void addMessage(std::string const& message)
-    {
-        Message newMessage(message);
-        addMessage(newMessage);
-    }
-
-    void addMessage(Message const& message)
-    {
-        messages.push_front(message);
-    }
+    void addMessage(std::string const& message);
+    void addMessage(Message const& message);
 };
 
 

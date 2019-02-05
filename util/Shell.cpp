@@ -17,6 +17,30 @@ Shell::Message::Message(std::string const & message, olc::Pixel color, uint32_t 
     initSprite();
 }
 
+void Shell::Message::setColor(olc::Pixel const & newColor)
+{
+    _color = newColor;
+    initSprite();
+}
+
+void Shell::Message::setBackground(olc::Pixel const & newColor)
+{
+    _backgroundColor = newColor;
+    initSprite(); //TODO dirty flag
+}
+
+void Shell::Message::setScale(uint32_t newScale)
+{
+    if (newScale == 0)
+    {
+        newScale = 1;
+    }
+
+    _scale = newScale;
+    generateMessageString(_originalMessage);
+    initSprite();
+}
+
 void Shell::Message::initSprite()
 {
     // reset to background color
@@ -28,6 +52,11 @@ void Shell::Message::initSprite()
         }
     }
     Engine::DrawString(_messageSprite, 1, 1, _message, _color, _scale);
+}
+
+uint32_t Shell::Message::getMessageHeight()
+{
+    return _messageSprite.height;
 }
 
 std::string Shell::Message::generateMessageString(std::string const & message)
@@ -68,6 +97,26 @@ void Shell::Message::draw(uint32_t height)
     Engine::instance().drawSpriteOnTop(&_messageSprite, Message::PADDING, height);
 }
 
+void Shell::Message::increaseAge(float fElapsedTime)
+{
+    _age += fElapsedTime;
+}
+
+float Shell::Message::getAge() const
+{
+    return _age;
+}
+
+olc::Pixel const & Shell::Message::getColor() const
+{
+    return _color;
+}
+
+olc::Pixel const & Shell::Message::getBackground() const
+{
+    return _backgroundColor;
+}
+
 void Shell::draw(float fElapsedTime)
 {
     uint32_t height = Engine::ScreenHeight() - Message::PADDING -messages.front().getMessageHeight();
@@ -93,4 +142,15 @@ void Shell::draw(float fElapsedTime)
     {
         return /*message.getAge() >= Message::MAX_AGE ||*/ message.getColor().a < 10;
     });
+}
+
+void Shell::addMessage(std::string const & message)
+{
+    Message newMessage(message);
+    addMessage(newMessage);
+}
+
+void Shell::addMessage(Message const & message)
+{
+    messages.push_front(message);
 }
