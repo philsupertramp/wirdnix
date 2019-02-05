@@ -169,51 +169,60 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
 void Engine::handleUserInput(float fElapsedTime /* = 0 */)
 {
-    if (GetKey(olc::W).bHeld || GetKey(olc::UP).bHeld)
-    {
-        camera.moveUp(fElapsedTime);
+    bool ignoreCamera = Shell::instance().isWaiting();
+    if(ignoreCamera){
+        Shell::instance().setInput(mapInput(Shell::instance().getInput()));
+        if (GetKey(olc::ESCAPE).bReleased)
+        {
+            Shell::instance().toggleWaiting();
+        }
+        if (GetKey(olc::ENTER).bReleased)
+        {
+            Shell::instance().sendUserMessage();
+        }
+    }
+    else {
+        if ((GetKey(olc::W).bHeld || GetKey(olc::UP).bHeld)) {
+            camera.moveUp(fElapsedTime);
+        }
+
+        if ((GetKey(olc::A).bHeld || GetKey(olc::LEFT).bHeld)) {
+            camera.moveLeft(fElapsedTime);
+        }
+
+        if ((GetKey(olc::S).bHeld || GetKey(olc::DOWN).bHeld)) {
+            camera.moveDown(fElapsedTime);
+        }
+
+        if ((GetKey(olc::D).bHeld || GetKey(olc::RIGHT).bHeld)) {
+            camera.moveRight(fElapsedTime);
+        }
+
+        if ((GetKey(olc::Q).bHeld || GetKey(olc::CTRL).bHeld)) {
+            camera.rotateLeft(fElapsedTime);
+        }
+
+        if ((GetKey(olc::E).bHeld || GetKey(olc::NP0).bHeld)) {
+            camera.rotateRight(fElapsedTime);
+        }
+
+        if ((GetKey(olc::R).bHeld || GetKey(olc::NP_ADD).bHeld)) {
+            camera.moveForward(fElapsedTime);
+        }
+
+        if ((GetKey(olc::F).bHeld || GetKey(olc::NP_SUB).bHeld)) {
+            camera.moveBackward(fElapsedTime);
+        }
+
+        if ((GetKey(olc::SPACE).bHeld)) {
+            camera.reset();
+        }
+        if ((GetKey(olc::TAB).bReleased)) {
+            Shell::instance().toggleWaiting();
+        }
     }
 
-    if (GetKey(olc::A).bHeld || GetKey(olc::LEFT).bHeld)
-    {
-        camera.moveLeft(fElapsedTime);
-    }
 
-    if (GetKey(olc::S).bHeld || GetKey(olc::DOWN).bHeld)
-    {
-        camera.moveDown(fElapsedTime);
-    }
-
-    if (GetKey(olc::D).bHeld || GetKey(olc::RIGHT).bHeld)
-    {
-        camera.moveRight(fElapsedTime);
-    }
-
-    if (GetKey(olc::Q).bHeld || GetKey(olc::CTRL).bHeld)
-    {
-        camera.rotateLeft(fElapsedTime);
-    }
-
-    if (GetKey(olc::E).bHeld || GetKey(olc::NP0).bHeld)
-    {
-        camera.rotateRight(fElapsedTime);
-    }
-
-    if (GetKey(olc::R).bHeld || GetKey(olc::NP_ADD).bHeld)
-    {
-        camera.moveForward(fElapsedTime);
-    }
-
-    if (GetKey(olc::F).bHeld || GetKey(olc::NP_SUB).bHeld)
-    {
-        camera.moveBackward(fElapsedTime);
-    }
-
-    if (GetKey(olc::SPACE).bHeld)
-    {
-        camera.reset();
-        Shell::instance().addMessage("TEST STRING WASD");
-    }
 }
 
 olc::rcode Engine::Construct(uint32_t screen_w, uint32_t screen_h, uint32_t pixel_w, uint32_t pixel_h)
@@ -278,4 +287,261 @@ void Engine::DrawMesh(olc::GFX3D::mesh& m, uint32_t flags /* = olc::GFX3D::RENDE
         // certainly dont render it textured
         camera.Render(m.tris, flags & ~olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED | olc::GFX3D::RENDERFLAGS::RENDER_CULL_CW);
     }
+}
+
+std::string Engine::mapInput(std::string const& _input){
+    std::string input = "";
+
+    /**
+     * Alphabetic characters
+     */
+    if (GetKey(olc::A).bReleased)
+    {
+        input += "a";
+    }
+    if (GetKey(olc::B).bReleased)
+    {
+        input += "b";
+    }
+    if (GetKey(olc::C).bReleased)
+    {
+        input += "c";
+    }
+    if (GetKey(olc::D).bReleased)
+    {
+        input += "d";
+    }
+    if (GetKey(olc::E).bReleased)
+    {
+        input += "e";
+    }
+    if (GetKey(olc::F).bReleased)
+    {
+        input += "f";
+    }
+    if (GetKey(olc::G).bReleased)
+    {
+        input += "g";
+    }
+    if (GetKey(olc::H).bReleased)
+    {
+        input += "h";
+    }
+    if (GetKey(olc::I).bReleased)
+    {
+        input += "i";
+    }
+    if (GetKey(olc::J).bReleased)
+    {
+        input += "j";
+    }
+    if (GetKey(olc::K).bReleased)
+    {
+        input += "k";
+    }
+    if (GetKey(olc::L).bReleased)
+    {
+        input += "l";
+    }
+    if (GetKey(olc::M).bReleased)
+    {
+        input += "m";
+    }
+    if (GetKey(olc::N).bReleased)
+    {
+        input += "n";
+    }
+    if (GetKey(olc::O).bReleased)
+    {
+        input += "o";
+    }
+    if (GetKey(olc::P).bReleased)
+    {
+        input += "p";
+    }
+    if (GetKey(olc::Q).bReleased)
+    {
+        input += "q";
+    }
+    if (GetKey(olc::R).bReleased)
+    {
+        input += "r";
+    }
+    if (GetKey(olc::S).bReleased)
+    {
+        input += "s";
+    }
+    if (GetKey(olc::T).bReleased)
+    {
+        input += "t";
+    }
+    if (GetKey(olc::U).bReleased)
+    {
+        input += "u";
+    }
+    if (GetKey(olc::V).bReleased)
+    {
+        input += "v";
+    }
+    if (GetKey(olc::W).bReleased)
+    {
+        input += "w";
+    }
+    if (GetKey(olc::X).bReleased)
+    {
+        input += "x";
+    }
+    if (GetKey(olc::Y).bReleased)
+    {
+        input += "y";
+    }
+    if (GetKey(olc::Z).bReleased)
+    {
+        input += "z";
+    }
+    /**
+     * Numbers
+     */
+
+    if (GetKey(olc::K0).bReleased || GetKey(olc::NP0).bReleased)
+    {
+        input += "0";
+    }
+    if (GetKey(olc::K1).bReleased || GetKey(olc::NP1).bReleased)
+    {
+        input += "1";
+    }
+    if (GetKey(olc::K2).bReleased || GetKey(olc::NP2).bReleased)
+    {
+        input += "2";
+    }
+    if (GetKey(olc::K3).bReleased || GetKey(olc::NP3).bReleased)
+    {
+        input += "3";
+    }
+    if (GetKey(olc::K4).bReleased || GetKey(olc::NP4).bReleased)
+    {
+        input += "4";
+    }
+    if (GetKey(olc::K5).bReleased || GetKey(olc::NP5).bReleased)
+    {
+        input += "5";
+    }
+    if (GetKey(olc::K6).bReleased || GetKey(olc::NP6).bReleased)
+    {
+        input += "6";
+    }
+    if (GetKey(olc::K7).bReleased || GetKey(olc::NP7).bReleased)
+    {
+        input += "7";
+    }
+    if (GetKey(olc::K8).bReleased || GetKey(olc::NP8).bReleased)
+    {
+        input += "8";
+    }
+    if (GetKey(olc::K9).bReleased || GetKey(olc::NP9).bReleased)
+    {
+        input += "9";
+    }
+    /**
+     * Special characters
+     */
+
+
+    else if (GetKey(olc::SPACE).bReleased)
+    {
+        input += " ";
+    }
+    else if (GetKey(olc::NP_SUB).bReleased)
+    {
+        input += "-";
+    }
+    else if (GetKey(olc::NP_ADD).bReleased)
+    {
+        input += "+";
+    }
+    else if (GetKey(olc::NP_DIV).bReleased)
+    {
+        input += "/";
+    }
+    else if (GetKey(olc::NP_MUL).bReleased)
+    {
+        input += "*";
+    }
+    else if (GetKey(olc::NP_DECIMAL).bReleased)
+    {
+        input += ",";
+    }
+
+    /*
+     * Special treatment for shift
+     */
+    bool uppercaseToggle = Shell::instance().getActiveMessage()._messageUppercase;
+    if (GetKey(olc::SHIFT).bPressed && !uppercaseToggle || GetKey(olc::SHIFT).bReleased && uppercaseToggle)
+    {
+        Shell::instance().getActiveMessage().toggleUppercase();
+    }
+
+    if(Shell::instance().getActiveMessage()._messageUppercase){
+        // TODO: keyboard layout == de!
+        for (auto & c: input)
+        {
+            int current_char = (int) c;
+            if((int) 'Z' >= current_char && current_char >= (int) 'A' || (int) 'z' >= current_char && current_char >= (int) 'a') {
+                c = toupper(c);
+            }
+            else if(current_char == (int) '1')
+            {
+                c = '!';
+            }
+            else if(current_char == (int) '2')
+            {
+                c = '"';
+            }
+            /*
+             * § is not a regular ascii character.
+             * */
+            else if(current_char == (int) '4')
+            {
+                c = '$';
+            }
+            else if(current_char == (int) '5')
+            {
+                c = '%';
+            }
+            else if(current_char == (int) '6')
+            {
+                c = '&';
+            }
+            else if(current_char == (int) '7')
+            {
+                c = '/';
+            }
+            else if(current_char == (int) '8')
+            {
+                c = '(';
+            }
+            else if(current_char == (int) '9')
+            {
+                c = ')';
+            }
+            else if(current_char == (int) '0')
+            {
+                c = '=';
+            }
+        }
+    }
+    /**
+     * Text modifications
+     */
+    input = _input + input;
+    if (GetKey(olc::BACK).bReleased)
+    {
+        input = input.substr(0, input.size() - 1);
+        if(input.size() == 1){
+            input = "";
+        }
+    }
+    
+    return input;
 }

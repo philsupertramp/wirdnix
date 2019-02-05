@@ -3,6 +3,8 @@
 
 const olc::Pixel Shell::Message::BACKGROUND_COLOR = olc::Pixel(0, 0, 0, 100);
 const olc::Pixel Shell::SHELL_BACKGROUND_COLOR = olc::Pixel(0, 0, 0, 150);
+const olc::Pixel Shell::SYSTEM_MESSAGE_COLOR = olc::WHITE;
+const olc::Pixel Shell::USER_MESSAGE_COLOR = olc::BLUE;
 const float Shell::Message::MAX_AGE = 10;
 const float Shell::Message::FADE_AGE = MAX_AGE*2/3;
 
@@ -16,6 +18,10 @@ Shell::Message::Message(std::string const & message, olc::Pixel color, uint32_t 
     , _backgroundColor(BACKGROUND_COLOR)
 {
     initSprite();
+    time_t now = time(0);
+    tm* local_now = localtime(&now);
+    local_now->tm_sec += 20;
+    _createdAt = time_t (local_now);
 }
 
 void Shell::Message::setColor(olc::Pixel const & newColor)
@@ -70,7 +76,11 @@ std::string Shell::Message::generateMessageString(std::string const & message)
     messageWidth = uint32_t(Engine::ScreenWidth() / (12 * _scale));
     _lines = 0;
     std::string newString;
-
+    if(message.length() <= messageWidth){
+        newString = message;
+        _lines += 1;
+        return newString;
+    }
     for (size_t start = 0; start < message.length(); start++)
     {
         std::string substr = message.substr(start, messageWidth);
@@ -122,10 +132,35 @@ olc::Pixel const & Shell::Message::getBackground() const
     return _backgroundColor;
 }
 
+std::string Shell::Message::getMessageString()
+{
+    return _originalMessage;
+}
+
+time_t Shell::Message::getCreatedAt()const {
+    return _createdAt;
+}
+
+void Shell::Message::toggleUppercase(){
+    _messageUppercase = !_messageUppercase;
+}
 void Shell::draw(float fElapsedTime)
 {
     uint32_t height = Engine::ScreenHeight() - Message::PADDING -messages.front().getMessageHeight();
     uint32_t shell_height = Message::PADDING;
+
+    if(_waitingForInput){
+        Message input(_input);
+        if(messages.front().getMessageString() != input.getMessageString() || messages.empty())
+        {
+            if(!messages.empty()) {
+                messages.pop_front();
+            }
+            messages.push_front(input);
+            shell_height += input.getMessageHeight();
+        }
+    }
+
     for (auto& n : messages)
     {
         shell_height += n.getMessageHeight() + Message::PADDING;
@@ -137,22 +172,11 @@ void Shell::draw(float fElapsedTime)
         message.increaseAge(fElapsedTime);
         message.draw(height);
         height -= message.getMessageHeight() + Message::PADDING;
-
-        if (message.getAge() >= Message::FADE_AGE)
-        {
-            olc::Pixel c = message.getColor();
-            c.a -= (uint8_t)ceil((std::min(fElapsedTime, .99f)*c.a));
-            message.setColor(c);
-
-            olc::Pixel b = message.getBackground();
-            b.a = c.a / 10;
-            message.setBackground(b);
-        }
     }
 
     messages.remove_if([](Message const& message)
     {
-        return /*message.getAge() >= Message::MAX_AGE ||*/ message.getColor().a < 75;
+        return message.getAge() >= Message::MAX_AGE || message.getCreatedAt() < time(nullptr);
     });
 }
 
@@ -161,16 +185,56 @@ void Shell::addMessage(std::string const & message)
     Message newMessage(message);
     addMessage(newMessage);
 }
+void Shell::addUserMessage(std::string const & message)
+{
+    Message newMessage(message);
+    newMessage.setColor(USER_MESSAGE_COLOR);
+    addMessage(newMessage);
+    _input = "";
+}
 
 void Shell::addMessage(Message const & message)
 {
     messages.push_front(message);
 }
 
-void Shell::setHeight(size_t const& height) {
+void Shell::setHeight(uint32_t const& height)
+{
     _height = height;
 }
 
-uint32_t Shell::getHeight(){
+uint32_t Shell::getHeight()
+{
     return _height;
+}
+
+void Shell::toggleWaiting()
+{
+    _waitingForInput = !_waitingForInput;
+}
+
+void Shell::sendUserMessage()
+{
+    if(_waitingForInput){
+        addUserMessage(_input);
+    }
+}
+bool Shell::isWaiting()
+{
+    return _waitingForInput;
+}
+
+void Shell::setInput(std::string const& input)
+{
+    _input = input;
+}
+
+std::string Shell::getInput()
+{
+    return _input;
+}
+
+Shell::Message& Shell::getActiveMessage()
+{
+    return messages.front();
 }
