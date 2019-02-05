@@ -19,8 +19,8 @@ public:
 
     class Message
     {
-        std::string _message;
         std::string _originalMessage;
+        std::string _message;
         size_t _lines;
         olc::Sprite _messageSprite;
         olc::Pixel _color;
@@ -32,7 +32,7 @@ public:
         Message(std::string const& message, olc::Pixel color = olc::WHITE, uint32_t scale = 1)
             : _originalMessage(message)
             , _message(generateMessageString(_originalMessage))
-            , _messageSprite(uint32_t(Engine::ScreenWidth()/3 +2), uint32_t(_lines*10 +2))
+            , _messageSprite(uint32_t(Engine::ScreenWidth()*2/3 +2), uint32_t(_lines*10 +2))
             , _color(color)
             , _scale(scale)
         {

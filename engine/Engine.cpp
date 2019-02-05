@@ -159,7 +159,21 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
     SetDrawTarget(_drawTarget);
     drawTestImage();
-    Shell::Message shell_message("TEST STRING\nLOREM ipsum \b");
+    Shell::Message shell_message
+    (
+        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "
+        "sed diam nonumy eirmod tempor invidunt ut labore et dolor"
+        "e magna aliquyam erat, sed diam voluptua. At vero eos et "
+        "accusam et justo duo dolores et ea rebum. Stet clita kasd"
+        " gubergren, no sea takimata sanctus est Lorem ipsum dolor"
+        " sit amet.\nLorem ipsum dolor sit amet consetetur sadipsc"
+        "ing elitr, sed diam nonumy eirmod tempor invidunt ut labo"
+        "re et dolore magna aliquyam erat, sed diam voluptua. At v"
+        "ero eos et accusam et justo duo dolores et ea rebum. Stet"
+        " clita kasd gubergren, no sea takimata sanctus est Lorem "
+        "ipsum dolor sit amet.",
+        olc::GREEN, 10
+    );
     shell_message.draw();
 
 //    camera.iterate(fElapsedTime);
