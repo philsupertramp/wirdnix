@@ -159,22 +159,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
     SetDrawTarget(_drawTarget);
     drawTestImage();
-    Shell::Message shell_message
-    (
-        "Loremipsumdolorsitamet,consetetursadipscingelitr,"
-        "seddiamnonumyeirmodtemporinviduntutlaboreetdolor"
-        "emagnaaliquyamerat,seddiamvoluptua.Atveroeoset"
-        "accusametjustoduodoloresetearebum.Stetclitakasd"
-        "gubergren,noseatakimatasanctusestLoremipsumdolor"
-        "sitamet.Loremipsumdolorsitametconsetetursadipsc"
-        "ingelitr,seddiamnonumyeirmodtemporinviduntutlabo"
-        "reetdoloremagnaaliquyamerat,seddiamvoluptua.Atv"
-        "eroeosetaccusametjustoduodoloresetearebum.Stet"
-        "clitakasdgubergren,noseatakimatasanctusestLorem"
-        "ipsumdolorsitamet.",
-        olc::GREEN, 3
-    );
-    shell_message.draw();
+    Shell::instance().draw(fElapsedTime);
 
 //    camera.iterate(fElapsedTime);
     camera.refresh();
@@ -227,6 +212,7 @@ void Engine::handleUserInput(float fElapsedTime /* = 0 */)
     if (GetKey(olc::SPACE).bHeld)
     {
         camera.reset();
+        Shell::instance().addMessage("TEST STRING WASD");
     }
 }
 

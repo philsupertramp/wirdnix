@@ -6,6 +6,7 @@
 //#include "olcPGEX_Graphics3D.h"
 #include "TextureLibrary.h"
 #include "../renderable/Mesh.h"
+#include "Shell.h"
 
 class Engine
     : private olc::PixelGameEngine

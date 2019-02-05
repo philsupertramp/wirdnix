@@ -4,10 +4,15 @@
 #include "olcPixelGameEngine.h"
 #include "Engine.h"
 #include <string>
+#include <list>
+
 
 class Shell
 {
+public:
+    class Message;
 private:
+    std::list<Message> messages;
     Shell() = default;
 
 public:
@@ -26,10 +31,12 @@ public:
         size_t _lines;
         olc::Sprite _messageSprite;
         olc::Pixel _color;
+        float _age;
 
     public:
         static const olc::Pixel BACKGROUND_COLOR;
         static const uint32_t PADDING = 5;
+        static const float MAX_AGE;
 
         Message(std::string const& message, olc::Pixel color = olc::WHITE, uint32_t scale = 1)
             : _scale(scale)
@@ -37,6 +44,7 @@ public:
             , _message(generateMessageString(_originalMessage))
             , _messageSprite(uint32_t(Engine::ScreenWidth() * 2 / 3 + 2 - (Engine::ScreenWidth() * 2 / 3 + 1)%(8*_scale)) + PADDING, uint32_t(_lines * 8 * _scale + 2) )
             , _color(color)
+            , _age(0)
         {
             initSprite();
         }
@@ -68,6 +76,11 @@ public:
                 }
             }
             Engine::DrawString(_messageSprite, 1, 1, _message, _color, _scale);
+        }
+
+        uint32_t getMessageHeight()
+        {
+            return _messageSprite.height;
         }
 
         std::string generateMessageString(std::string const& message)
@@ -103,11 +116,44 @@ public:
             return newString;
         }
 
-        void draw()
+        void draw(uint32_t height)
         {
-            Engine::instance().drawSpriteOnTop(&_messageSprite, 1, 1);
+            Engine::instance().drawSpriteOnTop(&_messageSprite, height, Message::PADDING);
+        }
+
+        void increaseAge(float fElapsedTime)
+        {
+            _age += fElapsedTime;
+        }
+
+        float getAge()const {
+            return _age;
         }
     };
+
+    void draw(float fElapsedTime)
+    {
+        uint32_t height = Message::PADDING;
+        for(auto& message: messages){
+            message.increaseAge(fElapsedTime);
+            message.draw(height);
+            height += message.getMessageHeight() + Message::PADDING;
+        }
+        messages.remove_if([](Message const& message){
+            return message.getAge() >= Message::MAX_AGE;
+        });
+    }
+
+    void addMessage(std::string const& message)
+    {
+        Message newMessage(message);
+        addMessage(newMessage);
+    }
+
+    void addMessage(Message const& message)
+    {
+        messages.push_back(message);
+    }
 };
 
 
