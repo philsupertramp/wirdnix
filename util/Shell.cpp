@@ -2,6 +2,7 @@
 #include "Engine.h"
 
 const olc::Pixel Shell::Message::BACKGROUND_COLOR = olc::Pixel(0, 0, 0, 100);
+const olc::Pixel Shell::SHELL_BACKGROUND_COLOR = olc::Pixel(0, 0, 0, 150);
 const float Shell::Message::MAX_AGE = 10;
 const float Shell::Message::FADE_AGE = MAX_AGE*2/3;
 
@@ -57,6 +58,10 @@ void Shell::Message::initSprite()
 uint32_t Shell::Message::getMessageHeight()
 {
     return _messageSprite.height;
+}
+uint32_t Shell::Message::getMessageWidth()
+{
+    return _messageSprite.width;
 }
 
 std::string Shell::Message::generateMessageString(std::string const & message)
@@ -120,6 +125,13 @@ olc::Pixel const & Shell::Message::getBackground() const
 void Shell::draw(float fElapsedTime)
 {
     uint32_t height = Engine::ScreenHeight() - Message::PADDING -messages.front().getMessageHeight();
+    uint32_t shell_height = Message::PADDING;
+    for (auto& n : messages)
+    {
+        shell_height += n.getMessageHeight() + Message::PADDING;
+    }
+    setHeight(shell_height);
+    Engine::instance().fillRectOnTop(SHELL_BACKGROUND_COLOR, 0, Engine::ScreenHeight() - getHeight(), messages.front().getMessageWidth() + 2*Message::PADDING, getHeight());
     for (auto& message : messages)
     {
         message.increaseAge(fElapsedTime);
@@ -129,7 +141,7 @@ void Shell::draw(float fElapsedTime)
         if (message.getAge() >= Message::FADE_AGE)
         {
             olc::Pixel c = message.getColor();
-            c.a -= /*(uint8_t)ceil((std::min(fElapsedTime, .99f)*c.a))+*/1;
+            c.a -= (uint8_t)ceil((std::min(fElapsedTime, .99f)*c.a));
             message.setColor(c);
 
             olc::Pixel b = message.getBackground();
@@ -140,7 +152,7 @@ void Shell::draw(float fElapsedTime)
 
     messages.remove_if([](Message const& message)
     {
-        return /*message.getAge() >= Message::MAX_AGE ||*/ message.getColor().a < 10;
+        return /*message.getAge() >= Message::MAX_AGE ||*/ message.getColor().a < 75;
     });
 }
 
@@ -153,4 +165,12 @@ void Shell::addMessage(std::string const & message)
 void Shell::addMessage(Message const & message)
 {
     messages.push_front(message);
+}
+
+void Shell::setHeight(size_t const& height) {
+    _height = height;
+}
+
+uint32_t Shell::getHeight(){
+    return _height;
 }

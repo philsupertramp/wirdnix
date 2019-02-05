@@ -226,6 +226,11 @@ void Engine::drawSpriteOnTop(olc::Sprite* sprite, uint32_t x /* = 0 */, uint32_t
     SetPixelMode(olc::Pixel::Mode::ALPHA);
     olc::PixelGameEngine::DrawSprite(x, y, sprite, scale);
 }
+void Engine::fillRectOnTop(olc::Pixel pixel, uint32_t x /* = 0 */, uint32_t y /* = 0 */, uint32_t w/* = 10 */, uint32_t h/* = 10 */, uint32_t scale /* = 1 */)
+{
+    SetPixelMode(olc::Pixel::Mode::ALPHA);
+    olc::PixelGameEngine::FillRect(x, y, w*scale, h*scale, pixel);
+}
 
 void Engine::FillRect(olc::Sprite& sprite, int32_t x, int32_t y, int32_t w, int32_t h, olc::Pixel const& p /* = olc::WHITE */)
 {

@@ -14,9 +14,11 @@ public:
 
 private:
     std::list<Message> messages;
+    std::uint32_t _height;
     Shell() = default;
 
 public:
+    static const olc::Pixel SHELL_BACKGROUND_COLOR;
     static Shell& instance()
     {
         static Shell shell;
@@ -36,7 +38,7 @@ public:
 
     public:
         olc::Pixel _backgroundColor;
-        static const olc::Pixel Shell::Message::BACKGROUND_COLOR;
+        static const olc::Pixel BACKGROUND_COLOR;
         static const uint32_t PADDING = 5;
         static const float MAX_AGE;
         static const float FADE_AGE;
@@ -48,6 +50,7 @@ public:
         void setScale(uint32_t newScale);
         void initSprite();
         uint32_t getMessageHeight();
+        uint32_t getMessageWidth();
         std::string generateMessageString(std::string const& message);
         void draw(uint32_t height);
         void increaseAge(float fElapsedTime);
@@ -59,6 +62,8 @@ public:
     void draw(float fElapsedTime);
     void addMessage(std::string const& message);
     void addMessage(Message const& message);
+    void setHeight(size_t const& height);
+    uint32_t getHeight();
 };
 
 
