@@ -16,43 +16,70 @@ public:
         static Shell shell;
         return shell;
     }
+
     class Message
     {
-        size_t scale;
-        std::string messageString;
-        size_t newLines;
+        uint32_t _scale;
         size_t messageWidth;
-        olc::Sprite messageSprite;
+        std::string _originalMessage;
+        std::string _message;
+        size_t _lines;
+        olc::Sprite _messageSprite;
+        olc::Pixel _color;
 
     public:
         static const olc::Pixel BACKGROUND_COLOR;
+        static const uint32_t PADDING = 5;
 
-        Message(std::string const& message_string, olc::Pixel color = olc::WHITE, size_t const& scale = 1)
-                : scale(scale)
-                , messageString(generate_message_string(message_string))
-                , messageSprite(uint32_t(Engine::ScreenWidth()/3), uint32_t(newLines*10))
+        Message(std::string const& message, olc::Pixel color = olc::WHITE, uint32_t scale = 1)
+            : _scale(scale)
+            , _originalMessage(message)
+            , _message(generateMessageString(_originalMessage))
+            , _messageSprite(uint32_t(Engine::ScreenWidth() * 2 / 3 + 2 - (Engine::ScreenWidth() * 2 / 3 + 1)%(8*_scale)) + PADDING, uint32_t(_lines * 8 * _scale + 2) )
+            , _color(color)
         {
-            for(uint32_t i = 0; i < messageSprite.width; i++)
-            {
-                for(uint32_t j = 0; j < messageSprite.height; j ++)
-                {
-                    messageSprite.SetPixel(i, j, BACKGROUND_COLOR);
-                }
-            }
-            Engine::DrawString(messageSprite, 2, 2, messageString, color);
+            initSprite();
         }
 
-        std::string generate_message_string(std::string const& message)
+        void setColor(olc::Pixel const& newColor)
         {
-            // 24 = 3(1/3 screen with) * 8(default font with)
-            messageWidth = uint32_t(Engine::ScreenWidth()/ (24 * scale) );
-            newLines = 1;
+            _color = newColor;
+            initSprite();
+        }
+
+        void setScale(uint32_t newScale)
+        {
+            if (newScale == 0)
+            {
+                newScale = 1;
+            }
+
+            _scale = newScale;
+            generateMessageString(_originalMessage);
+            initSprite();
+        }
+
+        void initSprite()
+        {
+            // reset to background color
+            for (uint32_t i = 0; i < _messageSprite.width; i++) {
+                for (uint32_t j = 0; j < _messageSprite.height; j++) {
+                    _messageSprite.SetPixel(i, j, BACKGROUND_COLOR);
+                }
+            }
+            Engine::DrawString(_messageSprite, 1, 1, _message, _color, _scale);
+        }
+
+        std::string generateMessageString(std::string const& message)
+        {
+            // 12 = 1.5(2/3 screen with) * 8(default font with)
+            messageWidth = uint32_t(Engine::ScreenWidth()/ (12 * _scale) );
+            _lines = 0;
             std::string newString;
-            size_t end = messageWidth - 1;
 
             for(size_t start = 0; start < message.length(); start++)
             {
-                std::string substr = message.substr(start, end);
+                std::string substr = message.substr(start, messageWidth);
                 size_t current_newlines = size_t(std::count(substr.begin(), substr.end(), '\n'));
                 size_t split_index = 0;
                 if(current_newlines == 0)
@@ -60,29 +87,25 @@ public:
                     split_index = substr.find_last_of(' ');
                     if(split_index == std::string::npos)
                     {
-                        split_index = messageWidth - 1;
+                        split_index = messageWidth;
                     }
-                    else
-                    {
-                        substr = substr.substr(0, split_index);
-                        substr.append("\n");
-                    }
+                    substr = substr.substr(0, split_index);
+                    substr.append("\n");
+
                 }
                 newString.append(substr);
-                newLines += 1;
+                _lines += 1;
                 start += split_index;
-                end = start + messageWidth - 1;
-                if(end >= message.length())
-                {
-                    end = message.length();
-                }
+            }
+            if(_lines == 0){
+                _lines = 1;
             }
             return newString;
         }
 
         void draw()
         {
-            Engine::instance().drawSpriteOnTop(&messageSprite);
+            Engine::instance().drawSpriteOnTop(&_messageSprite, 1, 1);
         }
     };
 };

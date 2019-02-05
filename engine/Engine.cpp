@@ -159,7 +159,21 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
     SetDrawTarget(_drawTarget);
     drawTestImage();
-    Shell::Message shell_message("TEST STRING");
+    Shell::Message shell_message
+    (
+        "Loremipsumdolorsitamet,consetetursadipscingelitr,"
+        "seddiamnonumyeirmodtemporinviduntutlaboreetdolor"
+        "emagnaaliquyamerat,seddiamvoluptua.Atveroeoset"
+        "accusametjustoduodoloresetearebum.Stetclitakasd"
+        "gubergren,noseatakimatasanctusestLoremipsumdolor"
+        "sitamet.Loremipsumdolorsitametconsetetursadipsc"
+        "ingelitr,seddiamnonumyeirmodtemporinviduntutlabo"
+        "reetdoloremagnaaliquyamerat,seddiamvoluptua.Atv"
+        "eroeosetaccusametjustoduodoloresetearebum.Stet"
+        "clitakasdgubergren,noseatakimatasanctusestLorem"
+        "ipsumdolorsitamet.",
+        olc::GREEN, 3
+    );
     shell_message.draw();
 
 //    camera.iterate(fElapsedTime);
@@ -223,6 +237,7 @@ olc::rcode Engine::Construct(uint32_t screen_w, uint32_t screen_h, uint32_t pixe
 
 void Engine::drawSpriteOnTop(olc::Sprite* sprite, uint32_t x /* = 0 */, uint32_t y /* = 0 */, uint32_t scale /* = 1 */)
 {
+    SetPixelMode(olc::Pixel::Mode::ALPHA);
     olc::PixelGameEngine::DrawSprite(x, y, sprite, scale);
 }
 
