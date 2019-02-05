@@ -34,6 +34,8 @@ add_executable(wirdnix
 	renderable/Quadrilateral.cpp
 	renderable/Mesh.h
 	renderable/Mesh.cpp
+	util/Shell.cpp
+	util/Shell.h
 )
 
 include_directories(util)
