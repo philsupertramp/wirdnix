@@ -41,10 +41,10 @@ bool Mesh::loadFromOBJfile(std::string const& fileName)
         fin.close();
         return false;
     }
-    std::streampos p = fin.tellg();
-    std::stringstream ss;
-    ss << fin.rdbuf();
-    fin.seekg(p);
+//    std::streampos p = fin.tellg();
+//    std::stringstream ss;
+//    ss << fin.rdbuf();
+//    fin.seekg(p);
 
     std::vector<olc::GFX3D::vec3d> vertices;
     vertices.push_back(olc::GFX3D::vec3d()); // offset as file is 1-indexed
@@ -53,10 +53,10 @@ bool Mesh::loadFromOBJfile(std::string const& fileName)
     verticesTexture.push_back(olc::GFX3D::vec2d()); // offset
 
     // test
-    while(!ss.eof())
+    while(!fin.eof())
     {
         std::string currentLine;
-        std::getline(ss, currentLine);
+        std::getline(fin, currentLine);
         switch (currentLine[0])
         {
         case '#':
@@ -176,6 +176,7 @@ bool Mesh::loadFromOBJfile(std::string const& fileName)
             break;
         }
     }
+    fin.close();
 
     return true;
 }
