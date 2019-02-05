@@ -218,6 +218,11 @@ olc::rcode Engine::Construct(uint32_t screen_w, uint32_t screen_h, uint32_t pixe
     return olc::PixelGameEngine::Construct(_nScreenWidth =  screen_w, _nScreenHeight = screen_h, pixel_w, pixel_h);
 }
 
+void Engine::drawSpriteOnTop(olc::Sprite* sprite, uint32_t x /* = 0 */, uint32_t y /* = 0 */, uint32_t scale /* = 1 */)
+{
+    olc::PixelGameEngine::DrawSprite(x, y, sprite, scale);
+}
+
 void Engine::FillRect(olc::Sprite& sprite, int32_t x, int32_t y, int32_t w, int32_t h, olc::Pixel const& p /* = olc::WHITE */)
 {
     auto& engine = instance();
