@@ -58,7 +58,7 @@
 
     Author
     ~~~~~~
-    David Barr, aka javidx9, ©OneLoneCoder 2018
+    David Barr, aka javidx9, Â©OneLoneCoder 2018
 */
 
 
@@ -558,12 +558,6 @@ namespace olc
 
                         olc::Pixel const& pr = spr->Sample(tex_u / tex_w, tex_v / tex_w);
 
-                        if (pr.r == 255 && pr.g == 255 && pr.b == 255 && pr.a == 255)
-                        {
-                            float yoHoldOn = 0;
-                            yoHoldOn = 7;
-                        }
-
                         pge->Draw(j, i, pr);
                         m_DepthBuffer[index] = tex_w;
                     }
@@ -635,7 +629,10 @@ namespace olc
                         //tex_v = (1.0f - t) * tex_sv + t * tex_ev;
                         tex_v = tex_sv + t * d_tex_ev_sv;
 
-                        pge->Draw(j, i, spr->Sample(tex_u / tex_w, tex_v / tex_w));
+                        olc::Pixel const& pr = spr->Sample(tex_u / tex_w, tex_v / tex_w);
+
+                        pge->Draw(j, i, pr);
+
                         m_DepthBuffer[index] = tex_w;
                     }
                     t += tstep;
@@ -744,7 +741,9 @@ namespace olc
 
                     if (tex_z > m_DepthBuffer[i*pge->ScreenWidth() + j])
                     {
-                        pge->Draw(j, i, spr->Sample(tex_x / tex_z, tex_y / tex_z));
+                        olc::Pixel const& pr = spr->Sample(tex_x / tex_z, tex_y / tex_z);
+
+                        pge->Draw(j, i, pr);
                         m_DepthBuffer[i*pge->ScreenWidth() + j] = tex_z;
                     }
                     t += tstep;
@@ -809,7 +808,9 @@ namespace olc
 
                     if (tex_z > m_DepthBuffer[i*pge->ScreenWidth() + j])
                     {
-                        pge->Draw(j, i, spr->Sample(tex_x / tex_z, tex_y / tex_z));
+                        olc::Pixel const& pr = spr->Sample(tex_x / tex_z, tex_y / tex_z);
+
+                        pge->Draw(j, i, pr);
                         m_DepthBuffer[i*pge->ScreenWidth() + j] = tex_z;
                     }
 
@@ -817,7 +818,6 @@ namespace olc
                 }
             }
         }
-
     }
 
     float* GFX3D::m_DepthBuffer = nullptr;
@@ -826,9 +826,9 @@ namespace olc
     { }
 
     void GFX3D::PipeLine::SetProjection(float fFovDegrees, // field of view
-                                        float fAspectRatio, //? aspect ratio of camera
-                                        float fNear, //? near clipping plane
-                                        float fFar, //? far clipping plane
+                                        float fAspectRatio, // aspect ratio of camera
+                                        float fNear, // near clipping plane
+                                        float fFar, // far clipping plane
                                         float fLeft, // distance from the left border of the screen
                                         float fTop, // distance from the top border of the screen
                                         float fWidth, // width  of the area the camera draws in

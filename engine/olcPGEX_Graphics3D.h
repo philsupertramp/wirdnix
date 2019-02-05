@@ -203,7 +203,7 @@ namespace olc
         {
             float m[4][4] = { 0 };
 
-            vec3d operator* (vec3d const& v)
+            vec3d operator* (vec3d const& v) const
             {
                 vec3d res = v;
                 mat4x4 t = *this;
@@ -338,7 +338,7 @@ namespace olc
             olc::GFX3D::mat4x4 matProj;
             olc::GFX3D::mat4x4 matView;
             olc::GFX3D::mat4x4 matWorld;
-            olc::Sprite* sprTexture;
+            olc::Sprite* sprTexture = nullptr;
             float fViewX;
             float fViewY;
             float fViewW;

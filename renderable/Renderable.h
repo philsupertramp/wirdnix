@@ -1,22 +1,20 @@
 #ifndef RENDERABLE_H
 #define RENDERABLE_H
 
-#include "../engine/Engine.h"
 #include <string>
-#include "../engine/TextureLibrary.h"
+#include "TextureLibrary.h"
+#include "olcPGEX_Graphics3D.h"
+#include "olcPixelGameEngine.h"
 
 class Renderable
 {
 protected:
-    // for easy access to the engine
-    Engine& engine = Engine::instance();
-
     olc::GFX3D::mesh _mesh;
     olc::Sprite* _texture = nullptr;
 
 public:
     Renderable() = default;
-    ~Renderable() = default;
+    virtual ~Renderable() = default;
 
     virtual void draw();
 
@@ -26,7 +24,6 @@ public:
     bool setTexture(std::string const& name);
 
     void addTriangle(olc::GFX3D::triangle const& tri);
-
 };
 
 #endif // RENDERABLE_H

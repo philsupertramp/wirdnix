@@ -95,7 +95,6 @@ olc::Sprite TextureLibrary::nothing(std::string const& name)
     olc::Pixel color[2];
     color[0] = olc::Pixel(50, 50, 50, 255);
     color[1] = olc::Pixel(50,  0, 50, 255);
-    int colToChoose = 0;
 
     int squareLength = (s.width + s.height)/4;
     while (--squareLength > 11)
@@ -110,7 +109,7 @@ olc::Sprite TextureLibrary::nothing(std::string const& name)
     for (uint32_t i = 0; i < s.height; i += squareLength)
     {
         // such that each row starts with a different color
-        colToChoose = i / squareLength % 2;
+        int colToChoose = i / squareLength % 2;
         for (uint32_t j = 0; j < s.width; j += squareLength)
         {
             Engine::FillRect(s, i, j, std::min(s.width, i + squareLength), std::min(s.height, j + squareLength), color[colToChoose]);

@@ -95,6 +95,8 @@ void Engine::drawTestImage()
         room.draw();
     }
 
+    obj.draw();
+
 
     return;
 
@@ -137,6 +139,9 @@ bool Engine::OnUserCreate()
     TextureLibrary::add("../images/dirt.png");
     TextureLibrary::add("../images/floor.png");
     TextureLibrary::add("../images/wall.png");
+
+    obj.loadFromOBJfile("../objects/teapot.obj");
+    obj.randomizeColors();
 
     return true;
 }

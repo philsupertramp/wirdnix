@@ -13,7 +13,7 @@ class Room
     Quadrilateral _wallWest;
 
 public:
-    Room(float posX, float posY, float _width = Room::ROOM_WIDTH, float _length = Room::ROOM_LENGTH, float height = Room::ROOM_HEIGHT);
+    Room(float posX, float posY, float width = Room::ROOM_WIDTH, float length = Room::ROOM_LENGTH, float height = Room::ROOM_HEIGHT);
     ~Room();
 
     //jnl in pixels for now

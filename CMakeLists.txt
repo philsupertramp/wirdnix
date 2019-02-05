@@ -14,14 +14,6 @@ add_executable(wirdnix
 	main.cpp 
 	util/Logger.h
 	util/Logger.cpp
-	renderable/Chunk.h
-	renderable/Chunk.cpp
-	renderable/Room.h
-	renderable/Room.cpp
-	renderable/Renderable.h
-	renderable/Renderable.cpp
-	renderable/Quadrilateral.h
-	renderable/Quadrilateral.cpp
 	engine/olcPixelGameEngine.h 
 	engine/olcPGEX_Graphics3D.h
 	engine/olcPGEX_Graphics3D.cpp
@@ -32,6 +24,16 @@ add_executable(wirdnix
 	engine/Camera.cpp
 	engine/TextureLibrary.h
 	engine/TextureLibrary.cpp
+	renderable/Chunk.h
+	renderable/Chunk.cpp
+	renderable/Room.h
+	renderable/Room.cpp
+	renderable/Renderable.h
+	renderable/Renderable.cpp
+	renderable/Quadrilateral.h
+	renderable/Quadrilateral.cpp
+	renderable/Mesh.h
+	renderable/Mesh.cpp
 )
 
 include_directories(util)
