@@ -19,7 +19,8 @@ public:
 
     class Message
     {
-        std::string _messageString;
+        std::string _message;
+        std::string _originalMessage;
         size_t _lines;
         olc::Sprite _messageSprite;
         olc::Pixel _color;
@@ -28,8 +29,9 @@ public:
     public:
         static const olc::Pixel BACKGROUND_COLOR;
 
-        Message(std::string const& message_string, olc::Pixel color = olc::WHITE, uint32_t scale = 1)
-            : _messageString(generateMessageString(message_string))
+        Message(std::string const& message, olc::Pixel color = olc::WHITE, uint32_t scale = 1)
+            : _originalMessage(message)
+            , _message(generateMessageString(_originalMessage))
             , _messageSprite(uint32_t(Engine::ScreenWidth()/3 +2), uint32_t(_lines*10 +2))
             , _color(color)
             , _scale(scale)
@@ -51,7 +53,7 @@ public:
             }
 
             _scale = newScale;
-            generateMessageString();
+            generateMessageString(_originalMessage);
             initSprite();
         }
 
@@ -65,7 +67,7 @@ public:
                     _messageSprite.SetPixel(i, j, BACKGROUND_COLOR);
                 }
             }
-            Engine::DrawString(_messageSprite, 1, 1, _messageString, _color, _scale);
+            Engine::DrawString(_messageSprite, 1, 1, _message, _color, _scale);
         }
 
         std::string generateMessageString(std::string const& message)
