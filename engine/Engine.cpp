@@ -159,7 +159,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
     SetDrawTarget(_drawTarget);
     drawTestImage();
-    Shell::Message shell_message("TEST STRING\n");
+    Shell::Message shell_message("TEST STRING");
     shell_message.draw();
 
 //    camera.iterate(fElapsedTime);
