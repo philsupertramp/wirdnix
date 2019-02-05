@@ -149,19 +149,47 @@ bool Mesh::loadFromOBJfile(std::string const& fileName)
 
             int p1 = 0, p2 = 0, p3 = 0;
 
+            size_t nSlashes = std::count(currentLine.begin(), currentLine.end(), '/');
+            bool hasTexture = nSlashes > 0;
+
             if(start0 != std::string::npos && start0 < currentLine.size())
             try {
-                p1 = stoi(currentLine.substr(start0, end0 - start0));
+                std::string sub = currentLine.substr(start0, end0 - start0);
+                if (!hasTexture)
+                {
+                    p1 = stoi(sub);
+                }
+                else
+                {
+//                    currentLine.count
+                    auto a = currentLine.find_first_of('/');
+                    std::string first = currentLine.substr();
+
+                }
             } catch (...) { }
 
             if (start1 != std::string::npos && start1 < currentLine.size())
             try {
-                p2 = stoi(currentLine.substr(start1, end1 - start1));
+                std::string sub = currentLine.substr(start1, end1 - start1);
+                if (!hasTexture)
+                {
+                    p2 = stoi(sub);
+                }
+                else
+                {
+                }
             }catch (...) { }
 
             if (start2 != std::string::npos && start2 < currentLine.size())
             try {
-                p3 = stoi(currentLine.substr(start2, end2 - start2));
+                std::string sub = currentLine.substr(start2, end2 - start2);
+                if (!hasTexture)
+                {
+                    p3 = stoi(sub);
+                }
+                else
+                {
+                }
             }catch (...) { }
 
             olc::GFX3D::triangle t;
