@@ -21,6 +21,7 @@ public:
         std::string messageString;
         size_t new_lines = 0;
         olc::Sprite messageSprite;
+    public:
         static const olc::Pixel BACKGROUND_COLOR;
 
         Message(std::string const& message_string, olc::Pixel color = olc::WHITE)
@@ -45,7 +46,7 @@ public:
 
         void draw()
         {
-
+            Engine::instance().drawSpriteOnTop(&messageSprite);
         }
     };
 };

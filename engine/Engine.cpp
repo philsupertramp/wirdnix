@@ -6,6 +6,7 @@
 #include "../renderable/Chunk.h"
 #include "olcPGEX_Graphics3D.h"
 #include <vector>
+#include "Shell.h"
 
 int32_t Engine::_nScreenWidth = 100;
 int32_t Engine::_nScreenHeight = 100;
@@ -158,6 +159,8 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
     SetDrawTarget(_drawTarget);
     drawTestImage();
+    Shell::Message shell_message("TEST STRING\n");
+    shell_message.draw();
 
 //    camera.iterate(fElapsedTime);
     camera.refresh();
