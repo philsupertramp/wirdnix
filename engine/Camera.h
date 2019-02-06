@@ -31,10 +31,11 @@ public:
     void moveBackward(float fElapsedTime = 0);
     void moveLeft(float fElapsedTime = 0);
     void moveRight(float fElapsedTime = 0);
-    void rotateLeft(float fElapsedTime = 0);
-    void rotateRight(float fElapsedTime = 0);
     void moveUp(float fElapsedTime = 0);
     void moveDown(float fElapsedTime = 0);
+
+    void rotateLeft(float fElapsedTime = 0);
+    void rotateRight(float fElapsedTime = 0);
 
     void reset();
     void refresh();

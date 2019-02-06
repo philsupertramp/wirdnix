@@ -104,17 +104,17 @@ namespace olc
 
         struct vec3d
         {
+            float x = 0;
+            float y = 0;
+            float z = 0;
+            float w = 1; // Need a 4th term to perform sensible matrix vector multiplication
+
             vec3d(float x_ = 0, float y_ = 0, float z_ = 0, float w_ = 1)
                 : x(x_)
                 , y(y_)
                 , z(z_)
                 , w(w_)
             { }
-
-            float x = 0;
-            float y = 0;
-            float z = 0;
-            float w = 1; // Need a 4th term to perform sensible matrix vector multiplication
 
             void normalize()
             {
@@ -128,6 +128,19 @@ namespace olc
                 w = 1;
             }
 
+            void homogenize()
+            {
+                x /= w;
+                y /= w;
+                z /= w;
+                w = 1;
+            }
+
+            float operator* (vec3d const& v) const
+            {
+                return x * v.x + y * v.y + z * v.z;
+            }
+
             vec3d operator* (float s) const
             {
                 vec3d res = *this;
@@ -139,6 +152,21 @@ namespace olc
                 x *= s;
                 y *= s;
                 z *= s;
+
+                return *this;
+            }
+
+            vec3d operator/ (float s) const
+            {
+                vec3d res = *this;
+                return res /= s;
+            }
+
+            vec3d& operator/= (float s)
+            {
+                x /= s;
+                y /= s;
+                z /= s;
 
                 return *this;
             }
@@ -305,9 +333,9 @@ namespace olc
             inline static float Vec_Length(vec3d& v);
             inline static vec3d Vec_Normalise(vec3d& v);
             inline static vec3d Vec_CrossProduct(vec3d& v1, vec3d& v2);
-            inline static vec3d Vec_IntersectPlane(vec3d& plane_p, vec3d& plane_n, vec3d& lineStart, vec3d& lineEnd, float& t);
+            inline static vec3d Vec_IntersectPlane(vec3d const& plane_p, vec3d& plane_n, vec3d const& lineStart, vec3d const& lineEnd, float& t);
 
-            inline static int Triangle_ClipAgainstPlane(vec3d plane_p, vec3d plane_n, triangle& in_tri, triangle& out_tri1, triangle& out_tri2);
+            inline static int Triangle_ClipAgainstPlane(vec3d plane_p, vec3d plane_n, triangle const& in_tri, triangle& out_tri1, triangle& out_tri2);
         };
 
         enum RENDERFLAGS
@@ -332,7 +360,7 @@ namespace olc
             void SetTransform(olc::GFX3D::mat4x4& transform);
             void SetTexture(olc::Sprite* texture);
             void SetLightSource(olc::GFX3D::vec3d& pos, olc::GFX3D::vec3d& dir, olc::Pixel& col);
-            uint32_t Render(std::vector<olc::GFX3D::triangle>& triangles, uint32_t flags = RENDER_CULL_CW | RENDER_TEXTURED | RENDER_DEPTH);
+            uint32_t Render(std::vector<olc::GFX3D::triangle> const& triangles, uint32_t flags = RENDER_CULL_CW | RENDER_TEXTURED | RENDER_DEPTH);
 
         private:
             olc::GFX3D::mat4x4 matProj;

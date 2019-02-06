@@ -136,13 +136,13 @@ bool Engine::OnUserCreate()
 
     camera.reset();
 
-    //TextureLibrary::add("../images/rasen.png");
-    //TextureLibrary::add("../images/dirt.png");
-    //TextureLibrary::add("../images/floor.png");
-    //TextureLibrary::add("../images/wall.png");
+    TextureLibrary::add("../images/rasen.png");
+    TextureLibrary::add("../images/dirt.png");
+    TextureLibrary::add("../images/floor.png");
+    TextureLibrary::add("../images/wall.png");
 
-    //obj.loadFromOBJfile("../objects/teapot.obj");
-    //obj.randomizeColors();
+    obj.loadFromOBJfile("../objects/teapot.obj");
+    obj.randomizeColors();
 
     return true;
 }
@@ -158,10 +158,10 @@ bool Engine::OnUserUpdate(float fElapsedTime)
     handleUserInput(fElapsedTime);
 
     SetDrawTarget(_drawTarget);
-//    drawTestImage();
+    drawTestImage();
     Shell::instance().draw(fElapsedTime);
 
-//    camera.iterate(fElapsedTime);
+    camera.iterate(fElapsedTime);
     camera.refresh();
 
     return true;
