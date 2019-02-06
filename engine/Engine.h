@@ -52,6 +52,7 @@ public:
     static void DrawString(olc::Sprite& sprite, int32_t x, int32_t y, std::string const& sText, olc::Pixel const& col, uint32_t scale = 1);
     static int32_t ScreenWidth();
     static int32_t ScreenHeight();
+    std::string mapInput(std::string const& input);
 
     void DrawMesh(olc::GFX3D::mesh& m, uint32_t flags = olc::GFX3D::RENDERFLAGS::RENDER_CULL_CW | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED | olc::GFX3D::RENDERFLAGS::RENDER_DEPTH, olc::Sprite* tex = nullptr);
 };

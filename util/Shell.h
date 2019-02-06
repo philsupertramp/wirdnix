@@ -7,63 +7,89 @@
 #include <list>
 #include <algorithm>
 
+class Message
+{
+    static uint32_t _displayWidth;
+    time_t _createdAt;
+
+    uint32_t _scale;
+    std::string _originalMessage;
+    uint32_t _lines;
+    uint32_t _messageWidth;
+    std::string _message;
+    olc::Sprite _messageSprite;
+    olc::Pixel _color;
+    float _age;
+    olc::Pixel _backgroundColor;
+
+    friend class Shell;
+    // empty default constructor for Shell
+    Message() {};
+
+public:
+    bool _messageUppercase = false;
+    static const olc::Pixel BACKGROUND_COLOR;
+    static const uint32_t PADDING = 5;
+    static const float MAX_AGE;
+    static const float FADE_AGE;
+
+    Message(std::string const& message, olc::Pixel color = olc::WHITE, uint32_t scale = 2);
+
+    void setColor(olc::Pixel const& newColor);
+    void setBackground(olc::Pixel const& newColor);
+    void setScale(uint32_t newScale);
+    void initSprite();
+    uint32_t getMessageHeight();
+    static uint32_t getMessageWidth();
+    std::string getMessageString();
+    std::string generateMessageString(std::string const& message);
+    void draw(uint32_t heightOffset, uint32_t widthOffset = 0);
+    void increaseAge(float fElapsedTime);
+    void toggleUppercase();
+    float getAge() const;
+    time_t getCreatedAt()const;
+    olc::Pixel const& getColor() const;
+    olc::Pixel const& getBackground() const;
+};
+
 class Shell
 {
-public:
-    class Message;
-
 private:
     std::list<Message> messages;
-    std::uint32_t _height;
-    Shell() = default;
+    Message _inputMessage;
+    std::string _inputString;
+    bool _waitingForInput = false;
+
+    // shell is a singleton
+    Shell();
+
+    static olc::Pixel shellBackgroundColor;
 
 public:
+    static const olc::Pixel SYSTEM_MESSAGE_COLOR;
+    static const olc::Pixel USER_MESSAGE_COLOR;
     static const olc::Pixel SHELL_BACKGROUND_COLOR;
+
     static Shell& instance()
     {
         static Shell shell;
         return shell;
     }
 
-    class Message
-    {
-        uint32_t _scale;
-        size_t messageWidth;
-        std::string _originalMessage;
-        std::string _message;
-        size_t _lines;
-        olc::Sprite _messageSprite;
-        olc::Pixel _color;
-        float _age;
-
-    public:
-        olc::Pixel _backgroundColor;
-        static const olc::Pixel BACKGROUND_COLOR;
-        static const uint32_t PADDING = 5;
-        static const float MAX_AGE;
-        static const float FADE_AGE;
-
-        Message(std::string const& message, olc::Pixel color = olc::WHITE, uint32_t scale = 1);
-
-        void setColor(olc::Pixel const& newColor);
-        void setBackground(olc::Pixel const& newColor);
-        void setScale(uint32_t newScale);
-        void initSprite();
-        uint32_t getMessageHeight();
-        uint32_t getMessageWidth();
-        std::string generateMessageString(std::string const& message);
-        void draw(uint32_t height);
-        void increaseAge(float fElapsedTime);
-        float getAge() const;
-        olc::Pixel const& getColor() const;
-        olc::Pixel const& getBackground() const;
-    };
-
     void draw(float fElapsedTime);
+    void toggleWaiting();
+    void setWaiting(bool = false);
     void addMessage(std::string const& message);
+    void addUserMessage(std::string const& message);
     void addMessage(Message const& message);
-    void setHeight(size_t const& height);
+    void setHeight(uint32_t const& height);
+    void sendUserMessage();
+    Message& getInputMessage();
     uint32_t getHeight();
+    bool isWaiting();
+    void setInput(std::string const& input);
+    std::string getInput();
+
 };
 
 
