@@ -136,13 +136,13 @@ bool Engine::OnUserCreate()
 
     camera.reset();
 
-    TextureLibrary::add("../images/rasen.png");
-    TextureLibrary::add("../images/dirt.png");
-    TextureLibrary::add("../images/floor.png");
-    TextureLibrary::add("../images/wall.png");
+    //TextureLibrary::add("../images/rasen.png");
+    //TextureLibrary::add("../images/dirt.png");
+    //TextureLibrary::add("../images/floor.png");
+    //TextureLibrary::add("../images/wall.png");
 
-    obj.loadFromOBJfile("../objects/teapot.obj");
-    obj.randomizeColors();
+    //obj.loadFromOBJfile("../objects/teapot.obj");
+    //obj.randomizeColors();
 
     return true;
 }
@@ -158,7 +158,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
     handleUserInput(fElapsedTime);
 
     SetDrawTarget(_drawTarget);
-    drawTestImage();
+//    drawTestImage();
     Shell::instance().draw(fElapsedTime);
 
 //    camera.iterate(fElapsedTime);
@@ -170,54 +170,68 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 void Engine::handleUserInput(float fElapsedTime /* = 0 */)
 {
     bool ignoreCamera = Shell::instance().isWaiting();
-    if(ignoreCamera){
+    if(ignoreCamera)
+    {
         Shell::instance().setInput(mapInput(Shell::instance().getInput()));
         if (GetKey(olc::ESCAPE).bReleased)
         {
-            Shell::instance().toggleWaiting();
+            Shell::instance().setWaiting(false);
         }
-        if (GetKey(olc::ENTER).bReleased)
+        else if (GetKey(olc::ENTER).bReleased)
         {
             Shell::instance().sendUserMessage();
+            Shell::instance().setWaiting(false);
         }
     }
-    else {
-        if ((GetKey(olc::W).bHeld || GetKey(olc::UP).bHeld)) {
+    else
+    {
+        if ((GetKey(olc::W).bHeld || GetKey(olc::UP).bHeld))
+        {
             camera.moveUp(fElapsedTime);
         }
 
-        if ((GetKey(olc::A).bHeld || GetKey(olc::LEFT).bHeld)) {
+        if ((GetKey(olc::A).bHeld || GetKey(olc::LEFT).bHeld))
+        {
             camera.moveLeft(fElapsedTime);
         }
 
-        if ((GetKey(olc::S).bHeld || GetKey(olc::DOWN).bHeld)) {
+        if ((GetKey(olc::S).bHeld || GetKey(olc::DOWN).bHeld))
+        {
             camera.moveDown(fElapsedTime);
         }
 
-        if ((GetKey(olc::D).bHeld || GetKey(olc::RIGHT).bHeld)) {
+        if ((GetKey(olc::D).bHeld || GetKey(olc::RIGHT).bHeld))
+        {
             camera.moveRight(fElapsedTime);
         }
 
-        if ((GetKey(olc::Q).bHeld || GetKey(olc::CTRL).bHeld)) {
+        if ((GetKey(olc::Q).bHeld || GetKey(olc::CTRL).bHeld))
+        {
             camera.rotateLeft(fElapsedTime);
         }
 
-        if ((GetKey(olc::E).bHeld || GetKey(olc::NP0).bHeld)) {
+        if ((GetKey(olc::E).bHeld || GetKey(olc::NP0).bHeld))
+        {
             camera.rotateRight(fElapsedTime);
         }
 
-        if ((GetKey(olc::R).bHeld || GetKey(olc::NP_ADD).bHeld)) {
+        if ((GetKey(olc::R).bHeld || GetKey(olc::NP_ADD).bHeld))
+        {
             camera.moveForward(fElapsedTime);
         }
 
-        if ((GetKey(olc::F).bHeld || GetKey(olc::NP_SUB).bHeld)) {
+        if ((GetKey(olc::F).bHeld || GetKey(olc::NP_SUB).bHeld))
+        {
             camera.moveBackward(fElapsedTime);
         }
 
-        if ((GetKey(olc::SPACE).bHeld)) {
+        if ((GetKey(olc::SPACE).bPressed))
+        {
             camera.reset();
         }
-        if ((GetKey(olc::TAB).bReleased)) {
+
+        if ((GetKey(olc::TAB).bPressed))
+        {
             Shell::instance().toggleWaiting();
         }
     }
@@ -289,205 +303,50 @@ void Engine::DrawMesh(olc::GFX3D::mesh& m, uint32_t flags /* = olc::GFX3D::RENDE
     }
 }
 
-std::string Engine::mapInput(std::string const& _input){
-    std::string input = "";
+std::string Engine::mapInput(std::string const& _input)
+{
+    std::vector<char> keyMap;
 
-    /**
-     * Alphabetic characters
-     */
-    if (GetKey(olc::A).bReleased)
-    {
-        input += "a";
-    }
-    if (GetKey(olc::B).bReleased)
-    {
-        input += "b";
-    }
-    if (GetKey(olc::C).bReleased)
-    {
-        input += "c";
-    }
-    if (GetKey(olc::D).bReleased)
-    {
-        input += "d";
-    }
-    if (GetKey(olc::E).bReleased)
-    {
-        input += "e";
-    }
-    if (GetKey(olc::F).bReleased)
-    {
-        input += "f";
-    }
-    if (GetKey(olc::G).bReleased)
-    {
-        input += "g";
-    }
-    if (GetKey(olc::H).bReleased)
-    {
-        input += "h";
-    }
-    if (GetKey(olc::I).bReleased)
-    {
-        input += "i";
-    }
-    if (GetKey(olc::J).bReleased)
-    {
-        input += "j";
-    }
-    if (GetKey(olc::K).bReleased)
-    {
-        input += "k";
-    }
-    if (GetKey(olc::L).bReleased)
-    {
-        input += "l";
-    }
-    if (GetKey(olc::M).bReleased)
-    {
-        input += "m";
-    }
-    if (GetKey(olc::N).bReleased)
-    {
-        input += "n";
-    }
-    if (GetKey(olc::O).bReleased)
-    {
-        input += "o";
-    }
-    if (GetKey(olc::P).bReleased)
-    {
-        input += "p";
-    }
-    if (GetKey(olc::Q).bReleased)
-    {
-        input += "q";
-    }
-    if (GetKey(olc::R).bReleased)
-    {
-        input += "r";
-    }
-    if (GetKey(olc::S).bReleased)
-    {
-        input += "s";
-    }
-    if (GetKey(olc::T).bReleased)
-    {
-        input += "t";
-    }
-    if (GetKey(olc::U).bReleased)
-    {
-        input += "u";
-    }
-    if (GetKey(olc::V).bReleased)
-    {
-        input += "v";
-    }
-    if (GetKey(olc::W).bReleased)
-    {
-        input += "w";
-    }
-    if (GetKey(olc::X).bReleased)
-    {
-        input += "x";
-    }
-    if (GetKey(olc::Y).bReleased)
-    {
-        input += "y";
-    }
-    if (GetKey(olc::Z).bReleased)
-    {
-        input += "z";
-    }
-    /**
-     * Numbers
-     */
+    keyMap.resize(100, '@'); // @ == not printable
 
-    if (GetKey(olc::K0).bReleased || GetKey(olc::NP0).bReleased)
-    {
-        input += "0";
-    }
-    if (GetKey(olc::K1).bReleased || GetKey(olc::NP1).bReleased)
-    {
-        input += "1";
-    }
-    if (GetKey(olc::K2).bReleased || GetKey(olc::NP2).bReleased)
-    {
-        input += "2";
-    }
-    if (GetKey(olc::K3).bReleased || GetKey(olc::NP3).bReleased)
-    {
-        input += "3";
-    }
-    if (GetKey(olc::K4).bReleased || GetKey(olc::NP4).bReleased)
-    {
-        input += "4";
-    }
-    if (GetKey(olc::K5).bReleased || GetKey(olc::NP5).bReleased)
-    {
-        input += "5";
-    }
-    if (GetKey(olc::K6).bReleased || GetKey(olc::NP6).bReleased)
-    {
-        input += "6";
-    }
-    if (GetKey(olc::K7).bReleased || GetKey(olc::NP7).bReleased)
-    {
-        input += "7";
-    }
-    if (GetKey(olc::K8).bReleased || GetKey(olc::NP8).bReleased)
-    {
-        input += "8";
-    }
-    if (GetKey(olc::K9).bReleased || GetKey(olc::NP9).bReleased)
-    {
-        input += "9";
-    }
-    /**
-     * Special characters
-     */
+    keyMap.at(olc::Key::A) = 'A'; keyMap.at(olc::Key::B) = 'B'; keyMap.at(olc::Key::C) = 'C'; keyMap.at(olc::Key::D) = 'D'; keyMap.at(olc::Key::E) = 'E'; keyMap.at(olc::Key::F) = 'F'; keyMap.at(olc::Key::G) = 'G'; keyMap.at(olc::Key::H) = 'H';
+    keyMap.at(olc::Key::I) = 'I'; keyMap.at(olc::Key::J) = 'J'; keyMap.at(olc::Key::K) = 'K'; keyMap.at(olc::Key::L) = 'L'; keyMap.at(olc::Key::M) = 'M'; keyMap.at(olc::Key::N) = 'N'; keyMap.at(olc::Key::O) = 'O'; keyMap.at(olc::Key::P) = 'P';
+    keyMap.at(olc::Key::Q) = 'Q'; keyMap.at(olc::Key::R) = 'R'; keyMap.at(olc::Key::S) = 'S'; keyMap.at(olc::Key::T) = 'T'; keyMap.at(olc::Key::U) = 'U'; keyMap.at(olc::Key::V) = 'V'; keyMap.at(olc::Key::W) = 'W'; keyMap.at(olc::Key::X) = 'X';
+    keyMap.at(olc::Key::Y) = 'Y'; keyMap.at(olc::Key::Z) = 'Z';
+    keyMap.at(olc::Key::K0) = keyMap.at(olc::Key::NP0) = '0'; keyMap.at(olc::Key::K1) = keyMap.at(olc::Key::NP1) = '1'; keyMap.at(olc::Key::K2) = keyMap.at(olc::Key::NP2) = '2'; keyMap.at(olc::Key::K3) = keyMap.at(olc::Key::NP3) = '3';
+    keyMap.at(olc::Key::K4) = keyMap.at(olc::Key::NP4) = '4'; keyMap.at(olc::Key::K5) = keyMap.at(olc::Key::NP5) = '5'; keyMap.at(olc::Key::K6) = keyMap.at(olc::Key::NP6) = '6'; keyMap.at(olc::Key::K7) = keyMap.at(olc::Key::NP7) = '7';
+    keyMap.at(olc::Key::K8) = keyMap.at(olc::Key::NP8) = '8'; keyMap.at(olc::Key::K9) = keyMap.at(olc::Key::NP9) = '9';
+    keyMap.at(olc::Key::SPACE ) = ' '; keyMap.at(olc::Key::TAB   ) = '\t';keyMap.at(olc::Key::DEL       ) = '\b';keyMap.at(olc::Key::BACK  ) = '\b'; keyMap.at(olc::Key::RETURN) = '\n';keyMap.at(olc::Key::ENTER ) = '\n';keyMap.at(olc::Key::NP_MUL    ) = '*';
+    keyMap.at(olc::Key::NP_DIV) = '/'; keyMap.at(olc::Key::NP_ADD) = '+'; keyMap.at(olc::Key::NP_SUB) = '-'; keyMap.at(olc::Key::NP_DECIMAL) = ',';
 
 
-    else if (GetKey(olc::SPACE).bReleased)
+    std::string input;
+
+    for (size_t i = 0; i <= olc::Key::NP_DECIMAL; i++)
     {
-        input += " ";
-    }
-    else if (GetKey(olc::NP_SUB).bReleased)
-    {
-        input += "-";
-    }
-    else if (GetKey(olc::NP_ADD).bReleased)
-    {
-        input += "+";
-    }
-    else if (GetKey(olc::NP_DIV).bReleased)
-    {
-        input += "/";
-    }
-    else if (GetKey(olc::NP_MUL).bReleased)
-    {
-        input += "*";
-    }
-    else if (GetKey(olc::NP_DECIMAL).bReleased)
-    {
-        input += ",";
+        if (olc::PixelGameEngine::GetKey(olc::Key(i)).bPressed)
+        {
+            input += keyMap[i];
+        }
     }
 
     /*
      * Special treatment for shift
      */
-    bool uppercaseToggle = Shell::instance().getActiveMessage()._messageUppercase;
+    bool uppercaseToggle = Shell::instance().getInputMessage()._messageUppercase;
     if (GetKey(olc::SHIFT).bPressed && !uppercaseToggle || GetKey(olc::SHIFT).bReleased && uppercaseToggle)
     {
-        Shell::instance().getActiveMessage().toggleUppercase();
+        Shell::instance().getInputMessage().toggleUppercase();
     }
 
-    if(Shell::instance().getActiveMessage()._messageUppercase){
+    if(Shell::instance().getInputMessage()._messageUppercase)
+    {
         // TODO: keyboard layout == de!
         for (auto & c: input)
         {
             int current_char = (int) c;
-            if((int) 'Z' >= current_char && current_char >= (int) 'A' || (int) 'z' >= current_char && current_char >= (int) 'a') {
+            if((int) 'Z' >= current_char && current_char >= (int) 'A' || (int) 'z' >= current_char && current_char >= (int) 'a')
+            {
                 c = toupper(c);
             }
             else if(current_char == (int) '1')
@@ -531,17 +390,18 @@ std::string Engine::mapInput(std::string const& _input){
             }
         }
     }
+
     /**
      * Text modifications
      */
     input = _input + input;
-    if (GetKey(olc::BACK).bReleased)
-    {
-        input = input.substr(0, input.size() - 1);
-        if(input.size() == 1){
-            input = "";
-        }
-    }
-    
+    //if (GetKey(olc::BACK).bReleased)
+    //{
+    //    input = input.substr(0, input.size() - 1);
+    //    if(input.size() == 1){
+    //        input = "";
+    //    }
+    //}
+
     return input;
 }
