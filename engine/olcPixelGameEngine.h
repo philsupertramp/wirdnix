@@ -398,7 +398,6 @@ namespace olc // All OneLoneCoder stuff will now exist in the "olc" namespace
         NP_MUL, NP_DIV, NP_ADD, NP_SUB, NP_DECIMAL,
     };
 
-
     //=============================================================
 
     class PixelGameEngine
@@ -2441,14 +2440,14 @@ namespace olc
         mapKeys[VK_F5] = Key::F5; mapKeys[VK_F6] = Key::F6; mapKeys[VK_F7] = Key::F7; mapKeys[VK_F8] = Key::F8;
         mapKeys[VK_F9] = Key::F9; mapKeys[VK_F10] = Key::F10; mapKeys[VK_F11] = Key::F11; mapKeys[VK_F12] = Key::F12;
 
-        mapKeys[VK_DOWN] = Key::DOWN; mapKeys[VK_LEFT] = Key::LEFT; mapKeys[VK_RIGHT] = Key::RIGHT; mapKeys[VK_UP] = Key::UP;
+        mapKeys[VK_DOWN]   = Key::DOWN; mapKeys[VK_LEFT] = Key::LEFT; mapKeys[VK_RIGHT] = Key::RIGHT; mapKeys[VK_UP] = Key::UP;
         mapKeys[VK_RETURN] = Key::ENTER; //mapKeys[VK_RETURN] = Key::RETURN;
 
-        mapKeys[VK_BACK] = Key::BACK; mapKeys[VK_ESCAPE] = Key::ESCAPE; mapKeys[VK_RETURN] = Key::ENTER; mapKeys[VK_PAUSE] = Key::PAUSE;
-        mapKeys[VK_SCROLL] = Key::SCROLL; mapKeys[VK_TAB] = Key::TAB; mapKeys[VK_DELETE] = Key::DEL; mapKeys[VK_HOME] = Key::HOME;
-        mapKeys[VK_END] = Key::END; mapKeys[VK_PRIOR] = Key::PGUP; mapKeys[VK_NEXT] = Key::PGDN; mapKeys[VK_INSERT] = Key::INS;
-        mapKeys[VK_SHIFT] = Key::SHIFT; mapKeys[VK_CONTROL] = Key::CTRL;
-        mapKeys[VK_SPACE] = Key::SPACE;
+        mapKeys[VK_BACK]   = Key::BACK; mapKeys[VK_ESCAPE]   = Key::ESCAPE; mapKeys[VK_RETURN] = Key::ENTER; mapKeys[VK_PAUSE] = Key::PAUSE;
+        mapKeys[VK_SCROLL] = Key::SCROLL; mapKeys[VK_TAB]    = Key::TAB; mapKeys[VK_DELETE]    = Key::DEL; mapKeys[VK_HOME]    = Key::HOME;
+        mapKeys[VK_END]    = Key::END; mapKeys[VK_PRIOR]     = Key::PGUP; mapKeys[VK_NEXT]     = Key::PGDN; mapKeys[VK_INSERT] = Key::INS;
+        mapKeys[VK_SHIFT]  = Key::SHIFT; mapKeys[VK_CONTROL] = Key::CTRL;
+        mapKeys[VK_SPACE]  = Key::SPACE;
 
         mapKeys[0x30] = Key::K0; mapKeys[0x31] = Key::K1; mapKeys[0x32] = Key::K2; mapKeys[0x33] = Key::K3; mapKeys[0x34] = Key::K4;
         mapKeys[0x35] = Key::K5; mapKeys[0x36] = Key::K6; mapKeys[0x37] = Key::K7; mapKeys[0x38] = Key::K8; mapKeys[0x39] = Key::K9;

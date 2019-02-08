@@ -3,3 +3,4 @@ cmake-build-release/*
 build/*
 .idea/
 images_fake/*
+Thumbs.db
