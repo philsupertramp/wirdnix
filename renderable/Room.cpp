@@ -14,24 +14,22 @@ Room::Room(float posX, float posY, float width, float length, float height)
     olc::GFX3D::vec3d sizeY(    0, length,      0);
     olc::GFX3D::vec3d sizeZ(    0,      0, height);
 
-    float angle = 1.25*2;
-    olc::GFX3D::vec3d unitX(angle, 0, 0);
-    olc::GFX3D::vec3d unitY(0, angle, 0);
-    olc::GFX3D::vec3d unitZ(0, 0, angle);
-
-    _floor.initPlane(posFloor, sizeX, sizeY);
+    _floor.initPlane(posFloor, sizeX, sizeY*-1);
     _floor.setTexture("floor");
 
-    _wallNorth.initPlane(posFloor + sizeZ -unitY -unitX , sizeX + unitX*2, sizeZ*-1.f +unitY);
+    _ceiling.initPlane(posFloor+sizeZ-sizeY, sizeX, sizeY);
+    _ceiling.setTexture("ceiling");
+
+    _wallNorth.initPlane(posFloor + sizeZ , sizeX , sizeZ*-1.f );
     _wallNorth.setTexture("wall");
 
-    _wallSouth.initPlane(posFloor + sizeZ + sizeY +unitY-unitX, sizeX +unitX*2, sizeZ*-1.f -unitY);
+    _wallSouth.initPlane(posFloor + sizeZ -sizeY+sizeX, sizeX*-1 , sizeZ*-1 );
     _wallSouth.setTexture("wall");
 
-    _wallEast.initPlane(posFloor + sizeZ + sizeY -unitX+unitY, sizeY*-1 -unitY*2, sizeZ*-1.f+unitX);
+    _wallEast.initPlane(posFloor + sizeZ + sizeX, sizeY*-1 , sizeZ*-1.f);
     _wallEast.setTexture("wall");
 
-    _wallWest.initPlane(posFloor + sizeZ + sizeY + sizeX+unitX+unitY, sizeY*-1 -unitY*2, sizeZ*-1.f-unitX);
+    _wallWest.initPlane(posFloor + sizeZ - sizeY, sizeY, sizeZ*-1.f);
     _wallWest.setTexture("wall");
 }
 
@@ -45,4 +43,5 @@ void Room::draw()
     _wallEast.draw();
     _wallWest.draw();
     _floor.draw();
+    _ceiling.draw();
 }

@@ -7,6 +7,7 @@
 class Room
 {
     Quadrilateral _floor;
+    Quadrilateral _ceiling;
     Quadrilateral _wallNorth;
     Quadrilateral _wallEast;
     Quadrilateral _wallSouth;
