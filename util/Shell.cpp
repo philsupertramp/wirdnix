@@ -1,6 +1,9 @@
 #define __STDC_WANT_LIB_EXT1__ 1
 #include "Shell.h"
 #include "Engine.h"
+#define __STDC_WANT_LIB_EXT1__ 1
+#include "Shell.h"
+#include "Engine.h"
 #include <time.h>
 
 const olc::Pixel Message::BACKGROUND_COLOR = olc::Pixel(0, 0, 0, 100);
