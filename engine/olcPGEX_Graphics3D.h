@@ -163,7 +163,7 @@ namespace olc
                 return res *= s;
             }
 
-            inline vec3d& operator*= (float s)
+            inline vec3d const& operator*= (float s)
             {
                 x *= s;
                 y *= s;
@@ -178,7 +178,7 @@ namespace olc
                 return res /= s;
             }
 
-            inline vec3d& operator/= (float s)
+            inline vec3d const& operator/= (float s)
             {
                 x /= s;
                 y /= s;
@@ -193,7 +193,7 @@ namespace olc
                 return res += v;
             }
 
-            inline vec3d& operator+= (vec3d const& v)
+            inline vec3d const& operator+= (vec3d const& v)
             {
                 x += v.x;
                 y += v.y;
@@ -208,7 +208,7 @@ namespace olc
                 return res -= v;
             }
 
-            inline vec3d& operator-= (vec3d const& v)
+            inline vec3d const& operator-= (vec3d const& v)
             {
                 x -= v.x;
                 y -= v.y;

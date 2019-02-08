@@ -237,10 +237,10 @@ void Engine::handleUserInput(float fElapsedTime /* = 0 */)
             camera.pitchDown(fElapsedTime);
         }
 
-        if ( GetKey(olc::NP5).bHeld )
-        {
-            camera.resetRotation();
-        }
+        //if ( GetKey(olc::NP5).bHeld )
+        //{
+        //    camera.resetRotation(); // removed
+        //}
 
         if ((GetKey(olc::R).bHeld || GetKey(olc::NP_ADD).bHeld))
         {

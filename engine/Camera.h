@@ -11,7 +11,7 @@ class Camera
 {
     olc::GFX3D::vec3d _pos;
     olc::GFX3D::vec3d _lookat;
-    olc::GFX3D::vec3d _up;
+    olc::GFX3D::vec3d _up; // shall always be normalized -- length 1
 
     void normalizeLookAt();
 
@@ -43,8 +43,6 @@ public:
     void pitchDown(float fElapsedTime = 0);
     void yawLeft(float fElapsedTime = 0);
     void yawRight(float fElapsedTime = 0);
-
-    void resetRotation();
 
     void reset();
     void refresh();

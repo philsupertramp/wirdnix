@@ -9,10 +9,7 @@ const float Camera::ZOOM_SPEED = .00001f;
 
 void Camera::normalizeLookAt()
 {
-    olc::GFX3D::vec3d heading = (_lookat - _pos);
-    heading.normalize();
-
-    _lookat = _pos + heading;
+    _lookat = _pos + (_lookat - _pos).normalize();
 }
 
 Camera::Camera()
@@ -25,167 +22,111 @@ Camera::~Camera()
 
 void Camera::moveForward(float fElapsedTime /* = 0 */)
 {
-    olc::GFX3D::vec3d heading = (_lookat - _pos);
-    heading.normalize();
+    olc::GFX3D::vec3d heading = (_lookat - _pos).normalize();
     heading *= fElapsedTime * MOVEMENT_SPEED;
-
-    _pos += heading;
-    _lookat += heading;
-    SetCamera(_pos, _lookat, _up);
+    SetCamera(_pos += heading,
+              _lookat += heading,
+              _up);
 }
 
 void Camera::moveBackward(float fElapsedTime /* = 0 */)
 {
-    olc::GFX3D::vec3d dir = (_lookat - _pos);
-    dir.normalize();
-    dir *= fElapsedTime * MOVEMENT_SPEED;
-
-    _pos -= dir;
-    _lookat -= dir;
-    SetCamera(_pos, _lookat, _up);
+    olc::GFX3D::vec3d heading = (_lookat - _pos).normalize();
+    heading *= fElapsedTime * MOVEMENT_SPEED;
+    SetCamera(_pos -= heading,
+              _lookat -= heading,
+              _up);
 }
 
 void Camera::moveUp(float fElapsedTime /* = 0 */)
 {
     olc::GFX3D::vec3d headingUp = _up;
-    headingUp.normalize();
     headingUp *= fElapsedTime * MOVEMENT_SPEED;
-
-    _pos -= headingUp;
-    _lookat -= headingUp;
-    SetCamera(_pos, _lookat, _up);
+    SetCamera(_pos -= headingUp,
+              _lookat -= headingUp,
+              _up);
 }
 
 void Camera::moveDown(float fElapsedTime /* = 0 */)
 {
     olc::GFX3D::vec3d headingUp = _up;
-    headingUp.normalize();
     headingUp *= fElapsedTime * MOVEMENT_SPEED;
-
-    _pos += headingUp;
-    _lookat += headingUp;
-    SetCamera(_pos, _lookat, _up);
+    SetCamera(_pos += headingUp,
+              _lookat += headingUp,
+              _up);
 }
 
 
 void Camera::moveLeft(float fElapsedTime /* = 0 */)
 {
-    olc::GFX3D::vec3d cross = (_lookat - _pos) & _up;
-    cross.normalize();
+    olc::GFX3D::vec3d cross = ((_lookat - _pos) & _up).normalize();
     cross *= fElapsedTime * MOVEMENT_SPEED;
-
-    _pos += cross;
-    _lookat += cross;
-    SetCamera(_pos, _lookat, _up);
+    SetCamera(_pos += cross,
+              _lookat += cross,
+              _up);
 }
 
 void Camera::moveRight(float fElapsedTime /* = 0 */)
 {
-    olc::GFX3D::vec3d cross = (_lookat - _pos) & _up;
-    cross.normalize();
+    olc::GFX3D::vec3d cross = ((_lookat - _pos) & _up).normalize();
     cross *= fElapsedTime * MOVEMENT_SPEED;
-
-    _pos -= cross;
-    _lookat -= cross;
-    SetCamera(_pos, _lookat, _up);
+    SetCamera(_pos -= cross,
+              _lookat -= cross,
+              _up);
 }
 
 void Camera::rollLeft(float fElapsedTime /* = 0 */)
 {
-    olc::GFX3D::vec3d heading = _lookat - _pos;
-    heading.normalize();
+    olc::GFX3D::vec3d heading = (_lookat - _pos).normalize();
     olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(heading, -fElapsedTime * ROTATIONAL_SPEED);
-
-    _up = rot * _up;
-    _up.normalize();
-    SetCamera(_pos, _lookat, _up);
+    SetCamera(_pos,
+              _lookat,
+              _up = (rot * _up).normalize() );
 }
 
 void Camera::rollRight(float fElapsedTime /* = 0 */)
 {
-    olc::GFX3D::vec3d heading = _lookat - _pos;
-    heading.normalize();
+    olc::GFX3D::vec3d heading = (_lookat - _pos).normalize();
     olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(heading, fElapsedTime * ROTATIONAL_SPEED);
-
-    _up = rot * _up;
-    _up.normalize();
-    SetCamera(_pos, _lookat, _up);
+    SetCamera(_pos,
+              _lookat,
+              _up = (rot * _up).normalize() );
 }
 
 void Camera::pitchUp(float fElapsedTime)
 {
-    olc::GFX3D::vec3d heading = (_lookat - _pos);
-    heading.normalize();
-
-    olc::GFX3D::vec3d cross = heading & _up;
-    cross.normalize();
-
+    olc::GFX3D::vec3d heading = (_lookat - _pos).normalize();
+    olc::GFX3D::vec3d cross = (heading & _up).normalize();
     olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(cross, -fElapsedTime * ROTATIONAL_SPEED);
-
-    // dont rotate _up, recalculate
-    _up = (cross & heading).normalize();
-
-    _lookat = (rot * heading) + _pos;
-    SetCamera(_pos, _lookat, _up);
+    SetCamera(_pos,
+              _lookat = (rot * heading) + _pos,
+              _up = (cross & heading).normalize() ); // dont rotate _up, recalculate
 }
 
 void Camera::pitchDown(float fElapsedTime)
 {
-    olc::GFX3D::vec3d heading = (_lookat - _pos);
-    heading.normalize();
-
-    olc::GFX3D::vec3d cross = heading & _up;
-    cross.normalize();
-
+    olc::GFX3D::vec3d heading = (_lookat - _pos).normalize();
+    olc::GFX3D::vec3d cross = (heading & _up).normalize();
     olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(cross, fElapsedTime * ROTATIONAL_SPEED);
-
-    // dont rotate _up, recalculate
-    _up = (cross & heading).normalize();
-
-    _lookat = (rot * heading) + _pos;
-    SetCamera(_pos, _lookat, _up);
+    SetCamera(_pos,
+              _lookat = (rot * heading) + _pos,
+              _up = (cross & heading).normalize()); // dont rotate _up, recalculate
 }
 
 void Camera::yawLeft(float fElapsedTime)
 {
-    float angleX = -fElapsedTime * ROTATIONAL_SPEED;
-
-    _up.normalize();
-    olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(_up, angleX);
-
-    olc::GFX3D::vec3d toRotate = (_lookat - _pos);
-
-    std::cout << "toRotateLength " << toRotate.length();
-    toRotate = rot * toRotate;
-
-    std::cout << " rotatedLength  "<< toRotate.length() << " up " << _up << std::endl;
-
-    _lookat = ( rot * (_lookat - _pos) ) + _pos;
-    SetCamera(_pos, _lookat, _up);
+    olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(_up, -fElapsedTime * ROTATIONAL_SPEED);
+    SetCamera(_pos,
+              _lookat = ( rot * (_lookat - _pos) ) + _pos,
+              _up);
 }
 
 void Camera::yawRight(float fElapsedTime)
 {
-    float angleX = fElapsedTime * ROTATIONAL_SPEED;
-
-    olc::GFX3D::vec3d cross = (_lookat - _pos) & _up;
-    cross.normalize();
-
-    olc::GFX3D::vec3d upNormalized = _up;
-    upNormalized.normalize();
-
-    olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(upNormalized, angleX);
-
-    _lookat = ( rot * (_lookat - _pos) ) + _pos;
-    SetCamera(_pos, _lookat, _up);
-}
-
-void Camera::resetRotation()
-{
-
-    //_angleX = 0;
-    //_angleY = 0;
-    //defineCamera();
+    olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(_up, fElapsedTime * ROTATIONAL_SPEED);
+    SetCamera(_pos,
+              _lookat = ( rot * (_lookat - _pos) ) + _pos,
+              _up);
 }
 
 void Camera::reset()
