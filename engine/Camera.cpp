@@ -112,63 +112,37 @@ void Camera::rollRight(float fElapsedTime /* = 0 */)
     SetCamera(_pos, _lookat, _up);
 }
 
-
-//TODO upon starting, constantly pitching up does not go all the way, the crossproduct goes to 0 vector,
-// the dotProd of heading and _up goes to 1 from 0 at the start
 void Camera::pitchUp(float fElapsedTime)
 {
-    std::cout << std::endl << __FUNCTION__ << std::endl;
-    float angleY = -fElapsedTime * ROTATIONAL_SPEED;
-    std::cout << "  angleY = " << angleY * 180/M_PI << std::endl;
-
     olc::GFX3D::vec3d heading = (_lookat - _pos);
     heading.normalize();
 
-    _up.normalize();
     olc::GFX3D::vec3d cross = heading & _up;
-
-    std::cout << "  cross pre normalize " << cross << std::endl;
-    std::cout << "  heading * up = " << heading * _up << std::endl;
-    std::cout << "  angle between heading and up:" << heading.angleTo(_up) * 180 / M_PI << std::endl;
-
     cross.normalize();
-    std::cout << "  cross post normalize" << cross << std::endl;
 
-    std::cout << "  up         " << _up << std::endl;
-    std::cout << "  cross      " << cross << std::endl;
-    std::cout << "  heading    " << heading << std::endl;
+    olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(cross, -fElapsedTime * ROTATIONAL_SPEED);
 
-    olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(cross, angleY);
-    std::cout << "  rot " << std::endl << rot << std::endl;
+    // dont rotate _up, recalculate
+    _up = (cross & heading).normalize();
 
-    olc::GFX3D::vec3d newHeading = rot * heading;
-    newHeading.normalize();
-
-    olc::GFX3D::vec3d newUp = cross & heading;
-    newUp.normalize();
-
-    std::cout << "  newHeading " << newHeading << std::endl;
-    std::cout << "  newUp      " << newUp << std::endl;
-
-    std::cout << "  angle between heading and newHeading:" << heading.angleTo(newHeading) * 180 / M_PI << std::endl;
-    std::cout << "  angle between    up   and   newUp   :" << _up.angleTo(newUp) * 180 / M_PI << std::endl;
-    std::cout << "  angle between newheading and newup  :" << newHeading.angleTo(newUp) * 180 / M_PI << std::endl;
-
-    _up = newUp;
-    _lookat = newHeading + _pos;
+    _lookat = (rot * heading) + _pos;
     SetCamera(_pos, _lookat, _up);
 }
 
 void Camera::pitchDown(float fElapsedTime)
 {
-    float angleY = fElapsedTime * ROTATIONAL_SPEED;
+    olc::GFX3D::vec3d heading = (_lookat - _pos);
+    heading.normalize();
 
-    olc::GFX3D::vec3d cross = (_lookat - _pos) & _up;
+    olc::GFX3D::vec3d cross = heading & _up;
     cross.normalize();
 
-    olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(cross, angleY);
+    olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(cross, fElapsedTime * ROTATIONAL_SPEED);
 
-    _up = rot * _up;
+    // dont rotate _up, recalculate
+    _up = (cross & heading).normalize();
+
+    _lookat = (rot * heading) + _pos;
     SetCamera(_pos, _lookat, _up);
 }
 

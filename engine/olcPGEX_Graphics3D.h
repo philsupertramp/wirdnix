@@ -147,9 +147,9 @@ namespace olc
                 return acosf(cosTheta);
             }
 
-            inline double length() const
+            inline float length() const
             {
-                return sqrt((double)x*(double)x + (double)y*(double)y + (double)z*(double)z);
+                return sqrtf(x*x + y*y + z*z);
             }
 
             inline float operator* (vec3d const& v) const
