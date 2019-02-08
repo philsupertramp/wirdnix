@@ -13,6 +13,8 @@ class Camera
     olc::GFX3D::vec3d _lookat;
     olc::GFX3D::vec3d _up;
 
+    void normalizeLookAt();
+
 public:
     ///*** constructors ***//
     Camera();

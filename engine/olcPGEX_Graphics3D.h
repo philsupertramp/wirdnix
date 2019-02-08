@@ -119,7 +119,7 @@ namespace olc
 
             inline vec3d const& normalize()
             {
-                float l = length();
+                float l = (float)length();
 
                 x /= l;
                 y /= l;
@@ -130,17 +130,26 @@ namespace olc
                 return *this;
             }
 
-            inline void homogenize()
+            inline vec3d const& homogenize()
             {
                 x /= w;
                 y /= w;
                 z /= w;
                 w = 1;
+
+                return *this;
             }
 
-            inline float length() const
+            float angleTo(vec3d const& other) const
             {
-                return sqrtf(x*x + y*y + z*z);
+                float cosTheta = (float)(operator* (other) / (this->length() * other.length()));
+
+                return acosf(cosTheta);
+            }
+
+            inline double length() const
+            {
+                return sqrt((double)x*(double)x + (double)y*(double)y + (double)z*(double)z);
             }
 
             inline float operator* (vec3d const& v) const
@@ -384,11 +393,11 @@ namespace olc
             {
                 mat4x4 res;
 
-                float sinT = sinf(fAngleRad);
-                float cosT = cosf(fAngleRad);
+                float sinT = sin(fAngleRad);
+                float cosT = cos(fAngleRad);
 
                 res.m[0][0] =    cosT + u.x*u.x * (1 - cosT);     res.m[1][0] = u.x*u.y * (1 - cosT) - u.z * sinT;  res.m[2][0] = u.x*u.z * (1 - cosT) + u.y * sinT;
-                res.m[0][1] = u.y*u.x * (1 - cosT) + u.z * sinT;  res.m[1][1] =    cosT + u.y*u.y * (1 - cosT);     res.m[2][1] = u.y*u.z * (1 - cosT) + u.x * sinT;
+                res.m[0][1] = u.y*u.x * (1 - cosT) + u.z * sinT;  res.m[1][1] =    cosT + u.y*u.y * (1 - cosT);     res.m[2][1] = u.y*u.z * (1 - cosT) - u.x * sinT; // fucking helps if i can copy the formula correctly
                 res.m[0][2] = u.z*u.x * (1 - cosT) - u.y * sinT;  res.m[1][2] = u.z*u.y * (1 - cosT) + u.x * sinT;  res.m[2][2] =   cosT + u.z*u.z * (1 - cosT);
                 res.m[3][3] = 1;
                 return res;

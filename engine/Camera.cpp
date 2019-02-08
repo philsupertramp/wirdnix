@@ -7,6 +7,14 @@ const float Camera::MOVEMENT_SPEED = 20;
 const float Camera::ROTATIONAL_SPEED = .9f;
 const float Camera::ZOOM_SPEED = .00001f;
 
+void Camera::normalizeLookAt()
+{
+    olc::GFX3D::vec3d heading = (_lookat - _pos);
+    heading.normalize();
+
+    _lookat = _pos + heading;
+}
+
 Camera::Camera()
 {
 //    reset();
@@ -109,26 +117,45 @@ void Camera::rollRight(float fElapsedTime /* = 0 */)
 // the dotProd of heading and _up goes to 1 from 0 at the start
 void Camera::pitchUp(float fElapsedTime)
 {
-    std::cout << std::endl;
+    std::cout << std::endl << __FUNCTION__ << std::endl;
     float angleY = -fElapsedTime * ROTATIONAL_SPEED;
+    std::cout << "  angleY = " << angleY * 180/M_PI << std::endl;
 
     olc::GFX3D::vec3d heading = (_lookat - _pos);
     heading.normalize();
 
     _up.normalize();
     olc::GFX3D::vec3d cross = heading & _up;
-    std::cout <<  "cross pre normalize "<< cross << "  heading * up = " << heading * _up << std::endl;
-    cross.normalize();
 
-    std::cout << __FUNCTION__ << "  up" << _up << "  x" << cross << "  h" << heading << std::endl;
+    std::cout << "  cross pre normalize " << cross << std::endl;
+    std::cout << "  heading * up = " << heading * _up << std::endl;
+    std::cout << "  angle between heading and up:" << heading.angleTo(_up) * 180 / M_PI << std::endl;
+
+    cross.normalize();
+    std::cout << "  cross post normalize" << cross << std::endl;
+
+    std::cout << "  up         " << _up << std::endl;
+    std::cout << "  cross      " << cross << std::endl;
+    std::cout << "  heading    " << heading << std::endl;
 
     olc::GFX3D::mat4x4 rot = olc::GFX3D::Math::Mat_MakeRotationU(cross, angleY);
-//    std::cout << " rot " << std::endl << rot ;
+    std::cout << "  rot " << std::endl << rot << std::endl;
 
-    _up = rot * _up;
-    _up.normalize();
-    _lookat = ( rot * (_lookat - _pos) ) + _pos;
-    std::cout << "  up" << _up << std::endl;
+    olc::GFX3D::vec3d newHeading = rot * heading;
+    newHeading.normalize();
+
+    olc::GFX3D::vec3d newUp = cross & heading;
+    newUp.normalize();
+
+    std::cout << "  newHeading " << newHeading << std::endl;
+    std::cout << "  newUp      " << newUp << std::endl;
+
+    std::cout << "  angle between heading and newHeading:" << heading.angleTo(newHeading) * 180 / M_PI << std::endl;
+    std::cout << "  angle between    up   and   newUp   :" << _up.angleTo(newUp) * 180 / M_PI << std::endl;
+    std::cout << "  angle between newheading and newup  :" << newHeading.angleTo(newUp) * 180 / M_PI << std::endl;
+
+    _up = newUp;
+    _lookat = newHeading + _pos;
     SetCamera(_pos, _lookat, _up);
 }
 
