@@ -138,24 +138,15 @@ namespace olc
         return matrix;
     }
 
-    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MultiplyMatrix(olc::GFX3D::mat4x4& m1, olc::GFX3D::mat4x4& m2)
-    {
-        olc::GFX3D::mat4x4 matrix;
-        for (int c = 0; c < 4; c++)
-            for (int r = 0; r < 4; r++)
-                matrix.m[r][c] = m1.m[r][0] * m2.m[0][c] + m1.m[r][1] * m2.m[1][c] + m1.m[r][2] * m2.m[2][c] + m1.m[r][3] * m2.m[3][c];
-        return matrix;
-    }
-
-    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_PointAt(olc::GFX3D::vec3d& pos, olc::GFX3D::vec3d& target, olc::GFX3D::vec3d& up)
+    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_PointAt(olc::GFX3D::vec3d const& pos, olc::GFX3D::vec3d const& target, olc::GFX3D::vec3d const& up)
     {
         // Calculate new forward direction
-        olc::GFX3D::vec3d newForward = Vec_Sub(target, pos);
+        olc::GFX3D::vec3d newForward = target - pos;
         newForward = Vec_Normalise(newForward);
 
         // Calculate new Up direction
-        olc::GFX3D::vec3d a = Vec_Mul(newForward, Vec_DotProduct(up, newForward));
-        olc::GFX3D::vec3d newUp = Vec_Sub(up, a);
+        olc::GFX3D::vec3d a = newForward * (up * newForward);
+        olc::GFX3D::vec3d newUp = up - a;
         newUp = Vec_Normalise(newUp);
 
         // New Right direction is easy, its just cross product
@@ -269,19 +260,19 @@ namespace olc
         return v;
     }
 
-    olc::GFX3D::vec3d olc::GFX3D::Math::Vec_IntersectPlane(olc::GFX3D::vec3d& plane_p, olc::GFX3D::vec3d& plane_n, olc::GFX3D::vec3d& lineStart, olc::GFX3D::vec3d& lineEnd, float& t)
+    olc::GFX3D::vec3d olc::GFX3D::Math::Vec_IntersectPlane(olc::GFX3D::vec3d const& plane_p, olc::GFX3D::vec3d& plane_n, olc::GFX3D::vec3d const& lineStart, olc::GFX3D::vec3d const& lineEnd, float& t)
     {
         plane_n = Vec_Normalise(plane_n);
-        float plane_d = -Vec_DotProduct(plane_n, plane_p);
-        float ad = Vec_DotProduct(lineStart, plane_n);
-        float bd = Vec_DotProduct(lineEnd, plane_n);
+        float plane_d = plane_n * plane_p *-1;
+        float ad = lineStart * plane_n;
+        float bd = lineEnd * plane_n;
         t = (-plane_d - ad) / (bd - ad);
-        olc::GFX3D::vec3d lineStartToEnd = Vec_Sub(lineEnd, lineStart);
-        olc::GFX3D::vec3d lineToIntersect = Vec_Mul(lineStartToEnd, t);
-        return Vec_Add(lineStart, lineToIntersect);
+        olc::GFX3D::vec3d lineStartToEnd = lineEnd - lineStart;
+        olc::GFX3D::vec3d lineToIntersect = lineStartToEnd * t;
+        return lineStart + lineToIntersect;
     }
 
-    int olc::GFX3D::Math::Triangle_ClipAgainstPlane(vec3d plane_p, vec3d plane_n, triangle& in_tri, triangle& out_tri1, triangle& out_tri2)
+    int olc::GFX3D::Math::Triangle_ClipAgainstPlane(vec3d plane_p, vec3d plane_n, triangle const& in_tri, triangle& out_tri1, triangle& out_tri2)
     {
         // Make sure plane normal is indeed normal
         plane_n = Math::Vec_Normalise(plane_n);
@@ -294,18 +285,18 @@ namespace olc
         out_tri2.t[2] = in_tri.t[2];
 
         // Return signed shortest distance from point to plane, plane normal must be normalised
-        auto dist = [&](vec3d& p)
+        auto dist = [&](vec3d const& p)
         {
-            vec3d n = Math::Vec_Normalise(p);
+//            vec3d n = Math::Vec_Normalise(p);
             return (plane_n.x * p.x + plane_n.y * p.y + plane_n.z * p.z - Math::Vec_DotProduct(plane_n, plane_p));
         };
 
         // Create two temporary storage arrays to classify points either side of plane
         // If distance sign is positive, point lies on "inside" of plane
-        vec3d* inside_points[3];  int nInsidePointCount = 0;
-        vec3d* outside_points[3]; int nOutsidePointCount = 0;
-        vec2d* inside_tex[3];     int nInsideTexCount = 0;
-        vec2d* outside_tex[3];    int nOutsideTexCount = 0;
+        vec3d const* inside_points[3];  int nInsidePointCount = 0;
+        vec3d const* outside_points[3]; int nOutsidePointCount = 0;
+        vec2d const* inside_tex[3];     int nInsideTexCount = 0;
+        vec2d const* outside_tex[3];    int nOutsideTexCount = 0;
 
 
         // Get signed distance of each point in triangle to plane
@@ -842,7 +833,7 @@ namespace olc
         fViewH = fHeight;
     }
 
-    void GFX3D::PipeLine::SetCamera(olc::GFX3D::vec3d& pos, olc::GFX3D::vec3d& lookat, olc::GFX3D::vec3d& up)
+    void GFX3D::PipeLine::SetCamera(olc::GFX3D::vec3d const& pos, olc::GFX3D::vec3d const& lookat, olc::GFX3D::vec3d const& up)
     {
         matView = GFX3D::Math::Mat_PointAt(pos, lookat, up);
         matView = GFX3D::Math::Mat_QuickInverse(matView);
@@ -861,7 +852,7 @@ namespace olc
     void GFX3D::PipeLine::SetLightSource(olc::GFX3D::vec3d& pos, olc::GFX3D::vec3d& dir, olc::Pixel& col)
     { }
 
-    uint32_t GFX3D::PipeLine::Render(std::vector<olc::GFX3D::triangle>& triangles, uint32_t flags)
+    uint32_t GFX3D::PipeLine::Render(std::vector<olc::GFX3D::triangle> const& triangles, uint32_t flags)
     {
         // Calculate Transformation Matrix
         mat4x4 matWorldView = Math::Mat_MultiplyMatrix(matWorld, matView);
@@ -883,24 +874,24 @@ namespace olc
             triTransformed.t[2] = { tri.t[2].x, tri.t[2].y, tri.t[2].z }; // Think!
 
             // Transform Triangle from object into projected space
-            triTransformed.p[0] = GFX3D::Math::Mat_MultiplyVector(matWorldView, tri.p[0]);
-            triTransformed.p[1] = GFX3D::Math::Mat_MultiplyVector(matWorldView, tri.p[1]);
-            triTransformed.p[2] = GFX3D::Math::Mat_MultiplyVector(matWorldView, tri.p[2]);
+            triTransformed.p[0] = matWorldView * tri.p[0];
+            triTransformed.p[1] = matWorldView * tri.p[1];
+            triTransformed.p[2] = matWorldView * tri.p[2];
 
             // Calculate Triangle Normal in WorldView Space
             GFX3D::vec3d normal, line1, line2;
-            line1 = GFX3D::Math::Vec_Sub(triTransformed.p[1], triTransformed.p[0]);
-            line2 = GFX3D::Math::Vec_Sub(triTransformed.p[2], triTransformed.p[0]);
-            normal = GFX3D::Math::Vec_CrossProduct(line1, line2);
-            normal = GFX3D::Math::Vec_Normalise(normal);
+            line1 = triTransformed.p[1] - triTransformed.p[0];
+            line2 = triTransformed.p[2] - triTransformed.p[0];
+            normal = line1 & line2;
+            normal.normalize();
 
             // Cull triangles that face away from viewer
-            if (flags & RENDER_CULL_CW  && GFX3D::Math::Vec_DotProduct(normal, triTransformed.p[0]) > 0.0f)
+            if (flags & RENDER_CULL_CW  && normal * triTransformed.p[0] > 0.0f)
             {
                 continue;
             }
 
-            if (flags & RENDER_CULL_CCW && GFX3D::Math::Vec_DotProduct(normal, triTransformed.p[0]) < 0.0f)
+            if (flags & RENDER_CULL_CCW && normal * triTransformed.p[0] < 0.0f)
             {
                 continue;
             }
@@ -926,35 +917,28 @@ namespace olc
                 triangle triProjected = clipped[n];
 
                 // Project new triangle
-                triProjected.p[0] = GFX3D::Math::Mat_MultiplyVector(matProj, clipped[n].p[0]);
-                triProjected.p[1] = GFX3D::Math::Mat_MultiplyVector(matProj, clipped[n].p[1]);
-                triProjected.p[2] = GFX3D::Math::Mat_MultiplyVector(matProj, clipped[n].p[2]);
+                triProjected.p[0] = matProj * clipped[n].p[0];
+                triProjected.p[1] = matProj * clipped[n].p[1];
+                triProjected.p[2] = matProj * clipped[n].p[2];
 
-                // Apply Projection to Verts
-                triProjected.p[0].x = triProjected.p[0].x / triProjected.p[0].w;
-                triProjected.p[1].x = triProjected.p[1].x / triProjected.p[1].w;
-                triProjected.p[2].x = triProjected.p[2].x / triProjected.p[2].w;
-
-                triProjected.p[0].y = triProjected.p[0].y / triProjected.p[0].w;
-                triProjected.p[1].y = triProjected.p[1].y / triProjected.p[1].w;
-                triProjected.p[2].y = triProjected.p[2].y / triProjected.p[2].w;
-
-                triProjected.p[0].z = triProjected.p[0].z / triProjected.p[0].w;
-                triProjected.p[1].z = triProjected.p[1].z / triProjected.p[1].w;
-                triProjected.p[2].z = triProjected.p[2].z / triProjected.p[2].w;
 
                 // Apply Projection to Tex coords
-                triProjected.t[0].x = triProjected.t[0].x / triProjected.p[0].w;
-                triProjected.t[1].x = triProjected.t[1].x / triProjected.p[1].w;
-                triProjected.t[2].x = triProjected.t[2].x / triProjected.p[2].w;
+                triProjected.t[0].x /= triProjected.p[0].w;
+                triProjected.t[1].x /= triProjected.p[1].w;
+                triProjected.t[2].x /= triProjected.p[2].w;
 
-                triProjected.t[0].y = triProjected.t[0].y / triProjected.p[0].w;
-                triProjected.t[1].y = triProjected.t[1].y / triProjected.p[1].w;
-                triProjected.t[2].y = triProjected.t[2].y / triProjected.p[2].w;
+                triProjected.t[0].y /= triProjected.p[0].w;
+                triProjected.t[1].y /= triProjected.p[1].w;
+                triProjected.t[2].y /= triProjected.p[2].w;
 
                 triProjected.t[0].z = 1.0f / triProjected.p[0].w;
                 triProjected.t[1].z = 1.0f / triProjected.p[1].w;
                 triProjected.t[2].z = 1.0f / triProjected.p[2].w;
+
+                // Apply Projection to Verts
+                triProjected.p[0].homogenize();
+                triProjected.p[1].homogenize();
+                triProjected.p[2].homogenize();
 
                 // Clip against viewport in screen space
                 // Clip triangles against all four screen edges, this could yield
@@ -967,22 +951,21 @@ namespace olc
                 listTriangles.push_back(triProjected);
                 int nNewTriangles = 1;
 
-                for (int p = 0; p < 4; p++)
+                for (int plane = 0; plane < 4; plane++)
                 {
                     int nTrisToAdd = 0;
                     while (nNewTriangles > 0)
                     {
                         // Take triangle from front of queue
-                        triangle test = listTriangles.front();
-                        listTriangles.pop_front();
-                        nNewTriangles--;
+                        triangle const& test = listTriangles.front();
 
                         // Clip it against a plane. We only need to test each
                         // subsequent plane, against subsequent new triangles
                         // as all triangles after a plane clip are guaranteed
+
                         // to lie on the inside of the plane. I like how this
                         // comment is almost completely and utterly justified
-                        switch (p)
+                        switch (plane)
                         {
                         case 0: nTrisToAdd = GFX3D::Math::Triangle_ClipAgainstPlane({  0.0f, -1.0f, 0.0f }, {  0.0f,  1.0f, 0.0f }, test, sclipped[0], sclipped[1]); break;
                         case 1: nTrisToAdd = GFX3D::Math::Triangle_ClipAgainstPlane({  0.0f, +1.0f, 0.0f }, {  0.0f, -1.0f, 0.0f }, test, sclipped[0], sclipped[1]); break;
@@ -998,6 +981,10 @@ namespace olc
                         {
                             listTriangles.push_back(sclipped[w]);
                         }
+
+                        // Take triangle from front of queue
+                        listTriangles.pop_front();
+                        nNewTriangles--;
                     }
                     nNewTriangles = (int)listTriangles.size();
                 }
@@ -1011,10 +998,10 @@ namespace olc
                     triRaster.p[0].y *= -1.0f;
                     triRaster.p[1].y *= -1.0f;
                     triRaster.p[2].y *= -1.0f;*/
-                    vec3d vOffsetView = { 1,1,0 };
-                    triRaster.p[0] = Math::Vec_Add(triRaster.p[0], vOffsetView);
-                    triRaster.p[1] = Math::Vec_Add(triRaster.p[1], vOffsetView);
-                    triRaster.p[2] = Math::Vec_Add(triRaster.p[2], vOffsetView);
+                    vec3d vOffsetView( 1, 1, 0 );
+                    triRaster.p[0] += vOffsetView;
+                    triRaster.p[1] += vOffsetView;
+                    triRaster.p[2] += vOffsetView;
                     triRaster.p[0].x *= 0.5f * fViewW;
                     triRaster.p[0].y *= 0.5f * fViewH;
                     triRaster.p[1].x *= 0.5f * fViewW;
@@ -1022,9 +1009,9 @@ namespace olc
                     triRaster.p[2].x *= 0.5f * fViewW;
                     triRaster.p[2].y *= 0.5f * fViewH;
                     vOffsetView = { fViewX,fViewY,0 };
-                    triRaster.p[0] = Math::Vec_Add(triRaster.p[0], vOffsetView);
-                    triRaster.p[1] = Math::Vec_Add(triRaster.p[1], vOffsetView);
-                    triRaster.p[2] = Math::Vec_Add(triRaster.p[2], vOffsetView);
+                    triRaster.p[0] += vOffsetView;
+                    triRaster.p[1] += vOffsetView;
+                    triRaster.p[2] += vOffsetView;
 
                     // For now, just draw triangle
 

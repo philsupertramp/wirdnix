@@ -177,11 +177,7 @@ void Message::toggleUppercase()
 
 // shell is a singleton
 Shell::Shell()
-{
-    addMessage("testa");
-    addMessage("test btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest btest b");
-    addMessage("test g");
-}
+{ }
 
 void Shell::draw(float fElapsedTime)
 {

@@ -82,10 +82,8 @@ public:
     void addMessage(std::string const& message);
     void addUserMessage(std::string const& message);
     void addMessage(Message const& message);
-    void setHeight(uint32_t const& height);
     void sendUserMessage();
     Message& getInputMessage();
-    uint32_t getHeight();
     bool isWaiting();
     void setInput(std::string const& input);
     std::string getInput();
