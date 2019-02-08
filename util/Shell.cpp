@@ -1,9 +1,6 @@
 #define __STDC_WANT_LIB_EXT1__ 1
 #include "Shell.h"
 #include "Engine.h"
-#define __STDC_WANT_LIB_EXT1__ 1
-#include "Shell.h"
-#include "Engine.h"
 #include <time.h>
 
 const olc::Pixel Message::BACKGROUND_COLOR = olc::Pixel(0, 0, 0, 100);
@@ -38,11 +35,6 @@ Message::Message(std::string const & message, olc::Pixel color, uint32_t scale)
     buf.tm_sec += 20;
     _createdAt = mktime(&buf);
 #endif
-    time_t t = time(NULL);
-    struct tm buf;
-    localtime_s(&buf, &t);
-    buf.tm_sec += 20;
-    _createdAt = mktime(&buf);
 }
 
 void Message::setColor(olc::Pixel const & newColor)
