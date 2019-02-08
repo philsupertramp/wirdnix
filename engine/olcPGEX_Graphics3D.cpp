@@ -138,24 +138,15 @@ namespace olc
         return matrix;
     }
 
-    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_MultiplyMatrix(olc::GFX3D::mat4x4& m1, olc::GFX3D::mat4x4& m2)
-    {
-        olc::GFX3D::mat4x4 matrix;
-        for (int c = 0; c < 4; c++)
-            for (int r = 0; r < 4; r++)
-                matrix.m[r][c] = m1.m[r][0] * m2.m[0][c] + m1.m[r][1] * m2.m[1][c] + m1.m[r][2] * m2.m[2][c] + m1.m[r][3] * m2.m[3][c];
-        return matrix;
-    }
-
-    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_PointAt(olc::GFX3D::vec3d& pos, olc::GFX3D::vec3d& target, olc::GFX3D::vec3d& up)
+    olc::GFX3D::mat4x4 olc::GFX3D::Math::Mat_PointAt(olc::GFX3D::vec3d const& pos, olc::GFX3D::vec3d const& target, olc::GFX3D::vec3d const& up)
     {
         // Calculate new forward direction
-        olc::GFX3D::vec3d newForward = Vec_Sub(target, pos);
+        olc::GFX3D::vec3d newForward = target - pos;
         newForward = Vec_Normalise(newForward);
 
         // Calculate new Up direction
-        olc::GFX3D::vec3d a = Vec_Mul(newForward, Vec_DotProduct(up, newForward));
-        olc::GFX3D::vec3d newUp = Vec_Sub(up, a);
+        olc::GFX3D::vec3d a = newForward * (up * newForward);
+        olc::GFX3D::vec3d newUp = up - a;
         newUp = Vec_Normalise(newUp);
 
         // New Right direction is easy, its just cross product
@@ -842,7 +833,7 @@ namespace olc
         fViewH = fHeight;
     }
 
-    void GFX3D::PipeLine::SetCamera(olc::GFX3D::vec3d& pos, olc::GFX3D::vec3d& lookat, olc::GFX3D::vec3d& up)
+    void GFX3D::PipeLine::SetCamera(olc::GFX3D::vec3d const& pos, olc::GFX3D::vec3d const& lookat, olc::GFX3D::vec3d const& up)
     {
         matView = GFX3D::Math::Mat_PointAt(pos, lookat, up);
         matView = GFX3D::Math::Mat_QuickInverse(matView);

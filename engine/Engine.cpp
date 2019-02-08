@@ -161,8 +161,10 @@ bool Engine::OnUserUpdate(float fElapsedTime)
     drawTestImage();
     Shell::instance().draw(fElapsedTime);
 
-    camera.iterate(fElapsedTime);
+//    camera.iterate(fElapsedTime);
     camera.refresh();
+
+    std::cout << camera._up << std::endl;
 
     return true;
 }
@@ -207,12 +209,37 @@ void Engine::handleUserInput(float fElapsedTime /* = 0 */)
 
         if ((GetKey(olc::Q).bHeld || GetKey(olc::CTRL).bHeld))
         {
-            camera.rotateLeft(fElapsedTime);
+            camera.rollLeft(fElapsedTime);
         }
 
         if ((GetKey(olc::E).bHeld || GetKey(olc::NP0).bHeld))
         {
-            camera.rotateRight(fElapsedTime);
+            camera.rollRight(fElapsedTime);
+        }
+
+        if ( GetKey(olc::NP4).bHeld )
+        {
+            camera.yawLeft(fElapsedTime);
+        }
+
+        if ( GetKey(olc::NP6).bHeld )
+        {
+            camera.yawRight(fElapsedTime);
+        }
+
+        if ( GetKey(olc::NP8).bHeld )
+        {
+            camera.pitchUp(fElapsedTime);
+        }
+
+        if ( GetKey(olc::NP2).bHeld )
+        {
+            camera.pitchDown(fElapsedTime);
+        }
+
+        if ( GetKey(olc::NP5).bHeld )
+        {
+            camera.resetRotation();
         }
 
         if ((GetKey(olc::R).bHeld || GetKey(olc::NP_ADD).bHeld))
@@ -235,8 +262,6 @@ void Engine::handleUserInput(float fElapsedTime /* = 0 */)
             Shell::instance().toggleWaiting();
         }
     }
-
-
 }
 
 olc::rcode Engine::Construct(uint32_t screen_w, uint32_t screen_h, uint32_t pixel_w, uint32_t pixel_h)

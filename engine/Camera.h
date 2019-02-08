@@ -13,6 +13,14 @@ class Camera
     olc::GFX3D::vec3d _lookat;
     olc::GFX3D::vec3d _up;
 
+    float _angleX = 0;
+    float _angleY = 0;
+
+    olc::GFX3D::vec3d _lookCache;
+    olc::GFX3D::vec3d const& rotateLookAt();
+
+    void defineCamera();
+
 public:
     ///*** constructors ***//
     Camera();
@@ -34,8 +42,15 @@ public:
     void moveUp(float fElapsedTime = 0);
     void moveDown(float fElapsedTime = 0);
 
-    void rotateLeft(float fElapsedTime = 0);
-    void rotateRight(float fElapsedTime = 0);
+    ///*** rotation ***// like a plane
+    void rollLeft(float fElapsedTime = 0);
+    void rollRight(float fElapsedTime = 0);
+    void pitchUp(float fElapsedTime = 0);
+    void pitchDown(float fElapsedTime = 0);
+    void yawLeft(float fElapsedTime = 0);
+    void yawRight(float fElapsedTime = 0);
+
+    void resetRotation();
 
     void reset();
     void refresh();
