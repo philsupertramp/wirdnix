@@ -164,7 +164,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 //    camera.iterate(fElapsedTime);
     camera.refresh();
 
-    std::cout << camera._up << std::endl;
+//    std::cout << camera._up << std::endl;
 
     return true;
 }
@@ -189,7 +189,7 @@ void Engine::handleUserInput(float fElapsedTime /* = 0 */)
     {
         if ((GetKey(olc::W).bHeld || GetKey(olc::UP).bHeld))
         {
-            camera.moveUp(fElapsedTime);
+            camera.moveForward(fElapsedTime);
         }
 
         if ((GetKey(olc::A).bHeld || GetKey(olc::LEFT).bHeld))
@@ -199,7 +199,7 @@ void Engine::handleUserInput(float fElapsedTime /* = 0 */)
 
         if ((GetKey(olc::S).bHeld || GetKey(olc::DOWN).bHeld))
         {
-            camera.moveDown(fElapsedTime);
+            camera.moveBackward(fElapsedTime);
         }
 
         if ((GetKey(olc::D).bHeld || GetKey(olc::RIGHT).bHeld))
@@ -244,12 +244,12 @@ void Engine::handleUserInput(float fElapsedTime /* = 0 */)
 
         if ((GetKey(olc::R).bHeld || GetKey(olc::NP_ADD).bHeld))
         {
-            camera.moveForward(fElapsedTime);
+            camera.moveUp(fElapsedTime);
         }
 
         if ((GetKey(olc::F).bHeld || GetKey(olc::NP_SUB).bHeld))
         {
-            camera.moveBackward(fElapsedTime);
+            camera.moveDown(fElapsedTime);
         }
 
         if ((GetKey(olc::SPACE).bPressed))

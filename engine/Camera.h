@@ -13,14 +13,6 @@ class Camera
     olc::GFX3D::vec3d _lookat;
     olc::GFX3D::vec3d _up;
 
-    float _angleX = 0;
-    float _angleY = 0;
-
-    olc::GFX3D::vec3d _lookCache;
-    olc::GFX3D::vec3d const& rotateLookAt();
-
-    void defineCamera();
-
 public:
     ///*** constructors ***//
     Camera();

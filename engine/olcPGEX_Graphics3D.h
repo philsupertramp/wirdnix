@@ -69,6 +69,7 @@
 
 #include <cstring> // for the linux - inclined
 #include <iostream> // for output <<-operator
+#include <iomanip>
 
 #include <algorithm>
 #include <vector>
@@ -116,16 +117,17 @@ namespace olc
                 , w(w_)
             { }
 
-            inline void normalize()
+            inline vec3d const& normalize()
             {
-                float l = x*x + y*y + z*z;
-                l = sqrt(l);
+                float l = length();
 
                 x /= l;
                 y /= l;
                 z /= l;
 
                 w = 1;
+
+                return *this;
             }
 
             inline void homogenize()
@@ -134,6 +136,11 @@ namespace olc
                 y /= w;
                 z /= w;
                 w = 1;
+            }
+
+            inline float length() const
+            {
+                return sqrtf(x*x + y*y + z*z);
             }
 
             inline float operator* (vec3d const& v) const
@@ -215,7 +222,14 @@ namespace olc
 
             friend std::ostream& operator<< (std::ostream& ostr, vec3d const& v)
             {
-                return ostr << "(" << v.x << ", " << v.y << ", " << v.z << ": " << v.w << ")";
+                std::streamsize width = ostr.precision();
+                auto a = ostr.flags();
+                ostr.setf(ostr.showpos);
+                ostr << std::setprecision(4) << std::fixed;
+                ostr << "(" << std::setprecision(4) << v.x << ", " << v.y << ", " << v.z << ": " << v.w << " l:" << v.length() << ")";
+                ostr << std::setprecision(width);
+                ostr.flags(a);
+                return ostr;
             }
         };
 
@@ -253,6 +267,40 @@ namespace olc
                     }
                 }
                 return res;
+            }
+
+            void transpose()
+            {
+                for (int c = 0; c < 4; ++c)
+                {
+                    for (int r = c; r < 4; ++r)
+                    {
+                        std::swap(m[c][r], m[r][c]);
+                    }
+                }
+            }
+
+            friend std::ostream& operator<< (std::ostream& ostr, mat4x4 const& mat)
+            {
+                std::streamsize width = ostr.precision();
+                auto a = ostr.flags();
+                ostr.setf(ostr.showpos);
+                ostr << std::setprecision(4) << std::fixed;
+                ostr << "[" << std::setprecision(4);
+
+                for (int c = 0; c < 4; ++c)
+                {
+                    ostr << (c == 0 ? "" : " ") << "[";
+                    for (int r = 0; r < 4; ++r)
+                    {
+                        ostr << mat.m[r][c] << " ";
+                    }
+                    ostr << "]" << (c == 3 ? "" : "\n");
+                }
+
+                ostr << "]" << std::setprecision(width);
+                ostr.flags(a);
+                return ostr;
             }
         };
 
@@ -336,14 +384,13 @@ namespace olc
             {
                 mat4x4 res;
 
-                float sinTheta = sinf(fAngleRad);
-                float cosTheta = cosf(fAngleRad);
+                float sinT = sinf(fAngleRad);
+                float cosT = cosf(fAngleRad);
 
-                res.m[0][0] =    cosTheta + u.x*u.x * (1 - cosTheta);     res.m[1][0] = u.x*u.y * (1 - cosTheta) - u.z * sinTheta;  res.m[2][0] = u.x*u.z * (1 - cosTheta) + u.y * sinTheta;
-                res.m[0][1] = u.y*u.x * (1 - cosTheta) + u.z * sinTheta;  res.m[1][1] =    cosTheta + u.y*u.y * (1 - cosTheta);     res.m[2][1] = u.y*u.z * (1 - cosTheta) + u.x * sinTheta;
-                res.m[0][2] = u.z*u.x * (1 - cosTheta) - u.y * sinTheta;  res.m[1][2] = u.z*u.y * (1 - cosTheta) + u.x * sinTheta;  res.m[2][2] =   cosTheta + u.z*u.z * (1 - cosTheta);
+                res.m[0][0] =    cosT + u.x*u.x * (1 - cosT);     res.m[1][0] = u.x*u.y * (1 - cosT) - u.z * sinT;  res.m[2][0] = u.x*u.z * (1 - cosT) + u.y * sinT;
+                res.m[0][1] = u.y*u.x * (1 - cosT) + u.z * sinT;  res.m[1][1] =    cosT + u.y*u.y * (1 - cosT);     res.m[2][1] = u.y*u.z * (1 - cosT) + u.x * sinT;
+                res.m[0][2] = u.z*u.x * (1 - cosT) - u.y * sinT;  res.m[1][2] = u.z*u.y * (1 - cosT) + u.x * sinT;  res.m[2][2] =   cosT + u.z*u.z * (1 - cosT);
                 res.m[3][3] = 1;
-
                 return res;
             }
 
