@@ -2,6 +2,7 @@
 #include "Message.h"
 #include "Engine.h"
 #include <time.h>
+#include "olcPixelGameEngine.h"
 
 const olc::Pixel Message::BACKGROUND_COLOR = olc::Pixel(0, 0, 0, 100);
 const float Message::MAX_AGE = 10;

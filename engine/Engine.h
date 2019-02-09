@@ -8,7 +8,7 @@
 #include "../renderable/Mesh.h"
 
 //class Message;
-//#include "Message.h"
+#include "Message.h"
 
 class Engine
     : private olc::PixelGameEngine
@@ -34,7 +34,7 @@ private:
 
     // debug info:
     bool _showDebug = false;
-//    Message _debugInfo;
+    Message _debugInfo;
 
 public:
     // engine is a singleton

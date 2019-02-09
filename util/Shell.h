@@ -4,9 +4,7 @@
 #include "olcPixelGameEngine.h"
 #include <string>
 #include <list>
-#include <algorithm>
 #include "Message.h"
-#include "Engine.h"
 
 class Shell
 {
