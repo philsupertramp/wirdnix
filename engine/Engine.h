@@ -6,7 +6,9 @@
 //#include "olcPGEX_Graphics3D.h"
 #include "TextureLibrary.h"
 #include "../renderable/Mesh.h"
-#include "Shell.h"
+
+//class Message;
+//#include "Message.h"
 
 class Engine
     : private olc::PixelGameEngine
@@ -29,6 +31,10 @@ private:
     static int32_t _nScreenHeight;
 
     Mesh obj;
+
+    // debug info:
+    bool _showDebug = false;
+//    Message _debugInfo;
 
 public:
     // engine is a singleton

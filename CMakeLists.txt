@@ -14,6 +14,10 @@ add_executable(wirdnix
 	main.cpp 
 	util/Logger.h
 	util/Logger.cpp
+	util/Shell.h
+	util/Shell.cpp
+	util/Message.h
+	util/Message.cpp
 	engine/olcPixelGameEngine.h 
 	engine/olcPGEX_Graphics3D.h
 	engine/olcPGEX_Graphics3D.cpp
@@ -34,8 +38,6 @@ add_executable(wirdnix
 	renderable/Quadrilateral.cpp
 	renderable/Mesh.h
 	renderable/Mesh.cpp
-	util/Shell.cpp
-	util/Shell.h
 )
 
 include_directories(util)

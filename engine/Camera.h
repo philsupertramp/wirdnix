@@ -23,6 +23,10 @@ public:
     // allow render to be called
     using olc::GFX3D::PipeLine::Render;
 
+    olc::GFX3D::vec3d const& getPos();
+    olc::GFX3D::vec3d const& getUp();
+    olc::GFX3D::vec3d getHeading();
+
     ///*** constants ***//
     const static float MOVEMENT_SPEED;
     const static float ROTATIONAL_SPEED;

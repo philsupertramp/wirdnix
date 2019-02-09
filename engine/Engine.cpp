@@ -7,11 +7,15 @@
 #include "olcPGEX_Graphics3D.h"
 #include <vector>
 #include "Shell.h"
+#include "Message.h"
+#include <sstream>
+#include <string>
 
 int32_t Engine::_nScreenWidth = 100;
 int32_t Engine::_nScreenHeight = 100;
 
 Engine::Engine()
+//    : _debugInfo("")
 {
     sAppName = "widnix"; // hehe
 
@@ -164,6 +168,18 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
 //    camera.iterate(fElapsedTime);
     camera.refresh();
+
+    if (_showDebug)
+    {
+        std::stringstream sstr;
+
+        sstr << camera.getPos();
+
+        std::string str = sstr.str();
+        //_debugInfo = Message(str); // prob costly, idk
+        //_debugInfo.draw(Message::PADDING, Message::PADDING);
+    }
+
 
 //    std::cout << camera._up << std::endl;
 

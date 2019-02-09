@@ -20,6 +20,21 @@ Camera::Camera()
 Camera::~Camera()
 { }
 
+olc::GFX3D::vec3d const& Camera::getPos()
+{
+    return _pos;
+}
+
+olc::GFX3D::vec3d const& Camera::getUp()
+{
+    return _up;
+}
+
+olc::GFX3D::vec3d Camera::getHeading()
+{
+    return std::move((_lookat - _pos).normalize());
+}
+
 void Camera::moveForward(float fElapsedTime /* = 0 */)
 {
     olc::GFX3D::vec3d heading = (_lookat - _pos).normalize();
