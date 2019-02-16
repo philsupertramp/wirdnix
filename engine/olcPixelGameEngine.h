@@ -368,7 +368,7 @@ namespace olc // All OneLoneCoder stuff will now exist in the "olc" namespace
         Pixel const& GetPixel(uint32_t x, uint32_t y);
         void  SetPixel(uint32_t x, uint32_t y, Pixel const& p);
 
-        Pixel const& Sample(float x, float y);
+        Pixel const& Sample(float const& x, float const& y);
         Pixel SampleBL(float u, float v);
 
         Pixel* GetData();
@@ -933,7 +933,7 @@ namespace olc
         }
 	}
 
-    Pixel const& Sprite::Sample(float x, float y)
+    Pixel const& Sprite::Sample(float const& x, float const& y)
     {
         uint32_t sx = std::min((uint32_t)((x * (float)width )), width -1);
         uint32_t sy = std::min((uint32_t)((y * (float)height)), height -1);

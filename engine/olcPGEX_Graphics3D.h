@@ -69,6 +69,7 @@
 
 #include <cstring> // for the linux - inclined
 #include <iostream> // for output <<-operator
+#include <iomanip>
 
 #include <algorithm>
 #include <vector>
@@ -104,6 +105,11 @@ namespace olc
 
         struct vec3d
         {
+            float x = 0;
+            float y = 0;
+            float z = 0;
+            float w = 1; // Need a 4th term to perform sensible matrix vector multiplication
+
             vec3d(float x_ = 0, float y_ = 0, float z_ = 0, float w_ = 1)
                 : x(x_)
                 , y(y_)
@@ -111,30 +117,53 @@ namespace olc
                 , w(w_)
             { }
 
-            float x = 0;
-            float y = 0;
-            float z = 0;
-            float w = 1; // Need a 4th term to perform sensible matrix vector multiplication
-
-            void normalize()
+            inline vec3d const& normalize()
             {
-                float l = x*x + y*y + z*z;
-                l = sqrt(l);
+                float l = (float)length();
 
                 x /= l;
                 y /= l;
                 z /= l;
 
                 w = 1;
+
+                return *this;
             }
 
-            vec3d operator* (float s) const
+            inline vec3d const& homogenize()
+            {
+                x /= w;
+                y /= w;
+                z /= w;
+                w = 1;
+
+                return *this;
+            }
+
+            float angleTo(vec3d const& other) const
+            {
+                float cosTheta = (float)(operator* (other) / (this->length() * other.length()));
+
+                return acosf(cosTheta);
+            }
+
+            inline float length() const
+            {
+                return sqrtf(x*x + y*y + z*z);
+            }
+
+            inline float operator* (vec3d const& v) const
+            {
+                return x * v.x + y * v.y + z * v.z;
+            }
+
+            inline vec3d operator* (float s) const
             {
                 vec3d res = *this;
                 return res *= s;
             }
 
-            vec3d& operator*= (float s)
+            inline vec3d const& operator*= (float s)
             {
                 x *= s;
                 y *= s;
@@ -143,13 +172,28 @@ namespace olc
                 return *this;
             }
 
-            vec3d operator+ (vec3d const& v) const
+            inline vec3d operator/ (float s) const
+            {
+                vec3d res = *this;
+                return res /= s;
+            }
+
+            inline vec3d const& operator/= (float s)
+            {
+                x /= s;
+                y /= s;
+                z /= s;
+
+                return *this;
+            }
+
+            inline vec3d operator+ (vec3d const& v) const
             {
                 vec3d res = *this;
                 return res += v;
             }
 
-            vec3d& operator+= (vec3d const& v)
+            inline vec3d const& operator+= (vec3d const& v)
             {
                 x += v.x;
                 y += v.y;
@@ -158,13 +202,13 @@ namespace olc
                 return *this;
             }
 
-            vec3d operator- (vec3d const& v) const
+            inline vec3d operator- (vec3d const& v) const
             {
                 vec3d res = *this;
                 return res -= v;
             }
 
-            vec3d& operator-= (vec3d const& v)
+            inline vec3d const& operator-= (vec3d const& v)
             {
                 x -= v.x;
                 y -= v.y;
@@ -174,7 +218,7 @@ namespace olc
             }
 
             // cross product time!
-            vec3d operator& (vec3d const& v) const
+            inline vec3d operator& (vec3d const& v) const
             {
                 vec3d res;
 
@@ -187,7 +231,14 @@ namespace olc
 
             friend std::ostream& operator<< (std::ostream& ostr, vec3d const& v)
             {
-                return ostr << "(" << v.x << ", " << v.y << ", " << v.z << ": " << v.w << ")";
+                std::streamsize width = ostr.precision();
+                auto a = ostr.flags();
+                ostr.setf(ostr.showpos);
+                ostr << std::setprecision(4) << std::fixed;
+                ostr << "(" << std::setprecision(4) << v.x << ", " << v.y << ", " << v.z << ": " << v.w << " l:" << v.length() << ")";
+                ostr << std::setprecision(width);
+                ostr.flags(a);
+                return ostr;
             }
         };
 
@@ -203,12 +254,62 @@ namespace olc
         {
             float m[4][4] = { 0 };
 
-            vec3d operator* (vec3d const& v) const
+            inline vec3d operator* (vec3d const& v) const
             {
                 vec3d res = v;
                 mat4x4 t = *this;
                 res = Math::Mat_MultiplyVector(t, res);
                 return res;
+            }
+
+            inline mat4x4 operator* (mat4x4 const& other)
+            {
+                mat4x4 res;
+                for (int c = 0; c < 4; ++c)
+                {
+                    for (int r = 0; r < 4; ++r)
+                    {
+                        res.m[r][c] = m[r][0] * other.m[0][c]
+                                    + m[r][1] * other.m[1][c]
+                                    + m[r][2] * other.m[2][c]
+                                    + m[r][3] * other.m[3][c];
+                    }
+                }
+                return res;
+            }
+
+            void transpose()
+            {
+                for (int c = 0; c < 4; ++c)
+                {
+                    for (int r = c; r < 4; ++r)
+                    {
+                        std::swap(m[c][r], m[r][c]);
+                    }
+                }
+            }
+
+            friend std::ostream& operator<< (std::ostream& ostr, mat4x4 const& mat)
+            {
+                std::streamsize width = ostr.precision();
+                auto a = ostr.flags();
+                ostr.setf(ostr.showpos);
+                ostr << std::setprecision(4) << std::fixed;
+                ostr << "[" << std::setprecision(4);
+
+                for (int c = 0; c < 4; ++c)
+                {
+                    ostr << (c == 0 ? "" : " ") << "[";
+                    for (int r = 0; r < 4; ++r)
+                    {
+                        ostr << mat.m[r][c] << " ";
+                    }
+                    ostr << "]" << (c == 3 ? "" : "\n");
+                }
+
+                ostr << "]" << std::setprecision(width);
+                ostr.flags(a);
+                return ostr;
             }
         };
 
@@ -223,7 +324,7 @@ namespace olc
             inline Math();
 
         public:
-            inline static vec3d Mat_MultiplyVector(olc::GFX3D::mat4x4& m, olc::GFX3D::vec3d& i)
+            inline static vec3d Mat_MultiplyVector(mat4x4 const& m, vec3d const& i)
             {
                 vec3d v;
                 v.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + i.w * m.m[3][0];
@@ -232,7 +333,20 @@ namespace olc
                 v.w = i.x * m.m[0][3] + i.y * m.m[1][3] + i.z * m.m[2][3] + i.w * m.m[3][3];
                 return v;
             }
-            inline static mat4x4 Mat_MultiplyMatrix(mat4x4& m1, mat4x4& m2);
+
+            inline static mat4x4 Mat_MultiplyMatrix(mat4x4& m1, mat4x4& m2)
+            {
+                mat4x4 matrix;
+                for (int c = 0; c < 4; c++)
+                {
+                    for (int r = 0; r < 4; r++)
+                    {
+                        matrix.m[r][c] = m1.m[r][0] * m2.m[0][c] + m1.m[r][1] * m2.m[1][c] + m1.m[r][2] * m2.m[2][c] + m1.m[r][3] * m2.m[3][c];
+                    }
+                }
+                return matrix;
+            }
+
             inline static mat4x4 Mat_MakeIdentity()
             {
                 mat4x4 matrix;
@@ -279,21 +393,20 @@ namespace olc
             {
                 mat4x4 res;
 
-                float sinTheta = sinf(fAngleRad);
-                float cosTheta = cosf(fAngleRad);
+                float sinT = sin(fAngleRad);
+                float cosT = cos(fAngleRad);
 
-                res.m[0][0] =    cosTheta + u.x*u.x * (1 - cosTheta);     res.m[1][0] = u.x*u.y * (1 - cosTheta) - u.z * sinTheta;  res.m[2][0] = u.x*u.z * (1 - cosTheta) + u.y * sinTheta;
-                res.m[0][1] = u.y*u.x * (1 - cosTheta) + u.z * sinTheta;  res.m[1][1] =    cosTheta + u.y*u.y * (1 - cosTheta);     res.m[2][1] = u.y*u.z * (1 - cosTheta) + u.x * sinTheta;
-                res.m[0][2] = u.z*u.x * (1 - cosTheta) - u.y * sinTheta;  res.m[1][2] = u.z*u.y * (1 - cosTheta) + u.x * sinTheta;  res.m[2][2] =   cosTheta + u.z*u.z * (1 - cosTheta);
+                res.m[0][0] =    cosT + u.x*u.x * (1 - cosT);     res.m[1][0] = u.x*u.y * (1 - cosT) - u.z * sinT;  res.m[2][0] = u.x*u.z * (1 - cosT) + u.y * sinT;
+                res.m[0][1] = u.y*u.x * (1 - cosT) + u.z * sinT;  res.m[1][1] =    cosT + u.y*u.y * (1 - cosT);     res.m[2][1] = u.y*u.z * (1 - cosT) - u.x * sinT; // fucking helps if i can copy the formula correctly
+                res.m[0][2] = u.z*u.x * (1 - cosT) - u.y * sinT;  res.m[1][2] = u.z*u.y * (1 - cosT) + u.x * sinT;  res.m[2][2] =   cosT + u.z*u.z * (1 - cosT);
                 res.m[3][3] = 1;
-
                 return res;
             }
 
             inline static mat4x4 Mat_MakeScale(float x, float y, float z);
             inline static mat4x4 Mat_MakeTranslation(float x, float y, float z);
             inline static mat4x4 Mat_MakeProjection(float fFovDegrees, float fAspectRatio, float fNear, float fFar);
-            inline static mat4x4 Mat_PointAt(vec3d& pos, vec3d& target, vec3d& up);
+            inline static mat4x4 Mat_PointAt(vec3d const& pos, vec3d const& target, vec3d const& up);
             inline static mat4x4 Mat_QuickInverse(mat4x4& m); // Only for Rotation/Translation Matrices
             inline static mat4x4 Mat_Inverse(olc::GFX3D::mat4x4& m);
 
@@ -305,9 +418,9 @@ namespace olc
             inline static float Vec_Length(vec3d& v);
             inline static vec3d Vec_Normalise(vec3d& v);
             inline static vec3d Vec_CrossProduct(vec3d& v1, vec3d& v2);
-            inline static vec3d Vec_IntersectPlane(vec3d& plane_p, vec3d& plane_n, vec3d& lineStart, vec3d& lineEnd, float& t);
+            inline static vec3d Vec_IntersectPlane(vec3d const& plane_p, vec3d& plane_n, vec3d const& lineStart, vec3d const& lineEnd, float& t);
 
-            inline static int Triangle_ClipAgainstPlane(vec3d plane_p, vec3d plane_n, triangle& in_tri, triangle& out_tri1, triangle& out_tri2);
+            inline static int Triangle_ClipAgainstPlane(vec3d plane_p, vec3d plane_n, triangle const& in_tri, triangle& out_tri1, triangle& out_tri2);
         };
 
         enum RENDERFLAGS
@@ -328,11 +441,11 @@ namespace olc
 
         public:
             void SetProjection(float fFovDegrees, float fAspectRatio, float fNear, float fFar, float fLeft, float fTop, float fWidth, float fHeight);
-            void SetCamera(olc::GFX3D::vec3d& pos, olc::GFX3D::vec3d& lookat, olc::GFX3D::vec3d& up);
+            void SetCamera(olc::GFX3D::vec3d const& pos, olc::GFX3D::vec3d const& lookat, olc::GFX3D::vec3d const& up);
             void SetTransform(olc::GFX3D::mat4x4& transform);
             void SetTexture(olc::Sprite* texture);
             void SetLightSource(olc::GFX3D::vec3d& pos, olc::GFX3D::vec3d& dir, olc::Pixel& col);
-            uint32_t Render(std::vector<olc::GFX3D::triangle>& triangles, uint32_t flags = RENDER_CULL_CW | RENDER_TEXTURED | RENDER_DEPTH);
+            uint32_t Render(std::vector<olc::GFX3D::triangle> const& triangles, uint32_t flags = RENDER_CULL_CW | RENDER_TEXTURED | RENDER_DEPTH);
 
         private:
             olc::GFX3D::mat4x4 matProj;
