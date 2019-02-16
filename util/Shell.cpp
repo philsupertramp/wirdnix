@@ -1,3 +1,4 @@
+#define __STDC_WANT_LIB_EXT1__ 1
 #include "Shell.h"
 #include "Engine.h"
 #include <time.h>
@@ -26,12 +27,14 @@ Message::Message(std::string const & message, olc::Pixel color, uint32_t scale)
     , _backgroundColor(BACKGROUND_COLOR)
     // 12 = 1.5(2/3 screen with) * 8(default font with)
 {
+#ifdef __STDC_LIB_EXT1__
     initSprite();
     time_t t = time(NULL);
     struct tm buf;
     localtime_s(&buf, &t);
     buf.tm_sec += 20;
     _createdAt = mktime(&buf);
+#endif
 }
 
 void Message::setColor(olc::Pixel const & newColor)
