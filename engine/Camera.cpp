@@ -131,9 +131,9 @@ void Camera::yawRight(float fElapsedTime)
 
 void Camera::reset()
 {
-    float lookHeight = 11;
+    float lookHeight = 8;
     _pos = {12.5,12.5,lookHeight};
-    _lookat = {12.5,0,lookHeight};
+    _lookat = {12.5,13,lookHeight};
     _up = {0,0,-1}; //- since y is downward
     _up.normalize();
     SetCamera(_pos, _lookat, _up);

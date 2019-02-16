@@ -80,9 +80,9 @@ void Engine::drawTestImage()
         int length = 10;
         float gap = 5;
         float size = 25;
-        for (int i = -length; i < length; ++i)
+        for (int i = -length; i <= length; ++i)
         {
-            for (int j = -length; j < length; ++j)
+            for (int j = -length; j <= length; ++j)
             {
                 r.push_back(Room(i*(size + gap), j*(size + gap), size, size));
             }
@@ -140,8 +140,9 @@ bool Engine::OnUserCreate()
     TextureLibrary::add("../images/dirt.png");
     TextureLibrary::add("../images/floor.png");
     TextureLibrary::add("../images/wall.png");
+    TextureLibrary::add("../images/ceiling.png");
 
-    obj.loadFromOBJfile("../objects/teapot.obj");
+    obj.loadFromOBJfile("../objects/axis.obj");
     obj.randomizeColors();
 
     return true;
@@ -319,7 +320,7 @@ void Engine::DrawMesh(olc::GFX3D::mesh& m, uint32_t flags /* = olc::GFX3D::RENDE
     if (tex != nullptr)
     {
         camera.SetTexture(tex);
-        camera.Render(m.tris, flags | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED & ~olc::GFX3D::RENDERFLAGS::RENDER_FLAT /*| olc::GFX3D::RENDERFLAGS::RENDER_WIRE*/ );
+        camera.Render(m.tris, flags | olc::GFX3D::RENDERFLAGS::RENDER_TEXTURED & ~olc::GFX3D::RENDERFLAGS::RENDER_FLAT /*| olc::GFX3D::RENDERFLAGS::RENDER_WIRE*/ | olc::GFX3D::RENDERFLAGS::RENDER_CULL_CCW);
     }
     else
     {
